@@ -1,6 +1,6 @@
 // MUI Imports
 import Grid from '@mui/material/Grid';
-import WorldMap from '@/libs/WorldMap';
+
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
@@ -12,7 +12,10 @@ import QuestionsSlider from './QuestionsSlider';
 import React from "react";
 
 import {useAtomValue} from "jotai";
-import {newSurveyAtom} from '/src/app/store/atoms';
+import {newSurveyAtom} from '../../../app/store/atoms';
+import dynamic from "next/dynamic";
+
+const WorldMap = dynamic(() => import('@/libs/WorldMap'), { ssr: false })
 
 const StepAudience = ({activeStep, handleNext, handlePrev, steps}) => {
   const newSurvey = useAtomValue(newSurveyAtom)

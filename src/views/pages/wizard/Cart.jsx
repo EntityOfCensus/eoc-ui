@@ -25,7 +25,7 @@ const Cart = () => {
           newSurvey.targetGroups
             //.filter(item => item.visible)
             .map((item, index) => (
-              <Grid item xs={12} lg={6}>
+              <Grid item key={index} xs={12} lg={6}>
 
                 <Typography variant='h5'>{`${item.country}  -  ${item.ir}%, ${item.loi} min`}</Typography>
 

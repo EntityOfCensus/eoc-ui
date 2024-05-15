@@ -19,7 +19,6 @@ import classnames from 'classnames'
 import CustomAvatar from '@core/components/mui/Avatar'
 import StepSurveyType from './StepSurveyType'
 import StepConfigType from './StepConfigType'
-import StepAudience from './StepAudience'
 import StepBasicSettings from './StepBasicSettings'
 import StepReview from './StepReview'
 
@@ -29,8 +28,9 @@ import StoreProvider from "@/app/store/StoreProvider";
 import {countriesAtom, newSurveyAtom} from "@/app/store/atoms";
 import {useAtom, useStore} from "jotai";
 import withAuth from "@/hoc/withAuth";
-import {router} from "next/client";
 import {useRouter} from "next/navigation";
+import dynamic from "next/dynamic";
+const StepAudience = dynamic(() => import('./StepAudience'), { ssr: false })
 
 // Vars
 const steps = [

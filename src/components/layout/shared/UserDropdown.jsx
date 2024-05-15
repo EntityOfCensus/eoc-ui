@@ -80,7 +80,7 @@ const UserDropdown = () => {
     } catch (e) {
       console.log(e)
     }
-  }, token)
+  }, [token])
 
 
   const handleUserLogout = async () => {

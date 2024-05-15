@@ -25,7 +25,7 @@ const withAuth = (WrappedComponent) => {
       };
 
       checkAuth();
-    }, []);
+    });
 
     if (!isAuthenticated) {
       return <div>Loading...</div>; // You can render a loading spinner here

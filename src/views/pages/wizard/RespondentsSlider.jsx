@@ -1,11 +1,10 @@
-import {useEffect, useState} from 'react';
 import {styled} from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 import Slider from '@mui/material/Slider';
 import MuiInput from '@mui/material/Input';
 
-import {newSurveyAtom} from '/src/app/store/atoms';
-import {useAtom, useAtomValue} from "jotai";
+import {newSurveyAtom} from './../../../app/store/atoms';
+import {useAtom} from "jotai";
 
 const Input = styled(MuiInput)`
   width: 50px;

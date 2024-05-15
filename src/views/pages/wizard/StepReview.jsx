@@ -90,7 +90,7 @@ const StepReview = ({activeStep, handleNext, handlePrev, steps}) => {
           newSurvey.targetGroups
             .filter(item => item.visible)
             .map((item, index) => (
-              <Grid item xs={12} lg={6}>
+              <Grid key={index} item xs={12} lg={6}>
 
                 <Typography variant='h5'>{`${item.country}  -  ${item.ir}%, ${item.loi} min`}</Typography>
 

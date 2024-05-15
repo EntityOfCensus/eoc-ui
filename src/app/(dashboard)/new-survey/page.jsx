@@ -1,6 +1,7 @@
 // Component Imports
 'use client'
-import CreateSurvey from '@views/pages/wizard'
+import dynamic from "next/dynamic";
+const CreateSurvey = dynamic(() => import('@views/pages/wizard'), { ssr: false })
 
 const CreateSurveyPage = () => {
   return localStorage.getItem('user-type') === 'client' && <CreateSurvey />

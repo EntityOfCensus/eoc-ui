@@ -97,13 +97,13 @@ const StepBasicSettings = ({activeStep, handleNext, handlePrev, steps}) => {
       <Grid item xs={12}>
         {
           newSurvey.config === 'advanced' && newSurvey.targetGroups && newSurvey.targetGroups.map((item, index) => (
-              <BasicSettings targetGroup={item}/>
+              <BasicSettings key={index} targetGroup={item}/>
             )
           )
         }
         {
           newSurvey.config === 'easy' && newSurvey.targetGroups && newSurvey.targetGroups.map((item, index) => (
-              <BasicSettings targetGroup={item}/>
+              <BasicSettings key={index} targetGroup={item}/>
             )
           )
         }
