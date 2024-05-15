@@ -148,7 +148,7 @@ const LoginV2 = ({mode}) => {
             <Typography>Please sign-in to your account and start the adventure</Typography>
           </div>
           <FormControl error={Boolean(errors.radio)}>
-            <FormLabel>Gender</FormLabel>
+            <FormLabel>User Type</FormLabel>
             <Controller
               name='userType'
               defaultValue={userType}
