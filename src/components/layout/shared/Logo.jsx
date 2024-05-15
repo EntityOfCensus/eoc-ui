@@ -25,6 +25,7 @@ const LogoText = styled.span`
   line-height: 1.09091;
   font-weight: 700;
   letter-spacing: 0.25px;
+  visibility: hidden;
   color: var(--mui-palette-text-primary);
   transition: ${({ transitionDuration }) =>
     `margin-inline-start ${transitionDuration}ms ease-in-out, opacity ${transitionDuration}ms ease-in-out`};
@@ -62,7 +63,7 @@ const Logo = () => {
   // You may return any JSX here to display a logo in the sidebar header
   // return <Img src='/next.svg' width={100} height={25} alt='logo' /> // for example
   return (
-    <Link href='/' className='flex items-center'>
+    <Link href='/' className='flex '>
       <VuexyLogo className='text-2xl text-primary' />
       <LogoText
         ref={logoTextRef}

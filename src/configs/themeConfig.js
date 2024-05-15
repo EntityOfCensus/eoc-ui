@@ -16,7 +16,7 @@
  * Another way is to clear the cookie from the browser's Application/Storage tab and then reload the page.
  */
 const themeConfig = {
-  templateName: 'Entity of Code',
+  templateName: 'Entity of Census',
   settingsCookieName: 'eoc',
   mode: 'dark', // 'system', 'light', 'dark'
   skin: 'default', // 'default', 'bordered'

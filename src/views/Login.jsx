@@ -94,10 +94,6 @@ const LoginV2 = ({mode}) => {
 
   const [userType, setUserType] = useState('client')
   const handleLogin = async () => {
-    // const res1 = await login()
-    // console.log("Login \n", res1.data);
-    // router.push('/home')
-
     const res = await connect();
     console.log("Connect,\n", res.data);
 
@@ -127,7 +123,8 @@ const LoginV2 = ({mode}) => {
           }
         )}
       >
-        <LoginIllustration src={characterIllustration} />
+        {/*<LoginIllustration src={characterIllustration} />*/}
+        <Typography variant={'h1'}>Entity of Census</Typography>
         {!hidden && (
           <MaskImg
             alt='mask'
