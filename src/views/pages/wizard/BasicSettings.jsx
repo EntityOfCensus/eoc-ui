@@ -390,7 +390,6 @@ const BasicSettings = ({targetGroup}) => {
                               disabled={disabled}
                               defaultValue={targetGroup.startDate}
                               style={{marginTop: 10, marginRight: 30, width: '90%'}}
-                              defaultValue={value}
                               label='Start Date'
                               onChange={(e) => {
                                 field.onChange(e);
