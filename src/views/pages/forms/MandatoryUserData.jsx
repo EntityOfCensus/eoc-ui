@@ -1,7 +1,7 @@
 'use client'
 
 // React Imports
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 // MUI Imports
 import Card from '@mui/material/Card'
@@ -19,10 +19,13 @@ import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import InputAdornment from '@mui/material/InputAdornment'
 import IconButton from '@mui/material/IconButton'
+import { jwtDecode } from 'jwt-decode'
 
 // Third-party Imports
 import { toast } from 'react-toastify'
 import { useForm, Controller } from 'react-hook-form'
+
+import { RespondentBasicDataApi, RespondentBasicDataApiClient } from '../../../@bff/respondent-basic-info-api'
 
 // Components Imports
 import CustomTextField from '@core/components/mui/TextField'
@@ -36,7 +39,8 @@ const MandatoryUserData = () => {
     control,
     reset,
     handleSubmit,
-    formState: { errors }
+    formState: { errors },
+    setValue
   } = useForm({
     defaultValues: {
       firstName: '',
@@ -51,6 +55,30 @@ const MandatoryUserData = () => {
       radio: false,
       checkbox: false
     }
+  })
+  const [respondentBasicDataApi, setRespondentBasicDataApi] = useState(
+    new RespondentBasicDataApi(RespondentBasicDataApiClient.instance)
+  )
+
+  useEffect(() => {
+    const { sub } = jwtDecode(localStorage.getItem('id_token'))
+    respondentBasicDataApi.apiClient.authentications = {
+      bearerAuth: {
+        type: 'bearerAuth',
+        accessToken: localStorage.getItem('id_token')
+      }
+    }
+    respondentBasicDataApi.findRespondentBasicDataById(sub, function (error, data, response) {
+      if (error) {
+        console.log('error', error)
+        return
+      }
+      // if (formData == null) setFormData(data)
+      console.log('data', data)
+      setValue('firstName', data.firstName)
+      setValue('lastName', data.lastName)
+      setValue('email', data.email)
+    })
   })
 
   const onSubmit = () => toast.success('Form Submitted')
@@ -143,9 +171,7 @@ const MandatoryUserData = () => {
                 render={({ field }) => (
                   <CustomTextField select fullWidth label='Country' {...field} error={Boolean(errors.select)}>
                     <MenuItem value=''>Select Country</MenuItem>
-                    {
-
-                    }
+                    {}
                     <MenuItem value='UK'>UK</MenuItem>
                     <MenuItem value='USA'>USA</MenuItem>
                     <MenuItem value='Australia'>Australia</MenuItem>

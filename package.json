@@ -14,6 +14,7 @@
     "postinstall": "npm run build:icons"
   },
   "dependencies": {
+    "@auth0/auth0-spa-js": "^2.1.3",
     "@emotion/cache": "11.11.0",
     "@emotion/react": "11.11.4",
     "@emotion/styled": "11.11.0",
@@ -25,7 +26,6 @@
     "@othent/kms": "^1.0.12",
     "apexcharts": "3.47.0",
     "arweave": "^1.14.4",
-    "@auth0/auth0-spa-js": "^2.1.3",
     "classnames": "2.5.1",
     "country-list": "^2.3.0",
     "date-fns": "3.3.1",
@@ -43,7 +43,8 @@
     "react-perfect-scrollbar": "1.5.8",
     "react-toastify": "^10.0.5",
     "react-use": "17.5.0",
-    "server-only": "0.0.1"
+    "server-only": "0.0.1",
+    "superagent": "^9.0.2"
   },
   "devDependencies": {
     "@iconify/tools": "4.0.2",
