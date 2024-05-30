@@ -1,13 +1,13 @@
 'use client'
 
 // React Imports
-import {useEffect, useRef, useState} from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 // Next Imports
-import {useRouter} from 'next/navigation'
+import { useRouter } from 'next/navigation'
 
 // MUI Imports
-import {styled} from '@mui/material/styles'
+import { styled } from '@mui/material/styles'
 import Badge from '@mui/material/Badge'
 import Avatar from '@mui/material/Avatar'
 import Popper from '@mui/material/Popper'
@@ -19,11 +19,12 @@ import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
 import MenuItem from '@mui/material/MenuItem'
 import Button from '@mui/material/Button'
+import { RespondentBasicDataApi, RespondentBasicDataApiClient } from '../../../@bff/respondent-basic-info-api'
 
 // Hook Imports
-import {useSettings} from '@core/hooks/useSettings'
-import {disconnect} from "@othent/kms";
-import {jwtDecode} from "jwt-decode";
+import { useSettings } from '@core/hooks/useSettings'
+import { disconnect } from '@othent/kms'
+import { jwtDecode } from 'jwt-decode'
 
 // Styled component for badge content
 const BadgeContentSpan = styled('span')({
@@ -48,7 +49,11 @@ const UserDropdown = () => {
 
   // Hooks
   const router = useRouter()
-  const {settings} = useSettings()
+  const { settings } = useSettings()
+
+  const [respondentBasicDataApi, setRespondentBasicDataApi] = useState(
+    new RespondentBasicDataApi(RespondentBasicDataApiClient.instance)
+  )
 
   const handleDropdownOpen = () => {
     !open ? setOpen(true) : setOpen(false)
@@ -66,14 +71,13 @@ const UserDropdown = () => {
     setOpen(false)
   }
 
-
   useEffect(() => {
-    setToken(localStorage.getItem("id_token"))
+    setToken(localStorage.getItem('id_token'))
   }, [])
 
   useEffect(() => {
     try {
-      const {name, picture, email} = jwtDecode(localStorage.getItem("id_token"))
+      const { name, picture, email } = jwtDecode(localStorage.getItem('id_token'))
       setImageUrl(picture)
       setUsername(name)
       setEmail(email)
@@ -82,15 +86,25 @@ const UserDropdown = () => {
     }
   }, [token])
 
-
   const handleUserLogout = async () => {
     localStorage.setItem('id_token', '')
     await disconnect()
   }
 
-
   const handleUserDelete = () => {
-    alert('Mock for user delete')
+    // alert('Mock for user delete')
+    const { sub } = jwtDecode(localStorage.getItem('id_token'))
+    respondentBasicDataApi.apiClient.authentications = {
+      bearerAuth: {
+        type: 'bearerAuth',
+        accessToken: localStorage.getItem('id_token')
+      }
+    }
+    respondentBasicDataApi.deleteRespondentBasicData(sub, async function (error, data, response) {
+      console.log(error)
+      //todo error handling
+      await disconnect()
+    })
   }
 
   function handleUserProfile() {
@@ -102,8 +116,8 @@ const UserDropdown = () => {
       <Badge
         ref={anchorRef}
         overlap='circular'
-        badgeContent={<BadgeContentSpan onClick={handleDropdownOpen}/>}
-        anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
+        badgeContent={<BadgeContentSpan onClick={handleDropdownOpen} />}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         className='mis-2'
       >
         <Avatar
@@ -122,7 +136,7 @@ const UserDropdown = () => {
         anchorEl={anchorRef.current}
         className='min-is-[240px] !mbs-3 z-[1]'
       >
-        {({TransitionProps, placement}) => (
+        {({ TransitionProps, placement }) => (
           <Fade
             {...TransitionProps}
             style={{
@@ -133,7 +147,7 @@ const UserDropdown = () => {
               <ClickAwayListener onClickAway={e => handleDropdownClose(e)}>
                 <MenuList>
                   <div className='flex items-center plb-2 pli-6 gap-2' tabIndex={-1}>
-                    <Avatar alt={username} src={imageUrl}/>
+                    <Avatar alt={username} src={imageUrl} />
                     <div className='flex items-start flex-col'>
                       <Typography className='font-medium' color='text.primary'>
                         {username}
@@ -141,13 +155,13 @@ const UserDropdown = () => {
                       <Typography variant='caption'>{email}</Typography>
                     </div>
                   </div>
-                  <Divider className='mlb-1'/>
+                  <Divider className='mlb-1' />
                   <MenuItem className='mli-2 gap-3' onClick={handleUserProfile}>
-                    <i className='tabler-user text-[22px]'/>
+                    <i className='tabler-user text-[22px]' />
                     <Typography color='text.primary'>My Profile</Typography>
                   </MenuItem>
                   <MenuItem className='mli-2 gap-3' onClick={handleUserDelete}>
-                    <i className='tabler-settings text-[22px]'/>
+                    <i className='tabler-settings text-[22px]' />
                     <Typography color='text.primary'>Delete Profile</Typography>
                   </MenuItem>
                   <div className='flex items-center plb-2 pli-3'>
@@ -156,9 +170,9 @@ const UserDropdown = () => {
                       variant='contained'
                       color='error'
                       size='small'
-                      endIcon={<i className='tabler-logout'/>}
+                      endIcon={<i className='tabler-logout' />}
                       onClick={handleUserLogout}
-                      sx={{'& .MuiButton-endIcon': {marginInlineStart: 1.5}}}
+                      sx={{ '& .MuiButton-endIcon': { marginInlineStart: 1.5 } }}
                     >
                       Logout
                     </Button>

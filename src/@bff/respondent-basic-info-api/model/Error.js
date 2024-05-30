@@ -13,7 +13,7 @@
  * Do not edit the class manually.
  *
  */
-import ApiClient from '../RespondentBasicDataApiClient'
+import RespondentBasicDataApiClient from '../RespondentBasicDataApiClient'
 
 /**
  * The Error model module.
@@ -41,7 +41,8 @@ export default class Error {
   static constructFromObject(data, obj) {
     if (data) {
       obj = obj || new Error()
-      if (data.hasOwnProperty('message')) obj.message = ApiClient.convertToType(data['message'], 'String')
+      if (data.hasOwnProperty('message'))
+        obj.message = RespondentBasicDataApiClient.convertToType(data['message'], 'String')
     }
     return obj
   }
