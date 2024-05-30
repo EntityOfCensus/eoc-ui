@@ -58,91 +58,90 @@ const MandatoryUserData = () => {
   })
   const [respondentBasicData, setRespondentBasicData] = useState(null)
 
-  // const [respondentBasicDataApi, setRespondentBasicDataApi] = useState(
-  //   new RespondentBasicDataApi(RespondentBasicDataApiClient.instance)
-  // )
+  const [respondentBasicDataApi, setRespondentBasicDataApi] = useState(
+    new RespondentBasicDataApi(RespondentBasicDataApiClient.instance)
+  )
 
-  // useEffect(() => {
-  //   if (!respondentBasicData) {
-  //     const { sub } = jwtDecode(localStorage.getItem('id_token'))
-  //     respondentBasicDataApi.apiClient.authentications = {
-  //       bearerAuth: {
-  //         type: 'bearerAuth',
-  //         accessToken: localStorage.getItem('id_token')
-  //       }
-  //     }
-  //     respondentBasicDataApi.findRespondentBasicDataById(sub, function (error, data, response) {
-  //       if (error) {
-  //         console.log('error', error)
-  //         return
-  //       }
-  //       const { sub } = jwtDecode(localStorage.getItem('id_token'))
-  //       if (data.id == sub) {
-  //         setRespondentBasicData(data)
-  //         setValue('firstName', data.firstName)
-  //         setValue('lastName', data.lastName)
-  //         setValue('email', data.email)
-  //         setValue('dob', data.dateOfBirth)
-  //         setValue('select', data.country)
-  //         setValue('city', data.city)
-  //         setValue('county', data.county)
-  //         setValue('postal_code', data.postalCode)
-  //         setValue('radio', data.gender)
-  //         setValue('checkbox', data.agreeOnTerms)
-  //       }
-  //       // if (formData == null) setFormData(data)
-  //       console.log('data', data)
-  //     })
-  //   }
-  // }, [respondentBasicData])
+  useEffect(() => {
+    if (!respondentBasicData) {
+      const { sub } = jwtDecode(localStorage.getItem('id_token'))
+      respondentBasicDataApi.apiClient.authentications = {
+        bearerAuth: {
+          type: 'bearerAuth',
+          accessToken: localStorage.getItem('id_token')
+        }
+      }
+      respondentBasicDataApi.findRespondentBasicDataById(sub, function (error, data, response) {
+        if (error) {
+          console.log('error', error)
+          return
+        }
+        const { sub } = jwtDecode(localStorage.getItem('id_token'))
+        if (data.id == sub) {
+          setRespondentBasicData(data)
+          setValue('firstName', data.firstName)
+          setValue('lastName', data.lastName)
+          setValue('email', data.email)
+          setValue('dob', data.dateOfBirth)
+          setValue('select', data.country)
+          setValue('city', data.city)
+          setValue('county', data.county)
+          setValue('postal_code', data.postalCode)
+          setValue('radio', data.gender)
+          setValue('checkbox', data.agreeOnTerms)
+        }
+        console.log('data', data)
+      })
+    }
+  }, [respondentBasicData])
 
   const onSubmit = data => {
-    // let body = {
-    //   firstName: data.firstName,
-    //   lastName: data.lastName,
-    //   email: data.email,
-    //   dateOfBirth: new Date(data.dob).toISOString().substring(0, 10),
-    //   country: data.select,
-    //   city: data.city,
-    //   county: data.county,
-    //   postalCode: data.postal_code,
-    //   gender: data.radio,
-    //   agreeOnTerms: data.checkbox
-    // }
-    // if (respondentBasicData) {
-    //   putRespondentBasicData(body)
-    // } else {
-    //   postRespondentBasicData(body)
-    // }
+    let body = {
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+      dateOfBirth: new Date(data.dob).toISOString().substring(0, 10),
+      country: data.select,
+      city: data.city,
+      county: data.county,
+      postalCode: data.postal_code,
+      gender: data.radio,
+      agreeOnTerms: data.checkbox
+    }
+    if (respondentBasicData) {
+      putRespondentBasicData(body)
+    } else {
+      postRespondentBasicData(body)
+    }
     toast.success('Form Submitted')
   }
 
-  // const postRespondentBasicData = body => {
-  //   respondentBasicDataApi.apiClient.authentications = {
-  //     bearerAuth: {
-  //       type: 'bearerAuth',
-  //       accessToken: localStorage.getItem('id_token')
-  //     }
-  //   }
-  //   respondentBasicDataApi.addRespondentBasicData(body, function (error, data, response) {
-  //     console.log(error)
-  //     //todo error handling
-  //   })
-  // }
+  const postRespondentBasicData = body => {
+    respondentBasicDataApi.apiClient.authentications = {
+      bearerAuth: {
+        type: 'bearerAuth',
+        accessToken: localStorage.getItem('id_token')
+      }
+    }
+    respondentBasicDataApi.addRespondentBasicData(body, function (error, data, response) {
+      console.log(error)
+      //todo error handling
+    })
+  }
 
-  // const putRespondentBasicData = body => {
-  //   const { sub } = jwtDecode(localStorage.getItem('id_token'))
-  //   respondentBasicDataApi.apiClient.authentications = {
-  //     bearerAuth: {
-  //       type: 'bearerAuth',
-  //       accessToken: localStorage.getItem('id_token')
-  //     }
-  //   }
-  //   respondentBasicDataApi.updateRespondentBasicData(body, sub, function (error, data, response) {
-  //     console.log(error)
-  //     //todo error handling
-  //   })
-  // }
+  const putRespondentBasicData = body => {
+    const { sub } = jwtDecode(localStorage.getItem('id_token'))
+    respondentBasicDataApi.apiClient.authentications = {
+      bearerAuth: {
+        type: 'bearerAuth',
+        accessToken: localStorage.getItem('id_token')
+      }
+    }
+    respondentBasicDataApi.updateRespondentBasicData(body, sub, function (error, data, response) {
+      console.log(error)
+      //todo error handling
+    })
+  }
 
   return (
     <Card>
