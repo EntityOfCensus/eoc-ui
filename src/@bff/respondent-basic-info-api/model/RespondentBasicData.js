@@ -13,7 +13,7 @@
  * Do not edit the class manually.
  *
  */
-import ApiClient from '../RespondentBasicDataApiClient'
+import RespondentBasicDataApiClient from '../RespondentBasicDataApiClient'
 import NewRespondentBasicData from './NewRespondentBasicData'
 
 /**
@@ -47,7 +47,7 @@ export default class RespondentBasicData extends NewRespondentBasicData {
     if (data) {
       obj = obj || new RespondentBasicData()
       NewRespondentBasicData.constructFromObject(data, obj)
-      if (data.hasOwnProperty('id')) obj.id = ApiClient.convertToType(data['id'], 'String')
+      if (data.hasOwnProperty('id')) obj.id = RespondentBasicDataApiClient.convertToType(data['id'], 'String')
     }
     return obj
   }

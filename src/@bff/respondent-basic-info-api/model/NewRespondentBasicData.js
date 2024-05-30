@@ -13,7 +13,7 @@
  * Do not edit the class manually.
  *
  */
-import ApiClient from '../RespondentBasicDataApiClient'
+import RespondentBasicDataApiClient from '../RespondentBasicDataApiClient'
 
 /**
  * The NewRespondentBasicData model module.
@@ -43,15 +43,24 @@ export default class NewRespondentBasicData {
   static constructFromObject(data, obj) {
     if (data) {
       obj = obj || new NewRespondentBasicData()
-      if (data.hasOwnProperty('firstName')) obj.firstName = ApiClient.convertToType(data['firstName'], 'String')
-      if (data.hasOwnProperty('lastName')) obj.lastName = ApiClient.convertToType(data['lastName'], 'String')
-      if (data.hasOwnProperty('email')) obj.email = ApiClient.convertToType(data['email'], 'String')
-      if (data.hasOwnProperty('dateOfBirth')) obj.dateOfBirth = ApiClient.convertToType(data['dateOfBirth'], 'Date')
-      if (data.hasOwnProperty('country')) obj.country = ApiClient.convertToType(data['country'], 'String')
-      if (data.hasOwnProperty('city')) obj.city = ApiClient.convertToType(data['city'], 'String')
-      if (data.hasOwnProperty('county')) obj.county = ApiClient.convertToType(data['county'], 'String')
-      if (data.hasOwnProperty('postalCode')) obj.postalCode = ApiClient.convertToType(data['postalCode'], 'String')
-      if (data.hasOwnProperty('gender')) obj.gender = ApiClient.convertToType(data['gender'], 'String')
+      if (data.hasOwnProperty('firstName'))
+        obj.firstName = RespondentBasicDataApiClient.convertToType(data['firstName'], 'String')
+      if (data.hasOwnProperty('lastName'))
+        obj.lastName = RespondentBasicDataApiClient.convertToType(data['lastName'], 'String')
+      if (data.hasOwnProperty('email')) obj.email = RespondentBasicDataApiClient.convertToType(data['email'], 'String')
+      if (data.hasOwnProperty('dateOfBirth'))
+        obj.dateOfBirth = RespondentBasicDataApiClient.convertToType(data['dateOfBirth'], 'Date')
+      if (data.hasOwnProperty('country'))
+        obj.country = RespondentBasicDataApiClient.convertToType(data['country'], 'String')
+      if (data.hasOwnProperty('city')) obj.city = RespondentBasicDataApiClient.convertToType(data['city'], 'String')
+      if (data.hasOwnProperty('county'))
+        obj.county = RespondentBasicDataApiClient.convertToType(data['county'], 'String')
+      if (data.hasOwnProperty('postalCode'))
+        obj.postalCode = RespondentBasicDataApiClient.convertToType(data['postalCode'], 'String')
+      if (data.hasOwnProperty('gender'))
+        obj.gender = RespondentBasicDataApiClient.convertToType(data['gender'], 'String')
+      if (data.hasOwnProperty('agreeOnTerms'))
+        obj.agreeOnTerms = RespondentBasicDataApiClient.convertToType(data['agreeOnTerms'], 'Boolean')
     }
     return obj
   }
@@ -101,3 +110,8 @@ NewRespondentBasicData.prototype.postalCode = undefined
  * @member {String} gender
  */
 NewRespondentBasicData.prototype.gender = undefined
+
+/**
+ * @member {Boolean} agreeOnTerms
+ */
+NewRespondentBasicData.prototype.agreeOnTerms = undefined
