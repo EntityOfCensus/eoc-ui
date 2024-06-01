@@ -17,10 +17,19 @@ import { newSurveyAtom } from '@/app/store/atoms'
 import { encrypt, sign, signMessage } from '@othent/kms'
 import Arweave from 'arweave/web'
 import { useEffect } from 'react'
+import { PermissionType } from 'arconnect'
 
+import { jwtDecode } from 'jwt-decode'
 import { createDataItemSigner, message } from '@permaweb/aoconnect'
 
 // const TESTING_CENSUS_PROCESS_ID = 'taFQ_bgJhuBLNP7VXMdYq9xq9938oqinxboiLi7k2M8'
+
+const permissions = [
+  'ACCESS_ADDRESS',
+  'SIGNATURE',
+  'SIGN_TRANSACTION',
+  'DISPATCH'
+]
 
 const StepReview = ({ activeStep, handleNext, handlePrev, steps }) => {
   const newSurvey = useAtomValue(newSurveyAtom)
@@ -66,11 +75,29 @@ const StepReview = ({ activeStep, handleNext, handlePrev, steps }) => {
     // console.log(`Sign: time taken: ${(end - start) / 1000} seconds,\n`, res)
     // const txn = await arweave.transactions.post(transaction)
     // console.log(txn)
+    const { walletAddress } = jwtDecode(localStorage.getItem('id_token'))
+  //   await window.arweaveWallet.connect(
+  //     permissions,
+  //     {
+  //         name: walletAddress,
+  //         logo: "4eTBOaxZSSyGbpKlHyilxNKhXbocuZdiMBYIORjS4f0"
+  //     }
+  // )
+  // try {
+  //     const address = await window.arweaveWallet.getActiveAddress()
+  //     // setAddress(address)
+  // } catch(error) {
+  //     console.error(error)
+  // }
 
     try {
+      window.arweaveWallet.connect(permissions, {
+        name: walletAddress,
+        logo: '4eTBOaxZSSyGbpKlHyilxNKhXbocuZdiMBYIORjS4f0'
+      })
       const messageId = await message({
         process: 'taFQ_bgJhuBLNP7VXMdYq9xq9938oqinxboiLi7k2M8',
-        signer: createDataItemSigner(arweave),
+        signer: createDataItemSigner(window.arweaveWallet),
         // the survey as stringified JSON
         data: JSON.stringify(newSurvey),
         tags: [{ name: 'Action', value: 'AddSurvey' }]

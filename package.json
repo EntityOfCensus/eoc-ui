@@ -50,6 +50,7 @@
   "devDependencies": {
     "@iconify/tools": "4.0.2",
     "@iconify/utils": "2.1.22",
+    "arconnect": "^1.0.3",
     "autoprefixer": "10.4.18",
     "eslint": "8.57.0",
     "eslint-config-next": "14.1.3",
