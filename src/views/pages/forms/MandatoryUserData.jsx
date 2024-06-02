@@ -20,6 +20,8 @@ import FormControl from '@mui/material/FormControl'
 import InputAdornment from '@mui/material/InputAdornment'
 import IconButton from '@mui/material/IconButton'
 import { jwtDecode } from 'jwt-decode'
+import { newProfileSurveyAtom } from '@/app/store/atoms'
+import { useAtom } from 'jotai/index'
 
 // Third-party Imports
 import { toast } from 'react-toastify'
@@ -34,6 +36,8 @@ import CustomTextField from '@core/components/mui/TextField'
 import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
 
 const MandatoryUserData = () => {
+  const [newProfileSurvey, setNewProfileSurvey] = useAtom(newProfileSurveyAtom)
+
   // Hooks
   const {
     control,
@@ -78,6 +82,16 @@ const MandatoryUserData = () => {
         }
         const { sub } = jwtDecode(localStorage.getItem('id_token'))
         if (data.id == sub) {
+          let targetGroup = newProfileSurvey.targetGroups[0]; //.length > 0 {
+          targetGroup.dob = data.dateOfBirth;
+          targetGroup.gender = data.gender;
+          targetGroup.country = data.country;
+          setNewProfileSurvey(prev => ({
+            ...prev,
+            type: 'respondent-survey',
+            respondentOthentSub: sub,
+            targetGroups: [targetGroup]
+          }))
           setRespondentBasicData(data)
           setValue('firstName', data.firstName)
           setValue('lastName', data.lastName)
@@ -108,6 +122,16 @@ const MandatoryUserData = () => {
       gender: data.radio,
       agreeOnTerms: data.checkbox
     }
+    let targetGroup = newProfileSurvey.targetGroups[0] //.length > 0 {
+    targetGroup.dob = body.dateOfBirth
+    targetGroup.gender = body.gender
+    targetGroup.country = body.country
+    setNewProfileSurvey(prev => ({
+      ...prev,
+      type: 'respondent-survey',
+      respondentOthentSub: jwtDecode(localStorage.getItem('id_token')),
+      targetGroups: [targetGroup]
+    }))
     if (respondentBasicData) {
       putRespondentBasicData(body)
     } else {
