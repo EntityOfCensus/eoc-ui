@@ -6,6 +6,7 @@ import classnames from 'classnames'
 // Component Imports
 import NavToggle from './NavToggle'
 import ModeDropdown from '@components/layout/shared/ModeDropdown'
+import ArConnectBox from '@components/layout/shared/ArConnectBox'
 import UserDropdown from '@components/layout/shared/UserDropdown'
 
 // Util Imports
@@ -19,6 +20,7 @@ const NavbarContent = () => {
         <ModeDropdown />
       </div>
       <div className='flex items-center'>
+        <ArConnectBox />
         <UserDropdown />
       </div>
     </div>

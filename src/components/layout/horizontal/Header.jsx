@@ -17,7 +17,7 @@ const Header = () => {
     <>
       <LayoutHeader>
         <Navbar>
-          {/* <NavbarContent /> */}
+          <NavbarContent />
         </Navbar>
         {!isBreakpointReached && <Navigation />}
       </LayoutHeader>

@@ -31,8 +31,8 @@ const NavbarContent = () => {
       </div>
       <div className='flex items-center'>
         <ModeDropdown />
-        {/* <ArConnectBox /> */}
-        {/* <UserDropdown /> */}
+        <ArConnectBox />
+        <UserDropdown />
       </div>
     </div>
   )

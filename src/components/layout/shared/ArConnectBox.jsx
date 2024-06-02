@@ -20,6 +20,7 @@ import Divider from '@mui/material/Divider'
 import MenuItem from '@mui/material/MenuItem'
 import Button from '@mui/material/Button'
 import { RespondentBasicDataApi, RespondentBasicDataApiClient } from '../../../@bff/respondent-basic-info-api'
+import { dryrun, message, createDataItemSigner, result } from "@permaweb/aoconnect";
 
 // Hook Imports
 import { useSettings } from '@core/hooks/useSettings'
@@ -39,12 +40,52 @@ const BadgeContentSpan = styled('span')({
   boxShadow: '0 0 0 2px var(--mui-palette-background-paper)'
 })
 
+const BadgeContentDisconnectedSpan = styled('span')({
+  width: 8,
+  height: 8,
+  borderRadius: '50%',
+  cursor: 'pointer',
+  backgroundColor: 'var(--mui-palette-error-main)',
+  boxShadow: '0 0 0 2px var(--mui-palette-background-paper)'
+})
 const ArConnectBox = () => {
   // States
+  const [isConnected, setIsConnected] = useState(false)
   const [open, setOpen] = useState(false)
-  const [username, setUsername] = useState('')
-  const [email, setEmail] = useState('')
+  const [address, setAddress] = useState('')
+  const [balance, setBalance] = useState('')
   const [token, setToken] = useState(localStorage.getItem('id_token'))
+
+  const checkConnected = async () => {
+    console.log('Fetching address...')
+    try {
+      // Check if ArConnect is available
+      if (window.arweaveWallet) {
+        try {
+          // Try to get permissions without prompting the user again if they're already connected
+          const currentPermissions = await window.arweaveWallet.getPermissions()
+          if (currentPermissions.includes('ACCESS_ADDRESS')) {
+            const address = await window.arweaveWallet.getActiveAddress()
+            console.log('Connected: ', address)
+            setAddress(address)
+            setIsConnected(true)
+          } else {
+            console.log('Not connected.')
+            setIsConnected(false)
+          }
+        } catch (error) {
+          console.error('Error connecting to ArConnect:', error)
+          setIsConnected(false)
+        }
+      } else {
+        console.log('ArConnect not installed.')
+        setIsConnected(false)
+      }
+    } catch (error) {
+      console.error('Failed to fetch address:', error)
+      setIsConnected(false)
+    }
+  }
 
   // Refs
   const anchorRef = useRef(null)
@@ -74,42 +115,51 @@ const ArConnectBox = () => {
   }
 
   useEffect(() => {
-    setToken(localStorage.getItem('id_token'))
+    checkConnected()
   }, [])
 
   useEffect(() => {
-    try {
-      const { name, email } = jwtDecode(localStorage.getItem('id_token'))
-      setUsername(name)
-      setEmail(email)
-    } catch (e) {
-      console.log(e)
+    const fetchBalance = async () => {
+        const messageResponse = await dryrun({
+          process: 'taFQ_bgJhuBLNP7VXMdYq9xq9938oqinxboiLi7k2M8',
+          tags: [
+              { name: 'Action', value: 'Balance' },
+              { name: 'Recipient', value: address },
+          ],
+      });
+      const balanceTag = messageResponse.Messages[0].Tags.find((tag) => tag.name === 'Balance');
+      const balance = balanceTag ? parseFloat((balanceTag.value / 1000).toFixed(4)) : 0;
+      setBalance(balance);
     }
-  }, [token])
+    if(address && address.length > 0) {
+      fetchBalance();
+    }
+}, [address])
 
   const handleDisconnect = async () => {
-    localStorage.setItem('id_token', '')
-    await disconnect()
+    setIsConnected(false)
+    setAddress('')
+    await window.arweaveWallet.disconnect()
   }
 
-  const handleUserDelete = () => {
-    // alert('Mock for user delete')
-    const { sub } = jwtDecode(localStorage.getItem('id_token'))
-    respondentBasicDataApi.apiClient.authentications = {
-      bearerAuth: {
-        type: 'bearerAuth',
-        accessToken: localStorage.getItem('id_token')
+  const handleConnect = async () => {
+    const { walletAddress } = jwtDecode(localStorage.getItem('id_token'));
+    if(walletAddress) {
+      await window.arweaveWallet.connect(
+        permissions,
+        {
+            name: walletAddress,
+            logo: "4eTBOaxZSSyGbpKlHyilxNKhXbocuZdiMBYIORjS4f0"
+        }
+      )
+      try {
+        const address = await window.arweaveWallet.getActiveAddress();
+        setIsConnected(true);
+        setAddress(address);
+      } catch(error) {
+          console.error(error)
       }
     }
-    respondentBasicDataApi.deleteRespondentBasicData(sub, async function (error, data, response) {
-      console.log(error)
-      //todo error handling
-      await disconnect()
-    })
-  }
-
-  function handleUserProfile() {
-    router.push('/profile')
   }
 
   return (
@@ -117,20 +167,23 @@ const ArConnectBox = () => {
       <Badge
         ref={anchorRef}
         overlap='circular'
-        badgeContent={<BadgeContentSpan onClick={handleDropdownOpen} />}
+        badgeContent={
+          (isConnected && <BadgeContentSpan onClick={handleDropdownOpen} />) ||
+          (!isConnected && <BadgeContentDisconnectedSpan onClick={handleConnect} />)
+        }
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         className='mis-2'
       >
         <Avatar
           ref={anchorRef}
-          alt={username}
+          alt={address}
           src={'/images/avatars/logo.png'}
-          onClick={handleDropdownOpen}
+          onClick={isConnected ? handleDropdownOpen : handleConnect}
           className='cursor-pointer bs-[38px] is-[38px]'
         />
       </Badge>
       <Popper
-        open={open}
+        open={open && isConnected}
         transition
         disablePortal
         placement='bottom-end'
@@ -148,23 +201,15 @@ const ArConnectBox = () => {
               <ClickAwayListener onClickAway={e => handleDropdownClose(e)}>
                 <MenuList>
                   <div className='flex items-center plb-2 pli-6 gap-2' tabIndex={-1}>
-                    <Avatar alt={username} />
+                    <Avatar alt={address} />
                     <div className='flex items-start flex-col'>
                       <Typography className='font-medium' color='text.primary'>
-                        {username}
+                        {address}
                       </Typography>
-                      <Typography variant='caption'>{email}</Typography>
+                      <Typography variant='caption'>{balance}</Typography>
                     </div>
                   </div>
                   <Divider className='mlb-1' />
-                  {/* <MenuItem className='mli-2 gap-3' onClick={handleUserProfile}>
-                    <i className='tabler-user text-[22px]' />
-                    <Typography color='text.primary'>My Profile</Typography>
-                  </MenuItem>
-                  <MenuItem className='mli-2 gap-3' onClick={handleUserDelete}>
-                    <i className='tabler-settings text-[22px]' />
-                    <Typography color='text.primary'>Delete Profile</Typography>
-                  </MenuItem> */}
                   <div className='flex items-center plb-2 pli-3'>
                     <Button
                       fullWidth
