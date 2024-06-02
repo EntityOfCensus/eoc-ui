@@ -22,7 +22,7 @@ export const newSurveyDataAtom = atom({
 })
 
 export const surveyData1Atom = atom({
-  question: 'În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
+  question: 'T1 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'simple',
   possibleAnswers: [
     '5 ore sau mai puțin',
@@ -36,7 +36,7 @@ export const surveyData1Atom = atom({
 })
 
 export const surveyData2Atom = atom({
-  question: 'În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
+  question: 'T2 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'simple',
   possibleAnswers: [
     '5 ore sau mai puțin',
@@ -50,7 +50,7 @@ export const surveyData2Atom = atom({
 })
 
 export const surveyData3Atom = atom({
-  question: 'În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
+  question: 'T3 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'multiple',
   possibleAnswers: [
     '5 ore sau mai puțin',
@@ -64,7 +64,7 @@ export const surveyData3Atom = atom({
 })
 
 export const surveyData4Atom = atom({
-  question: 'În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
+  question: 'T4 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'multiple',
   possibleAnswers: [
     '5 ore sau mai puțin',
