@@ -19,6 +19,7 @@ import Radio from '@mui/material/Radio'
 import Checkbox from '@mui/material/Checkbox'
 import { newProfileSurveyAtom } from '@/app/store/atoms'
 import { useAtom } from 'jotai/index'
+import ProfileQuestion from './ProfileQuestion'
 
 const ProfileQuestions = ({ question, answers }) => {
   const [newProfileSurvey, setNewProfileSurvey] = useAtom(newProfileSurveyAtom)
@@ -36,6 +37,13 @@ const ProfileQuestions = ({ question, answers }) => {
         <form onSubmit={handleSubmit}>
           <Grid container spacing={6}>
             <Grid item xs={12}>
+              {newProfileSurvey.targetGroups[0].init.surveyData.map((item, index) => (
+                <ProfileQuestion questionItem={item.init} />
+              ))}
+            </Grid>
+
+            {/* <ProfileQuestion  */}
+            {/* <Grid item xs={12}>
               <FormLabel>În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?</FormLabel>
               <RadioGroup row name='radio-buttons-group' value={question.answer}>
                 <Grid item xs={12} sm={12} ms={12} lg={12}>
@@ -112,7 +120,7 @@ const ProfileQuestions = ({ question, answers }) => {
                 <FormControlLabel value='a5' label='Nu ma uit la TV' control={<Checkbox />} />
                 <FormControlLabel value='a6' label='Prefer sa nu raspund' control={<Checkbox />} />
               </RadioGroup>
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12} className='flex gap-4'>
               <Button variant='contained' type='submit'>

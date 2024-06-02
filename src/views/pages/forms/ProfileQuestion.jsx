@@ -39,7 +39,7 @@ const ProfileQuestion = ({questionItem}) => {
             question.possibleAnswers && question.possibleAnswers.map((item, index) => (
                 <FormControlLabel
                   key={index}
-                  value='a1'
+                  value={index}
                   control={question.type === 'simple' ? <Radio/> : <Checkbox/>}
                   label={item}/>
               )
