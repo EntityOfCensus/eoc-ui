@@ -30,13 +30,15 @@ export default class QuestionStatistic {
    * @param answer {String}
    * @param dateOfBirth {Date}
    * @param country {String}
+   * @param gender {String}
    */
-  constructor(profileSurveyStatisticId, question, answer, dateOfBirth, country) {
+  constructor(profileSurveyStatisticId, question, answer, dateOfBirth, country, gender) {
     this.profileSurveyStatisticId = profileSurveyStatisticId;
     this.question = question;
     this.answer = answer;
     this.dateOfBirth = dateOfBirth;
     this.country = country;
+    this.gender = gender;
   }
 
   /**
@@ -59,6 +61,8 @@ export default class QuestionStatistic {
         obj.dateOfBirth = RespondentProfileSurveyApiClient.convertToType(data['dateOfBirth'], 'Date');
       if (data.hasOwnProperty('country'))
         obj.country = RespondentProfileSurveyApiClient.convertToType(data['country'], 'String');
+      if (data.hasOwnProperty('gender'))
+        obj.gender = RespondentProfileSurveyApiClient.convertToType(data['gender'], 'String');
       if (data.hasOwnProperty('count'))
         obj.count = RespondentProfileSurveyApiClient.convertToType(data['count'], 'Number');
     }
@@ -90,6 +94,11 @@ QuestionStatistic.prototype.dateOfBirth = undefined;
  * @member {String} country
  */
 QuestionStatistic.prototype.country = undefined;
+
+/**
+ * @member {String} gender
+ */
+QuestionStatistic.prototype.gender = undefined;
 
 /**
  * @member {Number} count

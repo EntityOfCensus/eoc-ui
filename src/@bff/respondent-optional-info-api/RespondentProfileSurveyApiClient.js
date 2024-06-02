@@ -32,9 +32,9 @@ export default class RespondentProfileSurveyApiClient {
         /**
          * The base URL against which to resolve every API call's (relative) path.
          * @type {String}
-         * @default https://eoc-respondent-basic-info.infra-workers.workers.dev/
+         * @default https://eoc-respondent-optional-info.infra-workers.workers.dev/
          */
-        this.basePath = 'https://eoc-respondent-basic-info.infra-workers.workers.dev/'.replace(/\/+$/, '');
+        this.basePath = 'https://eoc-respondent-optional-info.infra-workers.workers.dev/'.replace(/\/+$/, '');
 
         /**
          * The authentication methods to be included for all API calls.

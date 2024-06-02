@@ -13,7 +13,7 @@
  * Do not edit the class manually.
  *
  */
-import RespondentProfileSurveyApiClient from '../RespondentProfileSurveyApiClient';
+import RespondentProfileSurveyApiClient from '../RespondentProfileSurveyApiClient'
 
 /**
  * The QuestionStatisticFilter model module.
@@ -26,11 +26,15 @@ export default class QuestionStatisticFilter {
    * @alias module:model/QuestionStatisticFilter
    * @class
    * @param question {String}
+   * @param answer {String}
    * @param country {String}
+   * @param gender {String}
    */
-  constructor(question, country) {
-    this.question = question;
-    this.country = country;
+  constructor(question, answer, country, gender) {
+    this.question = question
+    this.answer = answer
+    this.country = country
+    this.gender = gender
   }
 
   /**
@@ -42,44 +46,50 @@ export default class QuestionStatisticFilter {
    */
   static constructFromObject(data, obj) {
     if (data) {
-      obj = obj || new QuestionStatisticFilter();
+      obj = obj || new QuestionStatisticFilter()
       if (data.hasOwnProperty('question'))
-        obj.question = RespondentProfileSurveyApiClient.convertToType(data['question'], 'String');
+        obj.question = RespondentProfileSurveyApiClient.convertToType(data['question'], 'String')
       if (data.hasOwnProperty('answer'))
-        obj.answer = RespondentProfileSurveyApiClient.convertToType(data['answer'], 'String');
+        obj.answer = RespondentProfileSurveyApiClient.convertToType(data['answer'], 'String')
       if (data.hasOwnProperty('minAge'))
-        obj.minAge = RespondentProfileSurveyApiClient.convertToType(data['minAge'], 'Number');
+        obj.minAge = RespondentProfileSurveyApiClient.convertToType(data['minAge'], 'Number')
       if (data.hasOwnProperty('maxAge'))
-        obj.maxAge = RespondentProfileSurveyApiClient.convertToType(data['maxAge'], 'Number');
+        obj.maxAge = RespondentProfileSurveyApiClient.convertToType(data['maxAge'], 'Number')
       if (data.hasOwnProperty('country'))
-        obj.country = RespondentProfileSurveyApiClient.convertToType(data['country'], 'String');
+        obj.country = RespondentProfileSurveyApiClient.convertToType(data['country'], 'String')
+      if (data.hasOwnProperty('gender'))
+        obj.gender = RespondentProfileSurveyApiClient.convertToType(data['gender'], 'String')
     }
-    return obj;
+    return obj
   }
 }
 
 /**
  * @member {String} question
  */
-QuestionStatisticFilter.prototype.question = undefined;
+QuestionStatisticFilter.prototype.question = undefined
 
 /**
  * @member {String} answer
  */
-QuestionStatisticFilter.prototype.answer = undefined;
+QuestionStatisticFilter.prototype.answer = undefined
 
 /**
  * @member {Number} minAge
  */
-QuestionStatisticFilter.prototype.minAge = undefined;
+QuestionStatisticFilter.prototype.minAge = undefined
 
 /**
  * @member {Number} maxAge
  */
-QuestionStatisticFilter.prototype.maxAge = undefined;
+QuestionStatisticFilter.prototype.maxAge = undefined
 
 /**
  * @member {String} country
  */
-QuestionStatisticFilter.prototype.country = undefined;
+QuestionStatisticFilter.prototype.country = undefined
 
+/**
+ * @member {String} gender
+ */
+QuestionStatisticFilter.prototype.gender = undefined
