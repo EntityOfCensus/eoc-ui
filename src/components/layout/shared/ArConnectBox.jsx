@@ -129,7 +129,7 @@ const ArConnectBox = () => {
       });
       const balanceTag = messageResponse.Messages[0].Tags.find((tag) => tag.name === 'Balance');
       const balance = balanceTag ? parseFloat((balanceTag.value / 1000).toFixed(4)) : 0;
-      setBalance(balance);
+      setBalance(balance + ' AR');
     }
     if(address && address.length > 0) {
       fetchBalance();
