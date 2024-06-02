@@ -38,7 +38,9 @@ const ProfileQuestions = ({ question, answers }) => {
           <Grid container spacing={6}>
             <Grid item xs={12}>
               {newProfileSurvey.targetGroups[0].init.surveyData.map((item, index) => (
-                <ProfileQuestion questionItem={item.init} />
+                <ProfileQuestion
+                  key={index}
+                  questionItem={item.init} />
               ))}
             </Grid>
 
