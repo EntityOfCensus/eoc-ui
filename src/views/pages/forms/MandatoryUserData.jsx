@@ -71,7 +71,7 @@ const MandatoryUserData = () => {
       const { sub } = jwtDecode(localStorage.getItem('id_token'))
       respondentBasicDataApi.apiClient.authentications = {
         bearerAuth: {
-          type: 'bearerAuth',
+          type: 'oauth2',
           accessToken: localStorage.getItem('id_token')
         }
       }
@@ -80,7 +80,6 @@ const MandatoryUserData = () => {
           console.log('error', error)
           return
         }
-        const { sub } = jwtDecode(localStorage.getItem('id_token'))
         if (data.id == sub) {
           let targetGroup = newProfileSurvey.targetGroups[0]; //.length > 0 {
           targetGroup.dob = data.dateOfBirth;
@@ -143,7 +142,7 @@ const MandatoryUserData = () => {
   const postRespondentBasicData = body => {
     respondentBasicDataApi.apiClient.authentications = {
       bearerAuth: {
-        type: 'bearerAuth',
+        type: 'oauth2',
         accessToken: localStorage.getItem('id_token')
       }
     }
@@ -157,7 +156,7 @@ const MandatoryUserData = () => {
     const { sub } = jwtDecode(localStorage.getItem('id_token'))
     respondentBasicDataApi.apiClient.authentications = {
       bearerAuth: {
-        type: 'bearerAuth',
+        type: 'oauth2',
         accessToken: localStorage.getItem('id_token')
       }
     }

@@ -21,12 +21,121 @@ import { newProfileSurveyAtom } from '@/app/store/atoms'
 import { useAtom } from 'jotai/index'
 import ProfileQuestion from './ProfileQuestion'
 
+import {
+  RespondentProfileSurveyIndexApi,
+  RespondentProfileSurveyApiClient
+} from '../../../@bff/respondent-optional-info-api'
+import { useEffect, useState } from 'react'
+import { dryrun, message, createDataItemSigner, result } from '@permaweb/aoconnect'
+import { jwtDecode } from 'jwt-decode'
+
 const ProfileQuestions = ({ question, answers }) => {
   const [newProfileSurvey, setNewProfileSurvey] = useAtom(newProfileSurveyAtom)
+
+  const [surveyData, setSurveyData] = useState(newProfileSurvey.targetGroups[0].init.surveyData)
+
+  const [currentSurveyId, setCurrentSurveyId] = useState(null)
+
+  const [isConnected, setIsConnected] = useState(
+    localStorage.getItem('walletAddress') != null && localStorage.getItem('walletAddress').length > 0
+  )
+
+  const [walletAddress, setWalletAddress] = useState(null)
+
+  const [respondentProfileSurveyIndexApi, setRespondentProfileSurveyIndexApi] = useState(
+    new RespondentProfileSurveyIndexApi(RespondentProfileSurveyApiClient.instance)
+  )
+
+  useEffect(() => {
+    checkConnected()
+  }, [walletAddress])
+
+  useEffect(() => {
+      const fetchProfileSurvey = async () => {
+        try {
+          const tx = await dryrun({
+            process: "taFQ_bgJhuBLNP7VXMdYq9xq9938oqinxboiLi7k2M8",
+            tags: [
+              { name: "Action", value: "GetSurveyByKv" },
+              { name: "Key", value: "ao_id" },
+              { name: "Val", value: currentSurveyId },
+            ],
+          });
+
+          console.log(JSON.parse(tx.Messages[0].Data));
+
+          return JSON.parse(tx.Messages[0].Data);
+        } catch (error) {
+          console.log(error);
+          return {};
+        }
+      }
+    if (currentSurveyId) {
+      fetchProfileSurvey()
+    }
+  }, [currentSurveyId])
+
+  useEffect(() => {
+    const walletAddress =
+      localStorage.getItem('walletAddress') != null && localStorage.getItem('walletAddress').length > 0
+        ? localStorage.getItem('walletAddress')
+        : null
+    if (walletAddress) {
+      setWalletAddress(walletAddress)
+    }
+    if (!currentSurveyId) {
+      const idToken = localStorage.getItem('id_token')
+      const { sub } = jwtDecode(idToken)
+      respondentProfileSurveyIndexApi.apiClient.authentications = {
+        bearerAuth: {
+          type: 'oauth2',
+          accessToken: idToken
+        }
+      }
+      respondentProfileSurveyIndexApi.findRespondentProfileSurveyIndexById(sub, function (error, data, response) {
+        if (error) {
+          console.log('error', error)
+          return
+          setCurrentSurveyId(data.currentSurveyId)
+        }
+      })
+    }
+  }, [])
 
   const handleSubmit = e => {
     console.log('newProfileSurvey', newProfileSurvey)
     console.log('event', e)
+  }
+
+  const checkConnected = async () => {
+    console.log('Fetching address...')
+    try {
+      // Check if ArConnect is available
+      if (window.arweaveWallet) {
+        try {
+          // Try to get permissions without prompting the user again if they're already connected
+          const currentPermissions = await window.arweaveWallet.getPermissions()
+          if (currentPermissions.includes('ACCESS_ADDRESS')) {
+            const address = await window.arweaveWallet.getActiveAddress()
+            console.log('Connected: ', address)
+            setAddress(address)
+            setIsConnected(true)
+          } else {
+            console.log('Not connected.')
+            setIsConnected(false)
+          }
+        } catch (error) {
+          console.error('Error connecting to ArConnect:', error)
+          setIsConnected(false)
+        }
+      } else {
+        console.log('ArConnect not installed.')
+        setIsConnected(false)
+      }
+    } catch (error) {
+      console.error('Failed to fetch address:', error)
+      setIsConnected(false)
+    }
   }
 
   question = ''
@@ -37,11 +146,10 @@ const ProfileQuestions = ({ question, answers }) => {
         <form onSubmit={handleSubmit}>
           <Grid container spacing={6}>
             <Grid item xs={12}>
-              {newProfileSurvey.targetGroups[0].init.surveyData.map((item, index) => (
-                <ProfileQuestion
-                  key={index}
-                  questionItem={item.init} />
-              ))}
+              {surveyData &&
+                surveyData.map((item, index) => (
+                  <ProfileQuestion key={index} questionItem={item.init} connected={isConnected} />
+                ))}
             </Grid>
 
             {/* <ProfileQuestion  */}

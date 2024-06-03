@@ -96,13 +96,14 @@ const UserDropdown = () => {
     const { sub } = jwtDecode(localStorage.getItem('id_token'))
     respondentBasicDataApi.apiClient.authentications = {
       bearerAuth: {
-        type: 'bearerAuth',
+        type: 'oauth2',
         accessToken: localStorage.getItem('id_token')
       }
     }
     respondentBasicDataApi.deleteRespondentBasicData(sub, async function (error, data, response) {
       console.log(error)
       //todo error handling
+      localStorage.setItem('id_token', '')
       await disconnect()
     })
   }

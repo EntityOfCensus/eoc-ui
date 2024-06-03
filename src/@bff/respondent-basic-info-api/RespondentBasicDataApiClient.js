@@ -316,7 +316,7 @@ export default class RespondentBasicDataApiClient {
           }
 
           break
-        case 'bearerAuth':
+        case 'oauth2':
           if (auth.accessToken) {
             request.set({ Authorization: 'Bearer ' + auth.accessToken })
           }

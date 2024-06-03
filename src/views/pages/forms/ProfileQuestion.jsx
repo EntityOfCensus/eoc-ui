@@ -12,17 +12,20 @@ import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 
 // Components Imports
-import FormLabel from "@mui/material/FormLabel";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Radio from "@mui/material/Radio";
-import Checkbox from "@mui/material/Checkbox";
-import {useState} from "react";
+import FormLabel from '@mui/material/FormLabel'
+import RadioGroup from '@mui/material/RadioGroup'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Radio from '@mui/material/Radio'
+import Checkbox from '@mui/material/Checkbox'
+import { useState } from 'react'
 
-const ProfileQuestion = ({questionItem}) => {
+const ProfileQuestion = ({ questionItem, connected }) => {
   const [question, setQuestion] = useState(questionItem)
 
-  console.log(question)
+  const [isConnected, setIsConnected] = useState(connected)
+
+  console.log(question, isConnected)
+
   const handleAnswer = e => {
     console.log(e.target)
   }
@@ -31,20 +34,22 @@ const ProfileQuestion = ({questionItem}) => {
     <Grid item xs={12}>
       <form>
         <FormLabel>{question.question}</FormLabel>
-        <RadioGroup
-          row
-          name='radio-buttons-group'
-        >
-          {
-            question.possibleAnswers && question.possibleAnswers.map((item, index) => (
-                <FormControlLabel
-                  key={index}
-                  value={index}
-                  control={question.type === 'simple' ? <Radio/> : <Checkbox/>}
-                  label={item}/>
-              )
-            )
-          }
+        <RadioGroup row name='radio-buttons-group'>
+          {question.possibleAnswers &&
+            question.possibleAnswers.map((item, index) => (
+              isConnected && (<FormControlLabel
+                key={index}
+                value={index}
+                control={question.type === 'simple' ? <Radio /> : <Checkbox />}
+                label={item}
+              />) ||
+              (isConnected == false && (<FormControlLabel
+                key={index}
+                value={index}
+                control={question.type === 'simple' ? <Radio disabled/> : <Checkbox disabled/>}
+                label={item}
+              />))
+            ))}
         </RadioGroup>
       </form>
     </Grid>

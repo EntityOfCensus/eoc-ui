@@ -17,16 +17,13 @@ import ClickAwayListener from '@mui/material/ClickAwayListener'
 import MenuList from '@mui/material/MenuList'
 import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
-import MenuItem from '@mui/material/MenuItem'
 import Button from '@mui/material/Button'
 import { RespondentBasicDataApi, RespondentBasicDataApiClient } from '../../../@bff/respondent-basic-info-api'
-import { dryrun, message, createDataItemSigner, result } from "@permaweb/aoconnect";
+import { dryrun } from '@permaweb/aoconnect'
 
 // Hook Imports
 import { useSettings } from '@core/hooks/useSettings'
-import { disconnect } from '@othent/kms'
 import { jwtDecode } from 'jwt-decode'
-import { PermissionType } from 'arconnect'
 
 const permissions = ['ACCESS_ADDRESS', 'SIGNATURE', 'SIGN_TRANSACTION', 'DISPATCH']
 
@@ -120,44 +117,43 @@ const ArConnectBox = () => {
 
   useEffect(() => {
     const fetchBalance = async () => {
-        const messageResponse = await dryrun({
-          process: 'taFQ_bgJhuBLNP7VXMdYq9xq9938oqinxboiLi7k2M8',
-          tags: [
-              { name: 'Action', value: 'Balance' },
-              { name: 'Recipient', value: address },
-          ],
-      });
-      const balanceTag = messageResponse.Messages[0].Tags.find((tag) => tag.name === 'Balance');
-      const balance = balanceTag ? parseFloat((balanceTag.value / 1000).toFixed(4)) : 0;
-      setBalance(balance + ' AR');
+      const messageResponse = await dryrun({
+        process: 'taFQ_bgJhuBLNP7VXMdYq9xq9938oqinxboiLi7k2M8',
+        tags: [
+          { name: 'Action', value: 'Balance' },
+          { name: 'Recipient', value: address }
+        ]
+      })
+      const balanceTag = messageResponse.Messages[0].Tags.find(tag => tag.name === 'Balance')
+      const balance = balanceTag ? parseFloat((balanceTag.value / 1000).toFixed(4)) : 0
+      setBalance(balance + ' AR')
     }
-    if(address && address.length > 0) {
-      fetchBalance();
+    if (address && address.length > 0) {
+      fetchBalance()
     }
-}, [address])
+  }, [address])
 
   const handleDisconnect = async () => {
     setIsConnected(false)
     setAddress('')
+    localStorage.setItem('walletAddress', '')
     await window.arweaveWallet.disconnect()
   }
 
   const handleConnect = async () => {
-    const { walletAddress } = jwtDecode(localStorage.getItem('id_token'));
-    if(walletAddress) {
-      await window.arweaveWallet.connect(
-        permissions,
-        {
-            name: walletAddress,
-            logo: "4eTBOaxZSSyGbpKlHyilxNKhXbocuZdiMBYIORjS4f0"
-        }
-      )
+    const { walletAddress } = jwtDecode(localStorage.getItem('id_token'))
+    if (walletAddress) {
+      await window.arweaveWallet.connect(permissions, {
+        name: walletAddress,
+        logo: '4eTBOaxZSSyGbpKlHyilxNKhXbocuZdiMBYIORjS4f0'
+      })
       try {
-        const address = await window.arweaveWallet.getActiveAddress();
-        setIsConnected(true);
-        setAddress(address);
-      } catch(error) {
-          console.error(error)
+        const address = await window.arweaveWallet.getActiveAddress()
+        setIsConnected(true)
+        setAddress(address)
+        localStorage.setItem('walletAddress', address)
+      } catch (error) {
+        console.error(error)
       }
     }
   }
