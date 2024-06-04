@@ -219,7 +219,7 @@ const ProfileQuestions = ({ question, answers }) => {
           <Grid item xs={12}>
             {newProfileSurvey.targetGroups[0].surveyData &&
               newProfileSurvey.targetGroups[0].surveyData.map((item, index) => (
-                <ProfileQuestion key={index} questionItem={item} connected={arConnectGlobalIsConnected.connected} />
+                <ProfileQuestion key={index} questionItem={item} />
               ))}
           </Grid>
           <Grid item xs={12} className='flex gap-4'>
