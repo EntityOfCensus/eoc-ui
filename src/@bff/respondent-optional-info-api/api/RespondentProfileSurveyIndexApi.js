@@ -79,7 +79,7 @@ export default class RespondentProfileSurveyIndexApi {
       let returnType = RespondentProfileSurveyIndex;
 
       return this.apiClient.callApi(
-        '/suvery-index', 'POST',
+        '/survey-index', 'POST',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, callback
       );
@@ -126,7 +126,7 @@ export default class RespondentProfileSurveyIndexApi {
       let returnType = RespondentProfileSurveyIndex;
 
       return this.apiClient.callApi(
-        '/suvery-index/{id}', 'GET',
+        '/survey-index/{id}', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, callback
       );
@@ -178,7 +178,7 @@ export default class RespondentProfileSurveyIndexApi {
       let returnType = RespondentProfileSurveyIndex;
 
       return this.apiClient.callApi(
-        '/suvery-index/{id}', 'PUT',
+        '/survey-index/{id}', 'PUT',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, callback
       );

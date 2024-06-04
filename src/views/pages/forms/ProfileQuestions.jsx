@@ -25,14 +25,34 @@ import {
   RespondentProfileSurveyIndexApi,
   RespondentProfileSurveyApiClient
 } from '../../../@bff/respondent-optional-info-api'
-import { useEffect, useState } from 'react'
+import { cache, useEffect, useState } from 'react'
 import { dryrun, message, createDataItemSigner, result } from '@permaweb/aoconnect'
 import { jwtDecode } from 'jwt-decode'
+
+const getInitSurveyData = surveyData => {
+  surveyData.question = surveyData.init.question
+  surveyData.type = surveyData.init.type
+  surveyData.possibleAnswers = surveyData.init.possibleAnswers
+  surveyData.answers = surveyData.init.answers
+  return surveyData
+}
+
+const initSurveyData = surveyData => {
+  for (var i = 0; i < surveyData.length; ++i) {
+    surveyData[i] = getInitSurveyData(surveyData[i])
+  }
+  return surveyData
+  // surveyData.question = surveyData.init.question;
+  // surveyData.type = surveyData.init.type;
+  // surveyData.possibleAnswers = surveyData.init.possibleAnswers;
+  // surveyData.answers = surveyData.init.answers;
+  // return surveyData;
+}
 
 const ProfileQuestions = ({ question, answers }) => {
   const [newProfileSurvey, setNewProfileSurvey] = useAtom(newProfileSurveyAtom)
 
-  const [surveyData, setSurveyData] = useState(newProfileSurvey.targetGroups[0].init.surveyData)
+  const [surveyData, setSurveyData] = useState(initSurveyData(newProfileSurvey.targetGroups[0].init.surveyData))
 
   const [currentSurveyId, setCurrentSurveyId] = useState(null)
 
@@ -46,33 +66,18 @@ const ProfileQuestions = ({ question, answers }) => {
     new RespondentProfileSurveyIndexApi(RespondentProfileSurveyApiClient.instance)
   )
 
+  console.log(surveyData)
+
   useEffect(() => {
     checkConnected()
   }, [walletAddress])
 
   useEffect(() => {
-      const fetchProfileSurvey = async () => {
-        try {
-          const tx = await dryrun({
-            process: "taFQ_bgJhuBLNP7VXMdYq9xq9938oqinxboiLi7k2M8",
-            tags: [
-              { name: "Action", value: "GetSurveyByKv" },
-              { name: "Key", value: "ao_id" },
-              { name: "Val", value: currentSurveyId },
-            ],
-          });
-
-          console.log(JSON.parse(tx.Messages[0].Data));
-
-          return JSON.parse(tx.Messages[0].Data);
-        } catch (error) {
-          console.log(error);
-          return {};
-        }
-      }
     if (currentSurveyId) {
-      fetchProfileSurvey()
-    }
+      fetchProfileSurvey(currentSurveyId).then(sd => {
+        setSurveyData(sd)
+      })
+      }
   }, [currentSurveyId])
 
   useEffect(() => {
@@ -96,15 +101,135 @@ const ProfileQuestions = ({ question, answers }) => {
         if (error) {
           console.log('error', error)
           return
+        }
+        if (data.currentSurveyId) {
           setCurrentSurveyId(data.currentSurveyId)
         }
       })
     }
   }, [])
 
-  const handleSubmit = e => {
-    console.log('newProfileSurvey', newProfileSurvey)
-    console.log('event', e)
+  const handleSubmit = async () => {
+    let targetGroup = newProfileSurvey.targetGroups[0]
+    targetGroup.surveyData = surveyData
+    setNewProfileSurvey(prev => ({
+      ...prev,
+      targetGroups: [targetGroup]
+    }))
+    let surveyDataDto = []
+    for (var i = 0; i < surveyData.length; ++i) {
+      surveyDataDto.push({
+        question: surveyData[i].question,
+        answers: surveyData[i].answers
+      })
+    }
+    let survey = {
+      type: newProfileSurvey.type,
+      config: 'easy',
+      countryCodes: [],
+      countryNames: [],
+      wantedRespondents: 1,
+      wantedQuestions: 4,
+      targetGroups: [
+        {
+          minimumAge: 0,
+          maximumAge: 0,
+          gender: targetGroup.gender,
+          country: targetGroup.country,
+          wantedCompletes: '1',
+          ir: '',
+          loi: '',
+          daysInField: '',
+          startDate: targetGroup.dob,
+          time: new Date().toISOString(),
+          visible: true,
+          surveyData: surveyDataDto
+        }
+      ]
+    }
+    console.log(JSON.stringify(survey))
+    try {
+      const messageId = await message({
+        process: 'taFQ_bgJhuBLNP7VXMdYq9xq9938oqinxboiLi7k2M8',
+        signer: createDataItemSigner(window.arweaveWallet),
+        // the survey as stringified JSON
+        data: JSON.stringify(survey),
+        tags: [{ name: 'Action', value: 'AddSurvey' }]
+      })
+      const idToken = localStorage.getItem('id_token')
+      const { sub } = jwtDecode(idToken)
+      respondentProfileSurveyIndexApi.apiClient.authentications = {
+        bearerAuth: {
+          type: 'oauth2',
+          accessToken: idToken
+        }
+      }
+      if (currentSurveyId) {
+        respondentProfileSurveyIndexApi.updateRespondentProfileSurveyIndex(
+          {
+            currentSurveyId: messageId,
+            lastSurveyId: currentSurveyId
+          },
+          sub,
+          function (error, data, response) {
+            if (error) {
+              console.log('error', error)
+              return
+            }
+            setCurrentSurveyId(messageId)
+          }
+        )
+      } else {
+        respondentProfileSurveyIndexApi.addRespondentProfileSurveyIndex(
+          {
+            currentSurveyId: messageId,
+            lastSurveyId: ''
+          },
+          function (error, data, response) {
+            if (error) {
+              console.log('error', error)
+              return
+            }
+          }
+        )
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const fetchProfileSurvey = async surveyId => {
+    try {
+      const tx = await dryrun({
+        process: 'taFQ_bgJhuBLNP7VXMdYq9xq9938oqinxboiLi7k2M8',
+        tags: [
+          { name: 'Action', value: 'GetSurveyByKv' },
+          { name: 'Key', value: 'ao_id' },
+          { name: 'Val', value: surveyId }
+        ]
+      })
+
+      console.log(JSON.parse(tx.Messages[0].Data))
+      let survey = JSON.parse(tx.Messages[0].Data)
+
+      let targetGroup = newProfileSurvey.targetGroups[0]
+      let s = surveyData
+      targetGroup.surveyData = surveyData
+      for (var i = 0; i < survey.targetGroups[0].surveyData.length; ++i) {
+        targetGroup.surveyData[i].answers = survey.targetGroups[0].surveyData[i].answers
+        s[i].answers = targetGroup.surveyData[i].answers
+      }
+      // for(var i = 0 ; i < s.length; ++i) {
+      // }
+      return s
+      // // setSurveyData(targetGroup.surveyData)
+      // setNewProfileSurvey(prev => ({
+      //   ...prev,
+      //   targetGroups: [targetGroup]
+      // }))
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   const checkConnected = async () => {
@@ -118,7 +243,6 @@ const ProfileQuestions = ({ question, answers }) => {
           if (currentPermissions.includes('ACCESS_ADDRESS')) {
             const address = await window.arweaveWallet.getActiveAddress()
             console.log('Connected: ', address)
-            setAddress(address)
             setIsConnected(true)
           } else {
             console.log('Not connected.')
@@ -143,17 +267,17 @@ const ProfileQuestions = ({ question, answers }) => {
     <Card>
       <CardHeader title='Optional info' />
       <CardContent>
-        <form onSubmit={handleSubmit}>
-          <Grid container spacing={6}>
-            <Grid item xs={12}>
-              {surveyData &&
-                surveyData.map((item, index) => (
-                  <ProfileQuestion key={index} questionItem={item.init} connected={isConnected} />
-                ))}
-            </Grid>
+        {/* <form onSubmit={handleSubmit}> */}
+        <Grid container spacing={6}>
+          <Grid item xs={12}>
+            {surveyData &&
+              surveyData.map((item, index) => (
+                <ProfileQuestion key={index} questionItem={item} connected={isConnected} />
+              ))}
+          </Grid>
 
-            {/* <ProfileQuestion  */}
-            {/* <Grid item xs={12}>
+          {/* <ProfileQuestion  */}
+          {/* <Grid item xs={12}>
               <FormLabel>În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?</FormLabel>
               <RadioGroup row name='radio-buttons-group' value={question.answer}>
                 <Grid item xs={12} sm={12} ms={12} lg={12}>
@@ -232,16 +356,16 @@ const ProfileQuestions = ({ question, answers }) => {
               </RadioGroup>
             </Grid> */}
 
-            <Grid item xs={12} className='flex gap-4'>
-              <Button variant='contained' type='submit'>
-                Submit
-              </Button>
-              <Button variant='tonal' color='secondary' type='reset' onClick={() => reset()}>
-                Reset
-              </Button>
-            </Grid>
+          <Grid item xs={12} className='flex gap-4'>
+            <Button variant='contained' type='submit' onClick={() => handleSubmit()}>
+              Submit
+            </Button>
+            <Button variant='tonal' color='secondary' type='reset' onClick={() => reset()}>
+              Reset
+            </Button>
           </Grid>
-        </form>
+        </Grid>
+        {/* </form> */}
       </CardContent>
     </Card>
   )

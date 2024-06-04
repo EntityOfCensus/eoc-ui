@@ -79,7 +79,7 @@ export default class RespondentProfileSurveyApi {
       let returnType = RespondentProfileSurvey;
 
       return this.apiClient.callApi(
-        '/suvery-info', 'POST',
+        '/survey-info', 'POST',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, callback
       );
@@ -125,7 +125,7 @@ export default class RespondentProfileSurveyApi {
       let returnType = null;
 
       return this.apiClient.callApi(
-        '/suvery-info/{id}', 'DELETE',
+        '/survey-info/{id}', 'DELETE',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, callback
       );
@@ -174,7 +174,7 @@ export default class RespondentProfileSurveyApi {
       let returnType = [RespondentProfileSurvey];
 
       return this.apiClient.callApi(
-        '/suvery-info', 'GET',
+        '/survey-info', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, callback
       );
@@ -221,7 +221,7 @@ export default class RespondentProfileSurveyApi {
       let returnType = RespondentProfileSurvey;
 
       return this.apiClient.callApi(
-        '/suvery-info/{id}', 'GET',
+        '/survey-info/{id}', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, callback
       );
@@ -273,7 +273,7 @@ export default class RespondentProfileSurveyApi {
       let returnType = RespondentProfileSurvey;
 
       return this.apiClient.callApi(
-        '/suvery-info/{id}', 'PUT',
+        '/survey-info/{id}', 'PUT',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, callback
       );
