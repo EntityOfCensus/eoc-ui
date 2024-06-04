@@ -38,6 +38,8 @@ import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
 const MandatoryUserData = () => {
   const [newProfileSurvey, setNewProfileSurvey] = useAtom(newProfileSurveyAtom)
 
+  const [isSaving, setIsSaving] = useState(false)
+
   // Hooks
   const {
     control,
@@ -81,10 +83,10 @@ const MandatoryUserData = () => {
           return
         }
         if (data.id == sub) {
-          let targetGroup = newProfileSurvey.targetGroups[0]; //.length > 0 {
-          targetGroup.dob = data.dateOfBirth;
-          targetGroup.gender = data.gender;
-          targetGroup.country = data.country;
+          let targetGroup = newProfileSurvey.targetGroups[0] //.length > 0 {
+          targetGroup.dob = data.dateOfBirth
+          targetGroup.gender = data.gender
+          targetGroup.country = data.country
           setNewProfileSurvey(prev => ({
             ...prev,
             type: 'respondent-survey',
@@ -109,6 +111,7 @@ const MandatoryUserData = () => {
   }, [respondentBasicData])
 
   const onSubmit = data => {
+    setIsSaving(true)
     let body = {
       firstName: data.firstName,
       lastName: data.lastName,
@@ -149,6 +152,7 @@ const MandatoryUserData = () => {
     respondentBasicDataApi.addRespondentBasicData(body, function (error, data, response) {
       console.log(error)
       //todo error handling
+      setIsSaving(false)
     })
   }
 
@@ -163,6 +167,7 @@ const MandatoryUserData = () => {
     respondentBasicDataApi.updateRespondentBasicData(body, sub, function (error, data, response) {
       console.log(error)
       //todo error handling
+      setIsSaving(false)
     })
   }
 
@@ -355,12 +360,12 @@ const MandatoryUserData = () => {
             </Grid>
 
             <Grid item xs={12} className='flex gap-4'>
-              <Button variant='contained' type='submit'>
-                Submit
+              <Button variant='contained' type='submit' disable={isSaving}>
+              {isSaving && ('Saving...') || (!isSaving && ('Save'))}
               </Button>
-              <Button variant='tonal' color='secondary' type='reset' onClick={() => reset()}>
+              {/* <Button variant='tonal' color='secondary' type='reset' onClick={() => reset()}>
                 Reset
-              </Button>
+              </Button> */}
             </Grid>
           </Grid>
         </form>

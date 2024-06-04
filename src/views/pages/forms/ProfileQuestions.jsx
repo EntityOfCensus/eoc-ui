@@ -32,7 +32,9 @@ import { jwtDecode } from 'jwt-decode'
 const ProfileQuestions = ({ question, answers }) => {
   const [newProfileSurvey, setNewProfileSurvey] = useAtom(newProfileSurveyAtom)
 
-  const [surveyData, setSurveyData] = useState([])
+  const [surveyData, setSurveyData] = useState(null)
+
+  const [isSaving, setIsSaving] = useState(false)
 
   const [currentSurveyId, setCurrentSurveyId] = useState(null)
 
@@ -52,13 +54,14 @@ const ProfileQuestions = ({ question, answers }) => {
     checkConnected()
   }, [walletAddress])
 
-  // useEffect(() => {
-  //   if (currentSurveyId) {
-  //   }
-  // }, [currentSurveyId])
+  useEffect(() => {
+    if (currentSurveyId) {
+      fetchProfileSurvey(currentSurveyId)
+    }
+  }, [currentSurveyId])
 
   useEffect(() => {
-    setSurveyData(initSurveyData(newProfileSurvey.targetGroups[0].init.surveyData))
+    // setSurveyData(initSurveyData(newProfileSurvey.targetGroups[0].init.surveyData))
     const walletAddress =
       localStorage.getItem('walletAddress') != null && localStorage.getItem('walletAddress').length > 0
         ? localStorage.getItem('walletAddress')
@@ -82,15 +85,15 @@ const ProfileQuestions = ({ question, answers }) => {
         }
         if (data.currentSurveyId) {
           setCurrentSurveyId(data.currentSurveyId)
-          fetchProfileSurvey(data.currentSurveyId).then(sd => {
-            setSurveyData(sd)
-          })
+        } else {
+          setSurveyData(initSurveyData(newProfileSurvey.targetGroups[0].init.surveyData))
         }
       })
     }
   }, [])
 
   const handleSubmit = async () => {
+    setIsSaving(true)
     let targetGroup = newProfileSurvey.targetGroups[0]
     targetGroup.surveyData = surveyData
     setNewProfileSurvey(prev => ({
@@ -153,6 +156,7 @@ const ProfileQuestions = ({ question, answers }) => {
           },
           sub,
           function (error, data, response) {
+            setIsSaving(false)
             if (error) {
               console.log('error', error)
               return
@@ -167,6 +171,7 @@ const ProfileQuestions = ({ question, answers }) => {
             lastSurveyId: ''
           },
           function (error, data, response) {
+            setIsSaving(false)
             if (error) {
               console.log('error', error)
               return
@@ -208,14 +213,25 @@ const ProfileQuestions = ({ question, answers }) => {
       console.log(JSON.parse(tx.Messages[0].Data))
       let survey = JSON.parse(tx.Messages[0].Data)
 
-      let targetGroup = newProfileSurvey.targetGroups[0]
-      targetGroup['surveyData'] = targetGroup.init.surveyData
+      let sd = []
+      // let targetGroup = newProfileSurvey.targetGroups[0]
+      // targetGroup['surveyData'] = targetGroup.init.surveyData
       for (var i = 0; i < survey.targetGroups[0].surveyData.length; ++i) {
-        targetGroup.surveyData[i].answers = survey.targetGroups[0].surveyData[i].answers
+        sd.push({
+          question: newProfileSurvey.targetGroups[0].init.surveyData[i].init.question,
+          type: newProfileSurvey.targetGroups[0].init.surveyData[i].init.type,
+          possibleAnswers: newProfileSurvey.targetGroups[0].init.surveyData[i].init.possibleAnswers,
+          answers: survey.targetGroups[0].surveyData[i].answers
+        })
+        // targetGroup.surveyData[i].question = survey.targetGroups[0].surveyData[i].init.question
+        // targetGroup.surveyData[i].type = survey.targetGroups[0].surveyData[i].init.type
+        // targetGroup.surveyData[i].possibleAnswers = survey.targetGroups[0].surveyData[i].init.possibleAnswers
+        // targetGroup.surveyData[i].answers = survey.targetGroups[0].surveyData[i].answers
       }
       // for(var i = 0 ; i < s.length; ++i) {
       // }
-      return targetGroup.surveyData
+      setSurveyData(sd)
+      return sd
       // // setSurveyData(targetGroup.surveyData)
       // setNewProfileSurvey(prev => ({
       //   ...prev,
@@ -261,7 +277,7 @@ const ProfileQuestions = ({ question, answers }) => {
     <Card>
       <CardHeader title='Optional info' />
       <CardContent>
-        <form onSubmit={handleSubmit}>
+        {/* <form onSubmit={handleSubmit}> */}
         <Grid container spacing={6}>
           <Grid item xs={12}>
             {surveyData &&
@@ -269,97 +285,21 @@ const ProfileQuestions = ({ question, answers }) => {
                 <ProfileQuestion key={index} questionItem={item} connected={isConnected} />
               ))}
           </Grid>
-
-          {/* <ProfileQuestion  */}
-          {/* <Grid item xs={12}>
-              <FormLabel>În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?</FormLabel>
-              <RadioGroup row name='radio-buttons-group' value={question.answer}>
-                <Grid item xs={12} sm={12} ms={12} lg={12}>
-                  <FormControlLabel value='a1' control={<Radio />} label='5 ore sau mai puțin' />
-                </Grid>
-                <Grid item xs={12} sm={12} ms={12} lg={12}>
-                  <FormControlLabel value='a2' control={<Radio />} label='6 - 10 ore' />
-                </Grid>
-                <Grid item xs={12} sm={12} ms={12} lg={12}>
-                  <FormControlLabel value='a3' control={<Radio />} label='11 - 20 ore' />
-                </Grid>
-                <Grid item xs={12} sm={12} ms={12} lg={12}>
-                  <FormControlLabel value='a4' control={<Radio />} label='Mai mult de 20 ore' />
-                </Grid>
-                <Grid item xs={12} sm={12} ms={12} lg={12}>
-                  <FormControlLabel value='a5' control={<Radio />} label='Nu ma uit la TV' />
-                </Grid>
-                <Grid item xs={12} sm={12} ms={12} lg={12}>
-                  <FormControlLabel value='a6' control={<Radio />} label='Prefer sa nu raspund' />
-                </Grid>
-              </RadioGroup>
-            </Grid>
-            <Grid item xs={12}>
-              <FormLabel>În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?</FormLabel>
-              <RadioGroup row name='radio-buttons-group' value={question.answer}>
-                <FormControlLabel value='a1' control={<Radio />} label='5 ore sau mai puțin' />
-                <FormControlLabel value='a2' control={<Radio />} label='6 - 10 ore' />
-                <FormControlLabel value='a3' control={<Radio />} label='11 - 20 ore' />
-                <FormControlLabel value='a4' control={<Radio />} label='Mai mult de 20 ore' />
-                <FormControlLabel value='a5' control={<Radio />} label='Nu ma uit la TV' />
-                <FormControlLabel value='a6' control={<Radio />} label='Prefer sa nu raspund' />
-              </RadioGroup>
-            </Grid>
-            <Grid item xs={12}>
-              <FormLabel>În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?</FormLabel>
-              <RadioGroup
-                row
-                name='radio-buttons-group'
-                value={question.answer}
-                onChange={e => setCardData({ ...cardData, addressType: e.target.value })}
-              >
-                <Grid item xs={12} sm={12} ms={12} lg={12}>
-                  <FormControlLabel value='a1' label='5 ore sau mai puțin' control={<Checkbox />} />
-                </Grid>
-                <Grid item xs={12} sm={12} ms={12} lg={12}>
-                  <FormControlLabel value='a2' label='6 - 10 ore' control={<Checkbox />} />
-                </Grid>
-                <Grid item xs={12} sm={12} ms={12} lg={12}>
-                  <FormControlLabel value='a3' label='11 - 20 ore' control={<Checkbox />} />
-                </Grid>
-                <Grid item xs={12} sm={12} ms={12} lg={12}>
-                  <FormControlLabel value='a4' label='Mai mult de 20 ore' control={<Checkbox />} />
-                </Grid>
-                <Grid item xs={12} sm={12} ms={12} lg={12}>
-                  <FormControlLabel value='a5' label='Nu ma uit la TV' control={<Checkbox />} />
-                </Grid>
-                <Grid item xs={12} sm={12} ms={12} lg={12}>
-                  <FormControlLabel value='a6' label='Prefer sa nu raspund' control={<Checkbox />} />
-                </Grid>
-              </RadioGroup>
-            </Grid>
-            <Grid item xs={12}>
-              <FormLabel>În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?</FormLabel>
-              <RadioGroup
-                row
-                name='radio-buttons-group'
-                value={question.answer}
-                onChange={e => setCardData({ ...cardData, addressType: e.target.value })}
-              >
-                <FormControlLabel value='a1' label='5 ore sau mai puțin' control={<Checkbox />} />
-                <FormControlLabel value='a2' label='6 - 10 ore' control={<Checkbox />} />
-                <FormControlLabel value='a3' label='11 - 20 ore' control={<Checkbox />} />
-                <FormControlLabel value='a4' label='Mai mult de 20 ore' control={<Checkbox />} />
-                <FormControlLabel value='a5' label='Nu ma uit la TV' control={<Checkbox />} />
-                <FormControlLabel value='a6' label='Prefer sa nu raspund' control={<Checkbox />} />
-              </RadioGroup>
-            </Grid> */}
-
           <Grid item xs={12} className='flex gap-4'>
-            <Button variant='contained' type='submit' >
-              Submit
+            <Button
+              variant='contained'
+              type='submit'
+              onClick={() => handleSubmit()}
+              disabled={!isConnected || isSaving}
+            >
+                {isSaving && ('Saving...') || (!isSaving && ('Save'))}
             </Button>
-            <Button variant='tonal' color='secondary' type='reset' onClick={() => reset()}>
-              Reset
-            </Button>
+            {/* <Button variant='tonal' color='secondary' type='reset' onClick={() => reset()}>
+                Reset
+              </Button> */}
           </Grid>
         </Grid>
-        </form>
+        {/* </form> */}
       </CardContent>
     </Card>
   )
