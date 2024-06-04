@@ -29,30 +29,10 @@ import { cache, useEffect, useState } from 'react'
 import { dryrun, message, createDataItemSigner, result } from '@permaweb/aoconnect'
 import { jwtDecode } from 'jwt-decode'
 
-const getInitSurveyData = surveyData => {
-  surveyData.question = surveyData.init.question
-  surveyData.type = surveyData.init.type
-  surveyData.possibleAnswers = surveyData.init.possibleAnswers
-  surveyData.answers = surveyData.init.answers
-  return surveyData
-}
-
-const initSurveyData = surveyData => {
-  for (var i = 0; i < surveyData.length; ++i) {
-    surveyData[i] = getInitSurveyData(surveyData[i])
-  }
-  return surveyData
-  // surveyData.question = surveyData.init.question;
-  // surveyData.type = surveyData.init.type;
-  // surveyData.possibleAnswers = surveyData.init.possibleAnswers;
-  // surveyData.answers = surveyData.init.answers;
-  // return surveyData;
-}
-
 const ProfileQuestions = ({ question, answers }) => {
   const [newProfileSurvey, setNewProfileSurvey] = useAtom(newProfileSurveyAtom)
 
-  const [surveyData, setSurveyData] = useState(initSurveyData(newProfileSurvey.targetGroups[0].init.surveyData))
+  const [surveyData, setSurveyData] = useState([])
 
   const [currentSurveyId, setCurrentSurveyId] = useState(null)
 
@@ -72,15 +52,13 @@ const ProfileQuestions = ({ question, answers }) => {
     checkConnected()
   }, [walletAddress])
 
-  useEffect(() => {
-    if (currentSurveyId) {
-      fetchProfileSurvey(currentSurveyId).then(sd => {
-        setSurveyData(sd)
-      })
-      }
-  }, [currentSurveyId])
+  // useEffect(() => {
+  //   if (currentSurveyId) {
+  //   }
+  // }, [currentSurveyId])
 
   useEffect(() => {
+    setSurveyData(initSurveyData(newProfileSurvey.targetGroups[0].init.surveyData))
     const walletAddress =
       localStorage.getItem('walletAddress') != null && localStorage.getItem('walletAddress').length > 0
         ? localStorage.getItem('walletAddress')
@@ -104,6 +82,9 @@ const ProfileQuestions = ({ question, answers }) => {
         }
         if (data.currentSurveyId) {
           setCurrentSurveyId(data.currentSurveyId)
+          fetchProfileSurvey(data.currentSurveyId).then(sd => {
+            setSurveyData(sd)
+          })
         }
       })
     }
@@ -198,6 +179,21 @@ const ProfileQuestions = ({ question, answers }) => {
     }
   }
 
+  const getInitSurveyData = surveyData => {
+    surveyData.question = surveyData.init.question
+    surveyData.type = surveyData.init.type
+    surveyData.possibleAnswers = surveyData.init.possibleAnswers
+    surveyData.answers = [surveyData.init.answers]
+    return surveyData
+  }
+
+  const initSurveyData = surveyData => {
+    for (var i = 0; i < surveyData.length; ++i) {
+      surveyData[i] = getInitSurveyData(surveyData[i])
+    }
+    return surveyData
+  }
+
   const fetchProfileSurvey = async surveyId => {
     try {
       const tx = await dryrun({
@@ -213,15 +209,13 @@ const ProfileQuestions = ({ question, answers }) => {
       let survey = JSON.parse(tx.Messages[0].Data)
 
       let targetGroup = newProfileSurvey.targetGroups[0]
-      let s = surveyData
-      targetGroup.surveyData = surveyData
+      targetGroup['surveyData'] = targetGroup.init.surveyData
       for (var i = 0; i < survey.targetGroups[0].surveyData.length; ++i) {
         targetGroup.surveyData[i].answers = survey.targetGroups[0].surveyData[i].answers
-        s[i].answers = targetGroup.surveyData[i].answers
       }
       // for(var i = 0 ; i < s.length; ++i) {
       // }
-      return s
+      return targetGroup.surveyData
       // // setSurveyData(targetGroup.surveyData)
       // setNewProfileSurvey(prev => ({
       //   ...prev,
