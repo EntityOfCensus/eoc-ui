@@ -1,6 +1,7 @@
 'use client'
 
 // React Imports
+import { useEffect, useState } from 'react'
 
 // Next Imports
 
@@ -25,8 +26,7 @@ import {
   RespondentProfileSurveyIndexApi,
   RespondentProfileSurveyApiClient
 } from '../../../@bff/respondent-optional-info-api'
-import { cache, useEffect, useState } from 'react'
-import { dryrun, message, createDataItemSigner, result } from '@permaweb/aoconnect'
+import { dryrun, message, createDataItemSigner } from '@permaweb/aoconnect'
 import { jwtDecode } from 'jwt-decode'
 
 const ProfileQuestions = ({ question, answers }) => {
