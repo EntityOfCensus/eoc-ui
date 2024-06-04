@@ -13,11 +13,6 @@ import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 
 // Components Imports
-import FormLabel from '@mui/material/FormLabel'
-import RadioGroup from '@mui/material/RadioGroup'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Radio from '@mui/material/Radio'
-import Checkbox from '@mui/material/Checkbox'
 import { newProfileSurveyAtom } from '@/app/store/atoms'
 import { useAtom } from 'jotai/index'
 import ProfileQuestion from './ProfileQuestion'
@@ -31,8 +26,6 @@ import { jwtDecode } from 'jwt-decode'
 
 const ProfileQuestions = ({ question, answers }) => {
   const [newProfileSurvey, setNewProfileSurvey] = useAtom(newProfileSurveyAtom)
-
-  const [surveyData, setSurveyData] = useState(null)
 
   const [isSaving, setIsSaving] = useState(false)
 
@@ -48,8 +41,6 @@ const ProfileQuestions = ({ question, answers }) => {
     new RespondentProfileSurveyIndexApi(RespondentProfileSurveyApiClient.instance)
   )
 
-  console.log(surveyData)
-
   useEffect(() => {
     checkConnected()
   }, [walletAddress])
@@ -61,7 +52,6 @@ const ProfileQuestions = ({ question, answers }) => {
   }, [currentSurveyId])
 
   useEffect(() => {
-    // setSurveyData(initSurveyData(newProfileSurvey.targetGroups[0].init.surveyData))
     const walletAddress =
       localStorage.getItem('walletAddress') != null && localStorage.getItem('walletAddress').length > 0
         ? localStorage.getItem('walletAddress')
@@ -86,7 +76,13 @@ const ProfileQuestions = ({ question, answers }) => {
         if (data.currentSurveyId) {
           setCurrentSurveyId(data.currentSurveyId)
         } else {
-          setSurveyData(initSurveyData(newProfileSurvey.targetGroups[0].init.surveyData))
+          let targetGroup = newProfileSurvey.targetGroups[0]
+          targetGroup.surveyData = initSurveyData(newProfileSurvey.targetGroups[0].init.surveyData)
+
+          setNewProfileSurvey(prev => ({
+            ...prev,
+            targetGroups: [targetGroup]
+          }))
         }
       })
     }
@@ -95,16 +91,12 @@ const ProfileQuestions = ({ question, answers }) => {
   const handleSubmit = async () => {
     setIsSaving(true)
     let targetGroup = newProfileSurvey.targetGroups[0]
-    targetGroup.surveyData = surveyData
-    setNewProfileSurvey(prev => ({
-      ...prev,
-      targetGroups: [targetGroup]
-    }))
+
     let surveyDataDto = []
-    for (var i = 0; i < surveyData.length; ++i) {
+    for (var i = 0; i < targetGroup.surveyData.length; ++i) {
       surveyDataDto.push({
-        question: surveyData[i].question,
-        answers: surveyData[i].answers
+        question: targetGroup.surveyData[i].question,
+        answers: targetGroup.surveyData[i].answers
       })
     }
     let survey = {
@@ -131,7 +123,6 @@ const ProfileQuestions = ({ question, answers }) => {
         }
       ]
     }
-    console.log(JSON.stringify(survey))
     try {
       const messageId = await message({
         process: 'taFQ_bgJhuBLNP7VXMdYq9xq9938oqinxboiLi7k2M8',
@@ -214,8 +205,6 @@ const ProfileQuestions = ({ question, answers }) => {
       let survey = JSON.parse(tx.Messages[0].Data)
 
       let sd = []
-      // let targetGroup = newProfileSurvey.targetGroups[0]
-      // targetGroup['surveyData'] = targetGroup.init.surveyData
       for (var i = 0; i < survey.targetGroups[0].surveyData.length; ++i) {
         sd.push({
           question: newProfileSurvey.targetGroups[0].init.surveyData[i].init.question,
@@ -223,20 +212,14 @@ const ProfileQuestions = ({ question, answers }) => {
           possibleAnswers: newProfileSurvey.targetGroups[0].init.surveyData[i].init.possibleAnswers,
           answers: survey.targetGroups[0].surveyData[i].answers
         })
-        // targetGroup.surveyData[i].question = survey.targetGroups[0].surveyData[i].init.question
-        // targetGroup.surveyData[i].type = survey.targetGroups[0].surveyData[i].init.type
-        // targetGroup.surveyData[i].possibleAnswers = survey.targetGroups[0].surveyData[i].init.possibleAnswers
-        // targetGroup.surveyData[i].answers = survey.targetGroups[0].surveyData[i].answers
       }
-      // for(var i = 0 ; i < s.length; ++i) {
-      // }
-      setSurveyData(sd)
+      let targetGroup = newProfileSurvey.targetGroups[0]
+      targetGroup.surveyData = sd
+      setNewProfileSurvey(prev => ({
+        ...prev,
+        targetGroups: [targetGroup]
+      }))
       return sd
-      // // setSurveyData(targetGroup.surveyData)
-      // setNewProfileSurvey(prev => ({
-      //   ...prev,
-      //   targetGroups: [targetGroup]
-      // }))
     } catch (error) {
       console.log(error)
     }
@@ -280,8 +263,8 @@ const ProfileQuestions = ({ question, answers }) => {
         {/* <form onSubmit={handleSubmit}> */}
         <Grid container spacing={6}>
           <Grid item xs={12}>
-            {surveyData &&
-              surveyData.map((item, index) => (
+            {newProfileSurvey.targetGroups[0].surveyData &&
+              newProfileSurvey.targetGroups[0].surveyData.map((item, index) => (
                 <ProfileQuestion key={index} questionItem={item} connected={isConnected} />
               ))}
           </Grid>
@@ -292,11 +275,8 @@ const ProfileQuestions = ({ question, answers }) => {
               onClick={() => handleSubmit()}
               disabled={!isConnected || isSaving}
             >
-                {isSaving && ('Saving...') || (!isSaving && ('Save'))}
+              {(isSaving && 'Saving...') || (!isSaving && 'Save')}
             </Button>
-            {/* <Button variant='tonal' color='secondary' type='reset' onClick={() => reset()}>
-                Reset
-              </Button> */}
           </Grid>
         </Grid>
         {/* </form> */}

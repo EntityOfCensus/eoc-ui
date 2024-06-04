@@ -24,8 +24,6 @@ const ProfileQuestion = ({ questionItem, connected }) => {
 
   const [isConnected, setIsConnected] = useState(connected)
 
-  console.log(question, isConnected)
-
   const handleAnswer = e => {
     let answers = question.answers
     if (question.type == 'simple') {
@@ -44,11 +42,6 @@ const ProfileQuestion = ({ questionItem, connected }) => {
       ...prev,
       answers: answers
     }))
-  }
-
-  const handleChecked = index => {
-    //question.answers.includes
-    return true
   }
 
   return (
