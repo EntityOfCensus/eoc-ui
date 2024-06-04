@@ -261,7 +261,7 @@ const ProfileQuestions = ({ question, answers }) => {
     <Card>
       <CardHeader title='Optional info' />
       <CardContent>
-        {/* <form onSubmit={handleSubmit}> */}
+        <form onSubmit={handleSubmit}>
         <Grid container spacing={6}>
           <Grid item xs={12}>
             {surveyData &&
@@ -351,7 +351,7 @@ const ProfileQuestions = ({ question, answers }) => {
             </Grid> */}
 
           <Grid item xs={12} className='flex gap-4'>
-            <Button variant='contained' type='submit' onClick={() => handleSubmit()}>
+            <Button variant='contained' type='submit' >
               Submit
             </Button>
             <Button variant='tonal' color='secondary' type='reset' onClick={() => reset()}>
@@ -359,7 +359,7 @@ const ProfileQuestions = ({ question, answers }) => {
             </Button>
           </Grid>
         </Grid>
-        {/* </form> */}
+        </form>
       </CardContent>
     </Card>
   )
