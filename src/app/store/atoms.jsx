@@ -63,6 +63,8 @@ export const surveyData3Atom = atom({
   answers: []
 })
 
+export const newArConnectGlobalIsConnected = atom({connected: false})
+
 export const surveyData4Atom = atom({
   question: 'T4 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'multiple',

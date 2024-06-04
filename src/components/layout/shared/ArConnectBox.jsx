@@ -20,6 +20,8 @@ import Divider from '@mui/material/Divider'
 import Button from '@mui/material/Button'
 import { RespondentBasicDataApi, RespondentBasicDataApiClient } from '../../../@bff/respondent-basic-info-api'
 import { dryrun } from '@permaweb/aoconnect'
+import { useAtom } from 'jotai/index'
+import { newArConnectGlobalIsConnected } from '@/app/store/atoms'
 
 // Hook Imports
 import { useSettings } from '@core/hooks/useSettings'
@@ -46,6 +48,7 @@ const BadgeContentDisconnectedSpan = styled('span')({
   boxShadow: '0 0 0 2px var(--mui-palette-background-paper)'
 })
 const ArConnectBox = () => {
+  const [arConnectGlobalIsConnected, setArConnectGlobalIsConnected] = useAtom(newArConnectGlobalIsConnected)
   // States
   const [isConnected, setIsConnected] = useState(false)
   const [open, setOpen] = useState(false)
@@ -65,21 +68,26 @@ const ArConnectBox = () => {
             const address = await window.arweaveWallet.getActiveAddress()
             console.log('Connected: ', address)
             setAddress(address)
+            setArConnectGlobalIsConnected({connected: true})
             setIsConnected(true)
           } else {
             console.log('Not connected.')
+            setArConnectGlobalIsConnected({connected: false})
             setIsConnected(false)
           }
         } catch (error) {
           console.error('Error connecting to ArConnect:', error)
+          setArConnectGlobalIsConnected({connected: false})
           setIsConnected(false)
         }
       } else {
         console.log('ArConnect not installed.')
+        setArConnectGlobalIsConnected({connected: false})
         setIsConnected(false)
       }
     } catch (error) {
       console.error('Failed to fetch address:', error)
+      setArConnectGlobalIsConnected({connected: false})
       setIsConnected(false)
     }
   }
@@ -134,6 +142,7 @@ const ArConnectBox = () => {
   }, [address])
 
   const handleDisconnect = async () => {
+    setArConnectGlobalIsConnected({connected: false})
     setIsConnected(false)
     setAddress('')
     localStorage.setItem('walletAddress', '')
@@ -149,6 +158,7 @@ const ArConnectBox = () => {
       })
       try {
         const address = await window.arweaveWallet.getActiveAddress()
+        setArConnectGlobalIsConnected({connected: true})
         setIsConnected(true)
         setAddress(address)
         localStorage.setItem('walletAddress', address)

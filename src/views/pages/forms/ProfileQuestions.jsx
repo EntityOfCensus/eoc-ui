@@ -13,7 +13,7 @@ import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 
 // Components Imports
-import { newProfileSurveyAtom } from '@/app/store/atoms'
+import { newProfileSurveyAtom, newArConnectGlobalIsConnected } from '@/app/store/atoms'
 import { useAtom } from 'jotai/index'
 import ProfileQuestion from './ProfileQuestion'
 
@@ -25,25 +25,17 @@ import { dryrun, message, createDataItemSigner } from '@permaweb/aoconnect'
 import { jwtDecode } from 'jwt-decode'
 
 const ProfileQuestions = ({ question, answers }) => {
+  const [arConnectGlobalIsConnected, setArConnectGlobalIsConnected] = useAtom(newArConnectGlobalIsConnected)
+
   const [newProfileSurvey, setNewProfileSurvey] = useAtom(newProfileSurveyAtom)
 
   const [isSaving, setIsSaving] = useState(false)
 
   const [currentSurveyId, setCurrentSurveyId] = useState(null)
 
-  const [isConnected, setIsConnected] = useState(
-    localStorage.getItem('walletAddress') != null && localStorage.getItem('walletAddress').length > 0
-  )
-
-  const [walletAddress, setWalletAddress] = useState(null)
-
   const [respondentProfileSurveyIndexApi, setRespondentProfileSurveyIndexApi] = useState(
     new RespondentProfileSurveyIndexApi(RespondentProfileSurveyApiClient.instance)
   )
-
-  useEffect(() => {
-    checkConnected()
-  }, [walletAddress])
 
   useEffect(() => {
     if (currentSurveyId) {
@@ -52,13 +44,6 @@ const ProfileQuestions = ({ question, answers }) => {
   }, [currentSurveyId])
 
   useEffect(() => {
-    const walletAddress =
-      localStorage.getItem('walletAddress') != null && localStorage.getItem('walletAddress').length > 0
-        ? localStorage.getItem('walletAddress')
-        : null
-    if (walletAddress) {
-      setWalletAddress(walletAddress)
-    }
     if (!currentSurveyId) {
       const idToken = localStorage.getItem('id_token')
       const { sub } = jwtDecode(idToken)
@@ -225,37 +210,6 @@ const ProfileQuestions = ({ question, answers }) => {
     }
   }
 
-  const checkConnected = async () => {
-    console.log('Fetching address...')
-    try {
-      // Check if ArConnect is available
-      if (window.arweaveWallet) {
-        try {
-          // Try to get permissions without prompting the user again if they're already connected
-          const currentPermissions = await window.arweaveWallet.getPermissions()
-          if (currentPermissions.includes('ACCESS_ADDRESS')) {
-            const address = await window.arweaveWallet.getActiveAddress()
-            console.log('Connected: ', address)
-            setIsConnected(true)
-          } else {
-            console.log('Not connected.')
-            setIsConnected(false)
-          }
-        } catch (error) {
-          console.error('Error connecting to ArConnect:', error)
-          setIsConnected(false)
-        }
-      } else {
-        console.log('ArConnect not installed.')
-        setIsConnected(false)
-      }
-    } catch (error) {
-      console.error('Failed to fetch address:', error)
-      setIsConnected(false)
-    }
-  }
-
-  question = ''
   return (
     <Card>
       <CardHeader title='Optional info' />
@@ -265,7 +219,7 @@ const ProfileQuestions = ({ question, answers }) => {
           <Grid item xs={12}>
             {newProfileSurvey.targetGroups[0].surveyData &&
               newProfileSurvey.targetGroups[0].surveyData.map((item, index) => (
-                <ProfileQuestion key={index} questionItem={item} connected={isConnected} />
+                <ProfileQuestion key={index} questionItem={item} connected={arConnectGlobalIsConnected.connected} />
               ))}
           </Grid>
           <Grid item xs={12} className='flex gap-4'>
@@ -273,7 +227,7 @@ const ProfileQuestions = ({ question, answers }) => {
               variant='contained'
               type='submit'
               onClick={() => handleSubmit()}
-              disabled={!isConnected || isSaving}
+              disabled={!arConnectGlobalIsConnected.connected || isSaving}
             >
               {(isSaving && 'Saving...') || (!isSaving && 'Save')}
             </Button>

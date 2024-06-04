@@ -17,12 +17,14 @@ import RadioGroup from '@mui/material/RadioGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Radio from '@mui/material/Radio'
 import Checkbox from '@mui/material/Checkbox'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { newArConnectGlobalIsConnected } from '@/app/store/atoms'
+import { useAtom } from 'jotai/index'
 
-const ProfileQuestion = ({ questionItem, connected }) => {
+const ProfileQuestion = ({ questionItem }) => {
+  const [arConnectGlobalIsConnected, setArConnectGlobalIsConnected] = useAtom(newArConnectGlobalIsConnected)
+
   const [question, setQuestion] = useState(questionItem)
-
-  const [isConnected, setIsConnected] = useState(connected)
 
   const handleAnswer = e => {
     let answers = question.answers
@@ -52,19 +54,22 @@ const ProfileQuestion = ({ questionItem, connected }) => {
           {question.possibleAnswers &&
             question.possibleAnswers.map(
               (item, index) =>
-                (isConnected && (
+                (arConnectGlobalIsConnected.connected && (
                   <FormControlLabel
                     key={index}
                     value={index}
                     onChange={handleAnswer}
                     control={
-                      question.type === 'simple' ?
-                        <Radio checked={question.answers.includes(index)} /> : <Checkbox checked={question.answers.includes(index)} />
+                      question.type === 'simple' ? (
+                        <Radio checked={question.answers.includes(index)} />
+                      ) : (
+                        <Checkbox checked={question.answers.includes(index)} />
+                      )
                     }
                     label={item}
                   />
                 )) ||
-                (isConnected == false && (
+                (arConnectGlobalIsConnected.connected == false && (
                   <FormControlLabel
                     key={index}
                     value={index}
