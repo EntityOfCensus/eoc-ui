@@ -22,7 +22,7 @@ import { PermissionType } from 'arconnect'
 import { jwtDecode } from 'jwt-decode'
 import { createDataItemSigner, message } from '@permaweb/aoconnect'
 
-// const TESTING_CENSUS_PROCESS_ID = 'taFQ_bgJhuBLNP7VXMdYq9xq9938oqinxboiLi7k2M8'
+// const TESTING_CENSUS_PROCESS_ID = 'ENnyYpVeZlS0j01ss-Rht9rHVpmZ73vItDb2Xtrtikc'
 
 const permissions = [
   'ACCESS_ADDRESS',
@@ -96,7 +96,7 @@ const StepReview = ({ activeStep, handleNext, handlePrev, steps }) => {
         logo: '4eTBOaxZSSyGbpKlHyilxNKhXbocuZdiMBYIORjS4f0'
       })
       const messageId = await message({
-        process: 'taFQ_bgJhuBLNP7VXMdYq9xq9938oqinxboiLi7k2M8',
+        process: 'ENnyYpVeZlS0j01ss-Rht9rHVpmZ73vItDb2Xtrtikc',
         signer: createDataItemSigner(window.arweaveWallet),
         // the survey as stringified JSON
         data: JSON.stringify(newSurvey),

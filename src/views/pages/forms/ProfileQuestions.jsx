@@ -118,7 +118,7 @@ const ProfileQuestions = ({ question, answers }) => {
     }
     try {
       const messageId = await message({
-        process: 'taFQ_bgJhuBLNP7VXMdYq9xq9938oqinxboiLi7k2M8',
+        process: 'ENnyYpVeZlS0j01ss-Rht9rHVpmZ73vItDb2Xtrtikc',
         signer: createDataItemSigner(window.arweaveWallet),
         // the survey as stringified JSON
         data: JSON.stringify(survey),
@@ -186,7 +186,7 @@ const ProfileQuestions = ({ question, answers }) => {
   const fetchProfileSurvey = async surveyId => {
     try {
       const tx = await dryrun({
-        process: 'taFQ_bgJhuBLNP7VXMdYq9xq9938oqinxboiLi7k2M8',
+        process: 'ENnyYpVeZlS0j01ss-Rht9rHVpmZ73vItDb2Xtrtikc',
         tags: [
           { name: 'Action', value: 'GetSurveyByKv' },
           { name: 'Key', value: 'ao_id' },
@@ -213,6 +213,13 @@ const ProfileQuestions = ({ question, answers }) => {
       return sd
     } catch (error) {
       console.log(error)
+      let targetGroup = newProfileSurvey.targetGroups[0]
+      targetGroup.surveyData = initSurveyData(newProfileSurvey.targetGroups[0].init.surveyData)
+
+      setNewProfileSurvey(prev => ({
+        ...prev,
+        targetGroups: [targetGroup]
+      }))
     }
   }
 

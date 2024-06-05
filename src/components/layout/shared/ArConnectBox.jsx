@@ -126,7 +126,7 @@ const ArConnectBox = () => {
   useEffect(() => {
     const fetchBalance = async () => {
       const messageResponse = await dryrun({
-        process: 'taFQ_bgJhuBLNP7VXMdYq9xq9938oqinxboiLi7k2M8',
+        process: 'ENnyYpVeZlS0j01ss-Rht9rHVpmZ73vItDb2Xtrtikc',
         tags: [
           { name: 'Action', value: 'Balance' },
           { name: 'Recipient', value: address }
