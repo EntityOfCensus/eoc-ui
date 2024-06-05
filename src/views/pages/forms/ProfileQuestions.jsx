@@ -53,14 +53,7 @@ const ProfileQuestions = ({ question, answers }) => {
   )
 
   useEffect(() => {
-    if (arConnectGlobalIsConnected.connected
-      && (!newProfileSurvey.targetGroups[0].surveyData || newProfileSurvey.targetGroups[0].surveyData.length == 0)) {
-      fetchProfileSurvey(currentSurveyId)
-    }
-  }, [currentSurveyId, arConnectGlobalIsConnected])
-
-  useEffect(() => {
-    if (!currentSurveyId && arConnectGlobalIsConnected) {
+    if (!currentSurveyId) {
       const idToken = localStorage.getItem('id_token')
       const { sub } = jwtDecode(idToken)
       respondentProfileSurveyIndexApi.apiClient.authentications = {
@@ -77,10 +70,13 @@ const ProfileQuestions = ({ question, answers }) => {
         if (data.currentSurveyId) {
           setCurrentSurveyId(data.currentSurveyId)
         } else {
+          fetchProfileSurvey(currentSurveyId)
         }
       })
+    } else {
+      fetchProfileSurvey(currentSurveyId)
     }
-  }, [])
+  }, [currentSurveyId, arConnectGlobalIsConnected])
 
   const handleSubmit = async e => {
     e.preventDefault()
@@ -169,8 +165,6 @@ const ProfileQuestions = ({ question, answers }) => {
       console.log(error)
     }
   }
-
-
 
   const fetchProfileSurvey = async surveyId => {
     try {
