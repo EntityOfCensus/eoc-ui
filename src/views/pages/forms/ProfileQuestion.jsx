@@ -73,7 +73,8 @@ const ProfileQuestion = ({ questionItem }) => {
                   <FormControlLabel
                     key={index}
                     value={index}
-                    control={question.type === 'simple' ? <Radio disabled /> : <Checkbox disabled />}
+                    onChange={handleAnswer}
+                    control={question.type === 'simple' ? <Radio checked={question.answers.includes(index)} disabled /> : <Checkbox checked={question.answers.includes(index)} disabled />}
                     label={item}
                   />
                 ))

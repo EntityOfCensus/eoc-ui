@@ -38,10 +38,18 @@ const ProfileQuestions = ({ question, answers }) => {
   )
 
   useEffect(() => {
-    if (currentSurveyId) {
+    if (currentSurveyId && arConnectGlobalIsConnected.connected) {
       fetchProfileSurvey(currentSurveyId)
+    } else if (currentSurveyId && !arConnectGlobalIsConnected.connected) {
+      let targetGroup = newProfileSurvey.targetGroups[0]
+      targetGroup.surveyData = initSurveyData(newProfileSurvey.targetGroups[0].init.surveyData)
+
+      setNewProfileSurvey(prev => ({
+        ...prev,
+        targetGroups: [targetGroup]
+      }))
     }
-  }, [currentSurveyId])
+  }, [currentSurveyId, arConnectGlobalIsConnected.connected])
 
   useEffect(() => {
     if (!currentSurveyId) {
@@ -185,8 +193,6 @@ const ProfileQuestions = ({ question, answers }) => {
           { name: 'Val', value: surveyId }
         ]
       })
-
-      console.log(JSON.parse(tx.Messages[0].Data))
       let survey = JSON.parse(tx.Messages[0].Data)
 
       let sd = []

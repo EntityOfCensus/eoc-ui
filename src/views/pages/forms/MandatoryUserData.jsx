@@ -360,7 +360,7 @@ const MandatoryUserData = () => {
             </Grid>
 
             <Grid item xs={12} className='flex gap-4'>
-              <Button variant='contained' type='submit' disable={isSaving}>
+              <Button variant='contained' type='submit' disabled={isSaving}>
               {isSaving && ('Saving...') || (!isSaving && ('Save'))}
               </Button>
               {/* <Button variant='tonal' color='secondary' type='reset' onClick={() => reset()}>
