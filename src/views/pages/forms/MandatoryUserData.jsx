@@ -1,7 +1,8 @@
 'use client'
 
 // React Imports
-import { useState, useEffect } from 'react'
+import  * as React from 'react'
+import  { useState, useEffect } from 'react'
 
 // MUI Imports
 import Card from '@mui/material/Card'
@@ -34,6 +35,9 @@ import CustomTextField from '@core/components/mui/TextField'
 
 // Styled Component Imports
 import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
+
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const MandatoryUserData = () => {
   const [newProfileSurvey, setNewProfileSurvey] = useAtom(newProfileSurveyAtom)
@@ -172,6 +176,13 @@ const MandatoryUserData = () => {
   }
 
   return (
+    <React.Fragment>
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isSaving}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     <Card>
       <CardHeader title='Mandatory Info' />
       <CardContent>
@@ -371,6 +382,7 @@ const MandatoryUserData = () => {
         </form>
       </CardContent>
     </Card>
+    </React.Fragment>
   )
 }
 

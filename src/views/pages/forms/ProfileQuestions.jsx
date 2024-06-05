@@ -1,6 +1,7 @@
 'use client'
 
 // React Imports
+import * as React from 'react'
 import { useEffect, useState } from 'react'
 
 // Next Imports
@@ -23,6 +24,13 @@ import {
 } from '../../../@bff/respondent-optional-info-api'
 import { dryrun, message, createDataItemSigner } from '@permaweb/aoconnect'
 import { jwtDecode } from 'jwt-decode'
+import Backdrop from '@mui/material/Backdrop'
+import CircularProgress from '@mui/material/CircularProgress'
+
+import Alert from '@mui/material/Alert'
+import Link from '@mui/material/Link';
+import Snackbar from '@mui/material/Snackbar'
+
 
 const getInitSurveyData = surveyData => {
   surveyData.question = surveyData.init.question
@@ -47,6 +55,7 @@ const ProfileQuestions = ({ question, answers }) => {
   const [isSaving, setIsSaving] = useState(false)
 
   const [currentSurveyId, setCurrentSurveyId] = useState(null)
+  const [profileSurveySaved, setProfileSurveySaved] = useState(false)
 
   const [respondentProfileSurveyIndexApi, setRespondentProfileSurveyIndexApi] = useState(
     new RespondentProfileSurveyIndexApi(RespondentProfileSurveyApiClient.instance)
@@ -144,6 +153,7 @@ const ProfileQuestions = ({ question, answers }) => {
               return
             }
             setCurrentSurveyId(messageId)
+            setProfileSurveySaved(true)
           }
         )
       } else {
@@ -158,6 +168,7 @@ const ProfileQuestions = ({ question, answers }) => {
               console.log('error', error)
               return
             }
+            setProfileSurveySaved(true)
           }
         )
       }
@@ -207,26 +218,42 @@ const ProfileQuestions = ({ question, answers }) => {
   }
 
   return (
-    <Card>
-      <CardHeader title='Optional info' />
-      <CardContent>
-        <form onSubmit={handleSubmit}>
-          <Grid container spacing={6}>
-            <Grid item xs={12}>
-              {newProfileSurvey.targetGroups[0].surveyData &&
-                newProfileSurvey.targetGroups[0].surveyData.map((item, index) => (
-                  <ProfileQuestion key={index} questionItem={item} />
-                ))}
+    <React.Fragment>
+          <Snackbar
+            open={profileSurveySaved}
+            autoHideDuration={3000}
+            onClose={() => {setProfileSurveySaved(false)}}
+          >
+            <Alert variant="filled" severity="success">
+     <Link target="_blank" href={'https://ao_marton.g8way.io/#/message/' + currentSurveyId}>View Block in ao Explorer</Link>
+    </Alert>
+          </Snackbar>
+
+
+      <Backdrop sx={{ color: '#fff', zIndex: theme => theme.zIndex.drawer + 1 }} open={isSaving}>
+        <CircularProgress color='inherit' />
+      </Backdrop>
+      <Card>
+        <CardHeader title='Optional info' />
+        <CardContent>
+          <form onSubmit={handleSubmit}>
+            <Grid container spacing={6}>
+              <Grid item xs={12}>
+                {newProfileSurvey.targetGroups[0].surveyData &&
+                  newProfileSurvey.targetGroups[0].surveyData.map((item, index) => (
+                    <ProfileQuestion key={index} questionItem={item} />
+                  ))}
+              </Grid>
+              <Grid item xs={12} className='flex gap-4'>
+                <Button variant='contained' type='submit' disabled={!arConnectGlobalIsConnected.connected || isSaving}>
+                  {(isSaving && 'Saving...') || (!isSaving && 'Save')}
+                </Button>
+              </Grid>
             </Grid>
-            <Grid item xs={12} className='flex gap-4'>
-              <Button variant='contained' type='submit' disabled={!arConnectGlobalIsConnected.connected || isSaving}>
-                {(isSaving && 'Saving...') || (!isSaving && 'Save')}
-              </Button>
-            </Grid>
-          </Grid>
-        </form>
-      </CardContent>
-    </Card>
+          </form>
+        </CardContent>
+      </Card>
+    </React.Fragment>
   )
 }
 
