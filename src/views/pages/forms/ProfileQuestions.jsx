@@ -53,40 +53,9 @@ const ProfileQuestions = ({ question, answers }) => {
   )
 
   useEffect(() => {
-    // fetchProfileSurvey(currentSurveyId)
-    console.log('-----------------------use efect masaa --------------------------------------')
-    if (arConnectGlobalIsConnected.connected) {
-      console.log('-----------------------use efect fetch --------------------------------------')
-      if (!newProfileSurvey.targetGroups[0].surveyData || newProfileSurvey.targetGroups[0].surveyData.length == 0) {
-        fetchProfileSurvey(currentSurveyId)
-      }
-    } else if (currentSurveyId && !arConnectGlobalIsConnected.connected) {
-      // if (newProfileSurvey.targetGroups[0].surveyData && newProfileSurvey.targetGroups[0].surveyData.length > 0) {
-      //   console.log('-----------------------use efect empty --------------------------------------')
-      //   let targetGroup = newProfileSurvey.targetGroups[0]
-      //   targetGroup.surveyData = initSurveyData(newProfileSurvey.targetGroups[0].init.surveyData)
-
-      //   setNewProfileSurvey(prev => ({
-      //     ...prev,
-      //     targetGroups: [targetGroup]
-      //   }))
-      // }
-    } else {
-      //   if (!newProfileSurvey.targetGroups[0].surveyData || newProfileSurvey.targetGroups[0].surveyData.length == 0) {
-      //     console.log('-----------------------use efect empty --------------------------------------')
-      //     let targetGroup = newProfileSurvey.targetGroups[0]
-      //   targetGroup.surveyData = initSurveyData(newProfileSurvey.targetGroups[0].init.surveyData)
-      //   setNewProfileSurvey(prev => ({
-      //     ...prev,
-      //     targetGroups: [targetGroup]
-      //   }))
-      // }
-      // let targetGroup = newProfileSurvey.targetGroups[0]
-      // targetGroup.surveyData = initSurveyData(newProfileSurvey.targetGroups[0].init.surveyData)
-      // setNewProfileSurvey(prev => ({
-      //   ...prev,
-      //   targetGroups: [targetGroup]
-      // }))
+    if (arConnectGlobalIsConnected.connected
+      && (!newProfileSurvey.targetGroups[0].surveyData || newProfileSurvey.targetGroups[0].surveyData.length == 0)) {
+      fetchProfileSurvey(currentSurveyId)
     }
   }, [currentSurveyId, arConnectGlobalIsConnected])
 
