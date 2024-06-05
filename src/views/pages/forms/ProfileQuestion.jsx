@@ -54,30 +54,20 @@ const ProfileQuestion = ({ questionItem }) => {
           {question.possibleAnswers &&
             question.possibleAnswers.map(
               (item, index) =>
-                (arConnectGlobalIsConnected.connected && (
-                  <FormControlLabel
+                <FormControlLabel
                     key={index}
                     value={index}
                     onChange={handleAnswer}
                     control={
                       question.type === 'simple' ? (
-                        <Radio checked={question.answers.includes(index)} />
+                        <Radio checked={question.answers.includes(index)} disabled={!arConnectGlobalIsConnected.connected}/>
                       ) : (
-                        <Checkbox checked={question.answers.includes(index)} />
+                        <Checkbox checked={question.answers.includes(index)} disabled={!arConnectGlobalIsConnected.connected}/>
                       )
                     }
                     label={item}
                   />
-                )) ||
-                (arConnectGlobalIsConnected.connected == false && (
-                  <FormControlLabel
-                    key={index}
-                    value={index}
-                    onChange={handleAnswer}
-                    control={question.type === 'simple' ? <Radio checked={question.answers.includes(index)} disabled /> : <Checkbox checked={question.answers.includes(index)} disabled />}
-                    label={item}
-                  />
-                ))
+
             )}
         </RadioGroup>
       </form>

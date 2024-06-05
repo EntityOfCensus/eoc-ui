@@ -24,6 +24,21 @@ import {
 import { dryrun, message, createDataItemSigner } from '@permaweb/aoconnect'
 import { jwtDecode } from 'jwt-decode'
 
+const getInitSurveyData = surveyData => {
+  surveyData.question = surveyData.init.question
+  surveyData.type = surveyData.init.type
+  surveyData.possibleAnswers = surveyData.init.possibleAnswers
+  surveyData.answers = [surveyData.init.answers]
+  return surveyData
+}
+
+const initSurveyData = surveyData => {
+  for (var i = 0; i < surveyData.length; ++i) {
+    surveyData[i] = getInitSurveyData(surveyData[i])
+  }
+  return surveyData
+}
+
 const ProfileQuestions = ({ question, answers }) => {
   const [arConnectGlobalIsConnected, setArConnectGlobalIsConnected] = useAtom(newArConnectGlobalIsConnected)
 
@@ -38,21 +53,45 @@ const ProfileQuestions = ({ question, answers }) => {
   )
 
   useEffect(() => {
-    if (currentSurveyId && arConnectGlobalIsConnected.connected) {
-      fetchProfileSurvey(currentSurveyId)
+    // fetchProfileSurvey(currentSurveyId)
+    console.log('-----------------------use efect masaa --------------------------------------')
+    if (arConnectGlobalIsConnected.connected) {
+      console.log('-----------------------use efect fetch --------------------------------------')
+      if (!newProfileSurvey.targetGroups[0].surveyData || newProfileSurvey.targetGroups[0].surveyData.length == 0) {
+        fetchProfileSurvey(currentSurveyId)
+      }
     } else if (currentSurveyId && !arConnectGlobalIsConnected.connected) {
-      let targetGroup = newProfileSurvey.targetGroups[0]
-      targetGroup.surveyData = initSurveyData(newProfileSurvey.targetGroups[0].init.surveyData)
+      // if (newProfileSurvey.targetGroups[0].surveyData && newProfileSurvey.targetGroups[0].surveyData.length > 0) {
+      //   console.log('-----------------------use efect empty --------------------------------------')
+      //   let targetGroup = newProfileSurvey.targetGroups[0]
+      //   targetGroup.surveyData = initSurveyData(newProfileSurvey.targetGroups[0].init.surveyData)
 
-      setNewProfileSurvey(prev => ({
-        ...prev,
-        targetGroups: [targetGroup]
-      }))
+      //   setNewProfileSurvey(prev => ({
+      //     ...prev,
+      //     targetGroups: [targetGroup]
+      //   }))
+      // }
+    } else {
+      //   if (!newProfileSurvey.targetGroups[0].surveyData || newProfileSurvey.targetGroups[0].surveyData.length == 0) {
+      //     console.log('-----------------------use efect empty --------------------------------------')
+      //     let targetGroup = newProfileSurvey.targetGroups[0]
+      //   targetGroup.surveyData = initSurveyData(newProfileSurvey.targetGroups[0].init.surveyData)
+      //   setNewProfileSurvey(prev => ({
+      //     ...prev,
+      //     targetGroups: [targetGroup]
+      //   }))
+      // }
+      // let targetGroup = newProfileSurvey.targetGroups[0]
+      // targetGroup.surveyData = initSurveyData(newProfileSurvey.targetGroups[0].init.surveyData)
+      // setNewProfileSurvey(prev => ({
+      //   ...prev,
+      //   targetGroups: [targetGroup]
+      // }))
     }
-  }, [currentSurveyId, arConnectGlobalIsConnected.connected])
+  }, [currentSurveyId, arConnectGlobalIsConnected])
 
   useEffect(() => {
-    if (!currentSurveyId) {
+    if (!currentSurveyId && arConnectGlobalIsConnected) {
       const idToken = localStorage.getItem('id_token')
       const { sub } = jwtDecode(idToken)
       respondentProfileSurveyIndexApi.apiClient.authentications = {
@@ -69,19 +108,13 @@ const ProfileQuestions = ({ question, answers }) => {
         if (data.currentSurveyId) {
           setCurrentSurveyId(data.currentSurveyId)
         } else {
-          let targetGroup = newProfileSurvey.targetGroups[0]
-          targetGroup.surveyData = initSurveyData(newProfileSurvey.targetGroups[0].init.surveyData)
-
-          setNewProfileSurvey(prev => ({
-            ...prev,
-            targetGroups: [targetGroup]
-          }))
         }
       })
     }
   }, [])
 
-  const handleSubmit = async () => {
+  const handleSubmit = async e => {
+    e.preventDefault()
     setIsSaving(true)
     let targetGroup = newProfileSurvey.targetGroups[0]
 
@@ -168,20 +201,7 @@ const ProfileQuestions = ({ question, answers }) => {
     }
   }
 
-  const getInitSurveyData = surveyData => {
-    surveyData.question = surveyData.init.question
-    surveyData.type = surveyData.init.type
-    surveyData.possibleAnswers = surveyData.init.possibleAnswers
-    surveyData.answers = [surveyData.init.answers]
-    return surveyData
-  }
 
-  const initSurveyData = surveyData => {
-    for (var i = 0; i < surveyData.length; ++i) {
-      surveyData[i] = getInitSurveyData(surveyData[i])
-    }
-    return surveyData
-  }
 
   const fetchProfileSurvey = async surveyId => {
     try {
@@ -227,26 +247,21 @@ const ProfileQuestions = ({ question, answers }) => {
     <Card>
       <CardHeader title='Optional info' />
       <CardContent>
-        {/* <form onSubmit={handleSubmit}> */}
-        <Grid container spacing={6}>
-          <Grid item xs={12}>
-            {newProfileSurvey.targetGroups[0].surveyData &&
-              newProfileSurvey.targetGroups[0].surveyData.map((item, index) => (
-                <ProfileQuestion key={index} questionItem={item} />
-              ))}
+        <form onSubmit={handleSubmit}>
+          <Grid container spacing={6}>
+            <Grid item xs={12}>
+              {newProfileSurvey.targetGroups[0].surveyData &&
+                newProfileSurvey.targetGroups[0].surveyData.map((item, index) => (
+                  <ProfileQuestion key={index} questionItem={item} />
+                ))}
+            </Grid>
+            <Grid item xs={12} className='flex gap-4'>
+              <Button variant='contained' type='submit' disabled={!arConnectGlobalIsConnected.connected || isSaving}>
+                {(isSaving && 'Saving...') || (!isSaving && 'Save')}
+              </Button>
+            </Grid>
           </Grid>
-          <Grid item xs={12} className='flex gap-4'>
-            <Button
-              variant='contained'
-              type='submit'
-              onClick={() => handleSubmit()}
-              disabled={!arConnectGlobalIsConnected.connected || isSaving}
-            >
-              {(isSaving && 'Saving...') || (!isSaving && 'Save')}
-            </Button>
-          </Grid>
-        </Grid>
-        {/* </form> */}
+        </form>
       </CardContent>
     </Card>
   )
