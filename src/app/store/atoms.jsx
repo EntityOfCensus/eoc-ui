@@ -86,6 +86,7 @@ export const newTargetGroupAtom = atom({
   surveyData: [surveyData1Atom, surveyData2Atom, surveyData3Atom, surveyData4Atom]
 })
 export const newProfileSurveyAtom = atom({
+  surveyId: null,
   type: 'respondent-survey',
   respondentOthentSub: '',
   targetGroups: [newTargetGroupAtom]

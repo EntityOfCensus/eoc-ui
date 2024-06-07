@@ -47,14 +47,12 @@ const initSurveyData = surveyData => {
 }
 
 const ProfileQuestions = ({ question, answers }) => {
-
   const [arConnectGlobalIsConnected, setArConnectGlobalIsConnected] = useAtom(newArConnectGlobalIsConnected)
 
   const [newProfileSurvey, setNewProfileSurvey] = useAtom(newProfileSurveyAtom)
 
   const [isSaving, setIsSaving] = useState(false)
 
-  const [currentSurveyId, setCurrentSurveyId] = useState(null)
   const [profileSurveySaved, setProfileSurveySaved] = useState(false)
 
   const [respondentProfileSurveyIndexApi, setRespondentProfileSurveyIndexApi] = useState(
@@ -62,7 +60,7 @@ const ProfileQuestions = ({ question, answers }) => {
   )
 
   useEffect(() => {
-    if (!currentSurveyId) {
+    if (!newProfileSurvey.surveyId) {
       const idToken = localStorage.getItem('id_token')
       const { sub } = jwtDecode(idToken)
       respondentProfileSurveyIndexApi.apiClient.authentications = {
@@ -77,7 +75,6 @@ const ProfileQuestions = ({ question, answers }) => {
           return
         }
         if (data.currentSurveyId) {
-          setCurrentSurveyId(data.currentSurveyId)
           fetchProfileSurvey(data.currentSurveyId)
         } else {
           fetchProfileSurvey(null)
@@ -138,11 +135,11 @@ const ProfileQuestions = ({ question, answers }) => {
           accessToken: idToken
         }
       }
-      if (currentSurveyId) {
+      if (newProfileSurvey.surveyId) {
         respondentProfileSurveyIndexApi.updateRespondentProfileSurveyIndex(
           {
             currentSurveyId: messageId,
-            lastSurveyId: currentSurveyId
+            lastSurveyId: newProfileSurvey.surveyId
           },
           sub,
           function (error, data, response) {
@@ -151,7 +148,10 @@ const ProfileQuestions = ({ question, answers }) => {
               console.log('error', error)
               return
             }
-            setCurrentSurveyId(messageId)
+            setNewProfileSurvey(prev => ({
+              ...prev,
+              surveyId: messageId
+            }))
             setProfileSurveySaved(true)
           }
         )
@@ -167,6 +167,10 @@ const ProfileQuestions = ({ question, answers }) => {
               console.log('error', error)
               return
             }
+            setNewProfileSurvey(prev => ({
+              ...prev,
+              surveyId: messageId
+            }))
             setProfileSurveySaved(true)
           }
         )
@@ -201,6 +205,7 @@ const ProfileQuestions = ({ question, answers }) => {
       targetGroup.surveyData = sd
       setNewProfileSurvey(prev => ({
         ...prev,
+        surveyId: surveyId,
         targetGroups: [targetGroup]
       }))
       return sd
@@ -217,7 +222,7 @@ const ProfileQuestions = ({ question, answers }) => {
   }
 
   return (
-    <React.Fragment>
+    <React.StrictMode>
       <Snackbar
         open={profileSurveySaved}
         autoHideDuration={3000}
@@ -226,7 +231,7 @@ const ProfileQuestions = ({ question, answers }) => {
         }}
       >
         <Alert variant='filled' severity='success'>
-          <Link target='_blank' href={'https://ao_marton.g8way.io/#/message/' + currentSurveyId}>
+          <Link target='_blank' href={'https://ao_marton.g8way.io/#/message/' + newProfileSurvey.surveyId}>
             View Block in ao Explorer
           </Link>
         </Alert>
@@ -255,7 +260,7 @@ const ProfileQuestions = ({ question, answers }) => {
           </form>
         </CardContent>
       </Card>
-    </React.Fragment>
+    </React.StrictMode>
   )
 }
 
