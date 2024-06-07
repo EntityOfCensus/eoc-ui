@@ -35,7 +35,7 @@ const getInitSurveyData = surveyData => {
   surveyData.question = surveyData.init.question
   surveyData.type = surveyData.init.type
   surveyData.possibleAnswers = surveyData.init.possibleAnswers
-  surveyData.answers = [surveyData.init.answers]
+  surveyData.answers = surveyData.init.answers
   return surveyData
 }
 
@@ -81,7 +81,7 @@ const ProfileQuestions = ({ question, answers }) => {
         }
       })
     }
-  }, [])
+  })
 
   const handleSubmit = async e => {
     e.preventDefault()
@@ -89,6 +89,7 @@ const ProfileQuestions = ({ question, answers }) => {
     let targetGroup = newProfileSurvey.targetGroups[0]
 
     let surveyDataDto = []
+    let statisticSurvey = []
     for (var i = 0; i < targetGroup.surveyData.length; ++i) {
       surveyDataDto.push({
         question: targetGroup.surveyData[i].question,
