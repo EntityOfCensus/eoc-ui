@@ -120,7 +120,8 @@ const ArConnectBox = () => {
   }
 
   useEffect(() => {
-    checkConnected()
+    if(!isConnected)
+      checkConnected()
   }, [])
 
   useEffect(() => {

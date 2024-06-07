@@ -28,9 +28,8 @@ import Backdrop from '@mui/material/Backdrop'
 import CircularProgress from '@mui/material/CircularProgress'
 
 import Alert from '@mui/material/Alert'
-import Link from '@mui/material/Link';
+import Link from '@mui/material/Link'
 import Snackbar from '@mui/material/Snackbar'
-
 
 const getInitSurveyData = surveyData => {
   surveyData.question = surveyData.init.question
@@ -48,6 +47,7 @@ const initSurveyData = surveyData => {
 }
 
 const ProfileQuestions = ({ question, answers }) => {
+
   const [arConnectGlobalIsConnected, setArConnectGlobalIsConnected] = useAtom(newArConnectGlobalIsConnected)
 
   const [newProfileSurvey, setNewProfileSurvey] = useAtom(newProfileSurveyAtom)
@@ -78,14 +78,13 @@ const ProfileQuestions = ({ question, answers }) => {
         }
         if (data.currentSurveyId) {
           setCurrentSurveyId(data.currentSurveyId)
+          fetchProfileSurvey(data.currentSurveyId)
         } else {
-          fetchProfileSurvey(currentSurveyId)
+          fetchProfileSurvey(null)
         }
       })
-    } else {
-      fetchProfileSurvey(currentSurveyId)
     }
-  }, [currentSurveyId, arConnectGlobalIsConnected])
+  }, [])
 
   const handleSubmit = async e => {
     e.preventDefault()
@@ -219,16 +218,19 @@ const ProfileQuestions = ({ question, answers }) => {
 
   return (
     <React.Fragment>
-          <Snackbar
-            open={profileSurveySaved}
-            autoHideDuration={3000}
-            onClose={() => {setProfileSurveySaved(false)}}
-          >
-            <Alert variant="filled" severity="success">
-     <Link target="_blank" href={'https://ao_marton.g8way.io/#/message/' + currentSurveyId}>View Block in ao Explorer</Link>
-    </Alert>
-          </Snackbar>
-
+      <Snackbar
+        open={profileSurveySaved}
+        autoHideDuration={3000}
+        onClose={() => {
+          setProfileSurveySaved(false)
+        }}
+      >
+        <Alert variant='filled' severity='success'>
+          <Link target='_blank' href={'https://ao_marton.g8way.io/#/message/' + currentSurveyId}>
+            View Block in ao Explorer
+          </Link>
+        </Alert>
+      </Snackbar>
 
       <Backdrop sx={{ color: '#fff', zIndex: theme => theme.zIndex.drawer + 1 }} open={isSaving}>
         <CircularProgress color='inherit' />
