@@ -20,6 +20,7 @@ import ProfileQuestion from './ProfileQuestion'
 
 import {
   RespondentProfileSurveyIndexApi,
+  QuestionStatisticApi,
   RespondentProfileSurveyApiClient
 } from '../../../@bff/respondent-optional-info-api'
 import { dryrun, message, createDataItemSigner } from '@permaweb/aoconnect'
@@ -59,6 +60,10 @@ const ProfileQuestions = ({ question, answers }) => {
     new RespondentProfileSurveyIndexApi(RespondentProfileSurveyApiClient.instance)
   )
 
+  const [questionStatisticApi, setQuestionStatisticApi] = useState(
+    new QuestionStatisticApi(RespondentProfileSurveyApiClient.instance)
+  )
+
   useEffect(() => {
     if (!newProfileSurvey.surveyId) {
       const idToken = localStorage.getItem('id_token')
@@ -89,7 +94,6 @@ const ProfileQuestions = ({ question, answers }) => {
     let targetGroup = newProfileSurvey.targetGroups[0]
 
     let surveyDataDto = []
-    let statisticSurvey = []
     for (var i = 0; i < targetGroup.surveyData.length; ++i) {
       surveyDataDto.push({
         question: targetGroup.surveyData[i].question,
@@ -143,10 +147,50 @@ const ProfileQuestions = ({ question, answers }) => {
             lastSurveyId: newProfileSurvey.surveyId
           },
           sub,
-          function (error, data, response) {
+          async function (error, data, response) {
             setIsSaving(false)
             if (error) {
               console.log('error', error)
+              return
+            }
+            let stats = []
+            let oldSurvey = await getProfileSurvey(newProfileSurvey.surveyId)
+            if (oldSurvey != null) {
+              for (var i = 0; i < survey.targetGroups[0].surveyData.length; ++i) {
+                for (var j = 0; j < oldSurvey.targetGroups[0].surveyData[i].answers.length; ++j) {
+                  stats.push({
+                    question: oldSurvey.targetGroups[0].surveyData[i].question,
+                    answer: oldSurvey.targetGroups[0].surveyData[i].answers[j] + '',
+                    dateOfBirth: new Date(oldSurvey.targetGroups[0].startDate).toISOString(),
+                    country: oldSurvey.targetGroups[0].country,
+                    gender: oldSurvey.targetGroups[0].gender,
+                    count: -1,
+                    profileSurveyStatisticId: oldSurvey.type
+                  })
+                }
+                for (var j = 0; j < survey.targetGroups[0].surveyData[i].answers.length; ++j) {
+                  stats.push({
+                    question: survey.targetGroups[0].surveyData[i].question,
+                    answer: survey.targetGroups[0].surveyData[i].answers[j] + '',
+                    dateOfBirth: newProfileSurvey.targetGroups[0].dob,
+                    country: newProfileSurvey.targetGroups[0].country,
+                    gender: newProfileSurvey.targetGroups[0].gender,
+                    count: 1,
+                    profileSurveyStatisticId: newProfileSurvey.type
+                  })
+                }
+              }
+              questionStatisticApi.addQuestionStatistic(stats, function (error, data, response) {
+                if (error) {
+                  console.log('error', error)
+                  return
+                }
+                setNewProfileSurvey(prev => ({
+                  ...prev,
+                  surveyId: messageId
+                }))
+                setProfileSurveySaved(true)
+              })
               return
             }
             setNewProfileSurvey(prev => ({
@@ -163,21 +207,58 @@ const ProfileQuestions = ({ question, answers }) => {
             lastSurveyId: ''
           },
           function (error, data, response) {
+            let stats = []
+            for (var i = 0; i < survey.targetGroups[0].surveyData.length; ++i) {
+              for (var j = 0; j < survey.targetGroups[0].surveyData[i].answers.length; ++j) {
+                stats.push({
+                  question: survey.targetGroups[0].surveyData[i].question,
+                  answer: survey.targetGroups[0].surveyData[i].answers[j] + '',
+                  dateOfBirth: newProfileSurvey.targetGroups[0].dob,
+                  country: newProfileSurvey.targetGroups[0].country,
+                  gender: newProfileSurvey.targetGroups[0].gender,
+                  count: 1,
+                  profileSurveyStatisticId: newProfileSurvey.type
+                })
+              }
+            }
             setIsSaving(false)
             if (error) {
               console.log('error', error)
               return
             }
-            setNewProfileSurvey(prev => ({
-              ...prev,
-              surveyId: messageId
-            }))
-            setProfileSurveySaved(true)
+            questionStatisticApi.addQuestionStatistic(stats, function (error, data, response) {
+              if (error) {
+                console.log('error', error)
+                return
+              }
+              setNewProfileSurvey(prev => ({
+                ...prev,
+                surveyId: messageId
+              }))
+              setProfileSurveySaved(true)
+            })
           }
         )
       }
     } catch (error) {
       console.log(error)
+    }
+  }
+
+  const getProfileSurvey = async surveyId => {
+    try {
+      const tx = await dryrun({
+        process: 'ENnyYpVeZlS0j01ss-Rht9rHVpmZ73vItDb2Xtrtikc',
+        tags: [
+          { name: 'Action', value: 'GetSurveyByKv' },
+          { name: 'Key', value: 'ao_id' },
+          { name: 'Val', value: surveyId }
+        ]
+      })
+      return JSON.parse(tx.Messages[0].Data)
+    } catch (error) {
+      console.log(error)
+      return true
     }
   }
 
