@@ -16,6 +16,4 @@ const LoginPage = () => {
   return <Login mode={mode} />
 }
 
-export const runtime = 'edge' // 'nodejs' (default) | 'edge'
-
 export default LoginPage

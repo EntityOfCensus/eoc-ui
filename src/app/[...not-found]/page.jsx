@@ -6,8 +6,6 @@ import NotFound from '@views/NotFound'
 // Util Imports
 import { getServerMode, getSystemMode } from '@core/utils/serverHelpers'
 
-export const runtime = 'edge' // 'nodejs' (default) | 'edge'
-
 const NotFoundPage = () => {
   // Vars
   const direction = 'ltr'

@@ -4,8 +4,6 @@ import Typography from '@mui/material/Typography'
 import SurveyCard from '@/app/(dashboard)/surveys/SurveyCard'
 import withAuth from '../../../hoc/withAuth'
 
-export const runtime = 'edge' // 'nodejs' (default) | 'edge'
-
 const Marketplace = () => {
   return (
     localStorage.getItem('user-type') === 'respondent' && (
