@@ -2,7 +2,9 @@
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  basePath: process.env.BASEPATH
+  output: 'standalone',
+  basePath: process.env.BASEPATH,
+  cacheMaxMemorySize: 0 // disable default in-memory caching
 }
 
 module.exports = nextConfig
