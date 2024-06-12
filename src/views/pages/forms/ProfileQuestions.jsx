@@ -32,8 +32,13 @@ import Alert from '@mui/material/Alert'
 import Link from '@mui/material/Link'
 import Snackbar from '@mui/material/Snackbar'
 
+import GlobalProfiling from '@views/pages/shared/GlobalProfiling'
+import Typography from '@mui/material/Typography'
+import { profileCategories } from '@/app/store/consts'
+
 const getInitSurveyData = surveyData => {
   surveyData.question = surveyData.init.question
+  surveyData.category = surveyData.init.category
   surveyData.type = surveyData.init.type
   surveyData.possibleAnswers = surveyData.init.possibleAnswers
   surveyData.answers = surveyData.init.answers
@@ -50,6 +55,8 @@ const initSurveyData = surveyData => {
 const ProfileQuestions = ({ question, answers }) => {
   const [arConnectGlobalIsConnected, setArConnectGlobalIsConnected] = useAtom(newArConnectGlobalIsConnected)
 
+  const [categoryTitle, setCategoryTitle] = useState('')
+
   const [newProfileSurvey, setNewProfileSurvey] = useAtom(newProfileSurveyAtom)
 
   const [isSaving, setIsSaving] = useState(false)
@@ -65,7 +72,12 @@ const ProfileQuestions = ({ question, answers }) => {
   )
 
   useEffect(() => {
-    if (!newProfileSurvey.surveyId) {
+    if (
+      !newProfileSurvey.surveyId &&
+      (!newProfileSurvey.targetGroups ||
+        !newProfileSurvey.targetGroups[0].surveyData ||
+        newProfileSurvey.targetGroups[0].surveyData.length <= 0)
+    ) {
       const idToken = localStorage.getItem('id_token')
       const { sub } = jwtDecode(idToken)
       respondentProfileSurveyIndexApi.apiClient.authentications = {
@@ -97,6 +109,7 @@ const ProfileQuestions = ({ question, answers }) => {
     for (var i = 0; i < targetGroup.surveyData.length; ++i) {
       surveyDataDto.push({
         question: targetGroup.surveyData[i].question,
+        category: targetGroup.surveyData[i].category,
         answers: targetGroup.surveyData[i].answers
       })
     }
@@ -279,6 +292,7 @@ const ProfileQuestions = ({ question, answers }) => {
         sd.push({
           question: newProfileSurvey.targetGroups[0].init.surveyData[i].init.question,
           type: newProfileSurvey.targetGroups[0].init.surveyData[i].init.type,
+          category: newProfileSurvey.targetGroups[0].init.surveyData[i].init.category,
           possibleAnswers: newProfileSurvey.targetGroups[0].init.surveyData[i].init.possibleAnswers,
           answers: survey.targetGroups[0].surveyData[i].answers
         })
@@ -325,21 +339,42 @@ const ProfileQuestions = ({ question, answers }) => {
       <Card>
         <CardHeader title='Optional info' />
         <CardContent>
-          <form onSubmit={handleSubmit}>
-            <Grid container spacing={6}>
-              <Grid item xs={12}>
-                {newProfileSurvey.targetGroups[0].surveyData &&
-                  newProfileSurvey.targetGroups[0].surveyData.map((item, index) => (
-                    <ProfileQuestion key={index} questionItem={item} />
-                  ))}
-              </Grid>
-              <Grid item xs={12} className='flex gap-4'>
-                <Button variant='contained' type='submit' disabled={!arConnectGlobalIsConnected.connected || isSaving}>
-                  {(isSaving && 'Saving...') || (!isSaving && 'Save')}
-                </Button>
-              </Grid>
-            </Grid>
-          </form>
+          <GlobalProfiling
+            category={categoryTitle}
+            profileCategories={profileCategories}
+            render={category => (
+              <React.Fragment>
+                <form onSubmit={handleSubmit}>
+                  <Grid container spacing={6}>
+                    <Grid item xs={12}>
+                      <Typography component='span' variant='h5' className='flex flex-col'>
+                        {category}
+                      </Typography>
+                      <Typography component='span' variant='h6' className='flex flex-col'>
+                        Below are the questions that the panelists hae responded to. You can select any number of
+                        attributes that matches your target criteria. The target group will then contain only panelists
+                        who have answered these selected attributes (as well as any other attributes you have selected
+                        in other categories).
+                      </Typography>
+                      {newProfileSurvey.targetGroups[0].surveyData &&
+                        newProfileSurvey.targetGroups[0].surveyData.map((item, index) => (
+                          <ProfileQuestion key={index} questionItem={item} category={category} />
+                        ))}
+                    </Grid>
+                    <Grid item xs={12} className='flex gap-4'>
+                      <Button
+                        variant='contained'
+                        type='submit'
+                        disabled={!arConnectGlobalIsConnected.connected || isSaving}
+                      >
+                        {(isSaving && 'Saving...') || (!isSaving && 'Save')}
+                      </Button>
+                    </Grid>
+                  </Grid>
+                </form>
+              </React.Fragment>
+            )}
+          />
         </CardContent>
       </Card>
     </React.StrictMode>
