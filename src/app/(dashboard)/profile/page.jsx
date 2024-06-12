@@ -7,6 +7,8 @@ import MandatoryUserData from '@views/pages/forms/MandatoryUserData'
 import ProfileQuestions from '@views/pages/forms/ProfileQuestions'
 import withAuth from '@/hoc/withAuth'
 
+//export const runtime = 'edge' // 'nodejs' (default) | 'edge'
+
 const FormValidation = () => {
   return (
     <Grid container spacing={6}>

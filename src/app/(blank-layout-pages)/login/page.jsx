@@ -4,6 +4,8 @@ import Login from '@views/Login'
 // Server Action Imports
 import { getServerMode } from '@core/utils/serverHelpers'
 
+//export const runtime = 'edge' // 'nodejs' (default) | 'edge'
+
 export const metadata = {
   title: 'Login',
   description: 'Login to your account'

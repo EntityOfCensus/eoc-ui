@@ -2,6 +2,8 @@
 'use client'
 import dynamic from 'next/dynamic'
 
+//export const runtime = 'edge' // 'nodejs' (default) | 'edge'
+
 const CreateSurvey = dynamic(() => import('@views/pages/wizard'), { ssr: false })
 
 const CreateSurveyPage = () => {
