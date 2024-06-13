@@ -177,6 +177,7 @@ const ProfileQuestions = ({ question, answers }) => {
                     dateOfBirth: new Date(oldSurvey.targetGroups[0].startDate).toISOString(),
                     country: oldSurvey.targetGroups[0].country,
                     gender: oldSurvey.targetGroups[0].gender,
+                    category: oldSurvey.targetGroups[0].category,
                     count: -1,
                     profileSurveyStatisticId: oldSurvey.type
                   })
@@ -188,6 +189,7 @@ const ProfileQuestions = ({ question, answers }) => {
                     dateOfBirth: newProfileSurvey.targetGroups[0].dob,
                     country: newProfileSurvey.targetGroups[0].country,
                     gender: newProfileSurvey.targetGroups[0].gender,
+                    category: newProfileSurvey.targetGroups[0].category,
                     count: 1,
                     profileSurveyStatisticId: newProfileSurvey.type
                   })
@@ -342,7 +344,8 @@ const ProfileQuestions = ({ question, answers }) => {
           <GlobalProfiling
             category={categoryTitle}
             profileCategories={profileCategories}
-            render={category => (
+            surveyData={newProfileSurvey.targetGroups[0].surveyData}
+            render={(category, open) => (
               <React.Fragment>
                 <form onSubmit={handleSubmit}>
                   <Grid container spacing={6}>
@@ -356,7 +359,8 @@ const ProfileQuestions = ({ question, answers }) => {
                         who have answered these selected attributes (as well as any other attributes you have selected
                         in other categories).
                       </Typography>
-                      {newProfileSurvey.targetGroups[0].surveyData &&
+                      {open &&
+                        newProfileSurvey.targetGroups[0].surveyData &&
                         newProfileSurvey.targetGroups[0].surveyData.map((item, index) => (
                           <ProfileQuestion key={index} questionItem={item} category={category} />
                         ))}

@@ -16,7 +16,7 @@ import Chip from '@mui/material/Chip'
 import ProfileModal from '@views/pages/wizard/ProfileModal'
 import { useAtom, useAtomValue } from 'jotai/index'
 
-const GlobalProfiling = ({ profileCategories, render, category }) => {
+const GlobalProfiling = ({ profileCategories, render, category, surveyData }) => {
   const [categories, setCategories] = useState(profileCategories)
 
   const [arConnectGlobalIsConnected, setArConnectGlobalIsConnected] = useAtom(newArConnectGlobalIsConnected)
@@ -25,14 +25,48 @@ const GlobalProfiling = ({ profileCategories, render, category }) => {
   const [categoryTitle, setCategoryTitle] = useState(category)
   const [open, setOpen] = useState(false)
 
+  // const [data, setData] = useState(surveyData)
+
   const handleProfilingClick = e => {
     setProfileOpen(prev => !prev)
   }
 
+  useEffect(() => {
+    if (!open) {
+      if (categoryTitle) {
+        setOpen(true)
+      }
+    }
+  }, [open])
+
   const handleClick = e => {
-    setOpen(true)
+    if (open) {
+      setOpen(false)
+    } else {
+      setOpen(true)
+    }
     setCategoryTitle(e.target.outerText)
     setCategories([...categories])
+  }
+
+  const getButtonColor = item => {
+    let allAnswered = false
+    let someAnswered = false
+    if (surveyData) {
+      var cntAll = 0
+      var cntAnswered = 0
+      for (var i = 0; i < surveyData.length; ++i) {
+        if (surveyData[i].category == item.label) {
+          cntAll++
+          if (surveyData[i].answers.length > 0) {
+            cntAnswered++
+          }
+        }
+      }
+      allAnswered = cntAll > 0 && cntAll == cntAnswered
+      someAnswered = !allAnswered && cntAnswered > 0
+    }
+    return allAnswered ? 'success' : someAnswered ? 'warning' : 'primary'
   }
 
   return (
@@ -53,16 +87,15 @@ const GlobalProfiling = ({ profileCategories, render, category }) => {
                 style={{ width: '200px', marginRight: 10, marginBottom: 10 }}
                 variant='filled'
                 label={item.label}
-                color={item.color ? item.color : 'primary'}
+                color={item.color ? item.color : getButtonColor(item)}
                 size='medium'
                 className='capitalize mie-4'
                 onClick={handleClick}
               />
             </React.Fragment>
           ))}
-        {/* <ProfileModal open={open} setOpen={setOpen} categoryTitle={categoryTitle} /> */}
+        {open && render(categoryTitle, open)}
       </Grid>
-      {open && render(categoryTitle)}
     </React.Fragment>
   )
 }
