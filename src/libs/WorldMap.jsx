@@ -1,72 +1,116 @@
 'use client'
 
-import React, {Suspense} from "react";
+import React, { Suspense, useEffect } from 'react'
 
-import {VectorMap} from "react-jvectormap";
+import { VectorMap } from 'react-jvectormap'
 import './world-map.css'
-import {useAtom} from 'jotai'
-import {mapDataAtom, newSurveyAtom} from '../../src/app/store/atoms';
+import { useAtom } from 'jotai'
+import { mapDataAtom, newTargetGroupAtom } from '../../src/app/store/atoms'
 
-const {getName} = require("country-list");
+const { getName } = require('country-list')
 
-const WorldMap = () => {
-  const [newSurvey, setNewSurvey] = useAtom(newSurveyAtom)
+const getInitSurveyData = surveyData => {
+  surveyData.question = surveyData.init.question
+  surveyData.category = surveyData.init.category
+  surveyData.type = surveyData.init.type
+  surveyData.possibleAnswers = surveyData.init.possibleAnswers
+  surveyData.answers = surveyData.init.answers
+  return surveyData
+}
+
+const initSurveyData = surveyData => {
+  for (var i = 0; i < surveyData.length; ++i) {
+    surveyData[i] = getInitSurveyData(surveyData[i])
+  }
+  return surveyData
+}
+
+const WorldMap = ({ surveyData, onChangeSurveyData }) => {
   const [mapData, setMapData] = useAtom(mapDataAtom)
 
+  const [newTargetGroup, setNewTargetGroup] = useAtom(newTargetGroupAtom)
+
   const mapClick = (e, countryCode) => {
-    const index = newSurvey.countryCodes.indexOf(countryCode)
+    let countryCodes = surveyData.countryCodes ? surveyData.countryCodes : []
+    let countryNames = surveyData.countryNames ? surveyData.countryNames : []
+    let changeTargetGroup = false
+    let targetGroup = {}
+    if (!surveyData.targetGroups) {
+      changeTargetGroup = true
+      targetGroup = {
+        minimumAge: 0,
+        maximumAge: 0,
+        gender: 'both',
+        country: '',
+        wantedCompletes: surveyData.wantedRespondents,
+        ir: '100',
+        loi: (surveyData.wantedQuestions / 3).toFixed(),
+        daysInField: '7',
+        startDate: '',
+        time: '00:00',
+        visible: true,
+        surveyData: initSurveyData(newTargetGroup.surveyData)
+      }
+    }
+    const index = countryCodes.indexOf(countryCode)
     if (index !== -1) {
-      newSurvey.countryCodes.splice(index, 1)
-      const namesIndex = newSurvey.countryNames.indexOf(getName(countryCode))
-      newSurvey.countryNames.splice(namesIndex, 1)
+      countryCodes.splice(index, 1)
+      const namesIndex = countryNames.indexOf(getName(countryCode))
+      countryNames.splice(namesIndex, 1)
     } else {
-      newSurvey.countryCodes.push(countryCode)
-      newSurvey.countryNames.push(getName(countryCode));
+      countryCodes.push(countryCode)
+      countryNames.push(getName(countryCode))
+    }
+    if (changeTargetGroup) {
+      onChangeSurveyData(prev => ({
+        ...prev,
+        countryCodes: countryCodes,
+        countryNames: countryNames,
+        targetGroups: [targetGroup]
+      }))
+    } else {
+      onChangeSurveyData(prev => ({
+        ...prev,
+        countryCodes: countryCodes,
+        countryNames: countryNames
+      }))
     }
 
-    setNewSurvey(prev => ({
-      ...prev,
-      countryCodes: newSurvey.countryCodes,
-      countryNames: newSurvey.countryNames
-    }))
-
-    let obj = {};
-    if (newSurvey.countryCodes.length > 0) {
-      newSurvey.countryCodes && newSurvey.countryCodes.forEach(countryCode => (obj[countryCode] = 5))
+    let obj = {}
+    if (countryCodes.length > 0) {
+      countryCodes && countryCodes.forEach(countryCode => (obj[countryCode] = 5))
       setMapData(obj)
     }
-  };
+  }
 
-  return (<Suspense fallback={<>Loading...</>}>
+  return (
+    <Suspense fallback={<>Loading...</>}>
       <VectorMap
-        map={"world_mill"}
-        backgroundColor="transparent" // change it to ocean blue: #0077be
+        map={'world_mill'}
+        backgroundColor='transparent' // change it to ocean blue: #0077be
         zoomOnScroll={true}
         containerStyle={{
-          "width": "100%",
+          width: '100%'
         }}
-        containerClassName="map"
-
+        containerClassName='map'
         onRegionTipShow={function (event, el, code) {
           event.preventDefault()
         }}
-
         onRegionClick={mapClick} // gets the country code
-
         regionStyle={{
           initial: {
-            fill: "#e4e4e4",
-            "fill-opacity": 0.9,
-            stroke: "none",
-            "stroke-width": 0,
-            "stroke-opacity": 0
+            fill: '#e4e4e4',
+            'fill-opacity': 0.9,
+            stroke: 'none',
+            'stroke-width': 0,
+            'stroke-opacity': 0
           },
           hover: {
-            "fill-opacity": 0.6,
-            cursor: "pointer"
+            'fill-opacity': 0.6,
+            cursor: 'pointer'
           },
           selected: {
-            fill: "#D28484FF" // color for the clicked country
+            fill: '#D28484FF' // color for the clicked country
           },
           selectedHover: {}
         }}
@@ -77,8 +121,8 @@ const WorldMap = () => {
           regions: [
             {
               values: mapData, // this is the map data
-              scale: ["#D28484FF"], // your color game's here
-              normalizeFunction: "polynomial"
+              scale: ['#D28484FF'], // your color game's here
+              normalizeFunction: 'polynomial'
             }
           ]
         }}
@@ -87,4 +131,3 @@ const WorldMap = () => {
   )
 }
 export default WorldMap
-

@@ -1,11 +1,11 @@
 // React Imports
-import {useEffect, useState} from 'react'
+import { useEffect, useState } from 'react'
 
 // MUI Imports
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
-import Typography from "@mui/material/Typography";
-import {useTheme} from '@mui/material/styles'
+import Typography from '@mui/material/Typography'
+import { useTheme } from '@mui/material/styles'
 
 // Third-party Imports
 import classnames from 'classnames'
@@ -14,17 +14,16 @@ import classnames from 'classnames'
 import CustomInputVertical from '@core/components/custom-inputs/Vertical'
 
 import DirectionalIcon from '@components/DirectionalIcon'
-import {useAtom} from "jotai/index";
-import {newSurveyAtom} from "@/app/store/atoms";
 
 // Vars
 const data = [
   {
     title: 'Survey',
     value: 'survey',
-    content: 'Gathering information using relevant questions from a sample of people with the aim of understanding populations as a whole.',
+    content:
+      'Gathering information using relevant questions from a sample of people with the aim of understanding populations as a whole.',
     asset: 'tabler-file-analytics',
-    isSelected: true,
+    isSelected: true
   },
   {
     title: 'Focus Group',
@@ -35,9 +34,7 @@ const data = [
   }
 ]
 
-const StepSurveyType = ({activeStep, handleNext, handlePrev, steps}) => {
-  const [newSurvey, setNewSurvey] = useAtom(newSurveyAtom)
-
+const StepSurveyType = ({ surveyData, onChangeSurveyData, activeStep, handleNext, handlePrev, steps }) => {
   // Hooks
   const theme = useTheme()
 
@@ -47,11 +44,10 @@ const StepSurveyType = ({activeStep, handleNext, handlePrev, steps}) => {
         //doNothing
       }
     } else {
-      setNewSurvey(prev => ({
+      onChangeSurveyData(prev => ({
         ...prev,
         type: prop.target.value
       }))
-      console.log(newSurvey)
     }
   }
 
@@ -66,20 +62,20 @@ const StepSurveyType = ({activeStep, handleNext, handlePrev, steps}) => {
         let asset
 
         if (item.asset && typeof item.asset === 'string') {
-          asset = <i className={classnames(item.asset, 'text-[1.75rem]')}/>
+          asset = <i className={classnames(item.asset, 'text-[1.75rem]')} />
         }
 
         return (
           <CustomInputVertical
             type='radio'
             key={index}
-            gridProps={{xs: 12, sm: 4, lg: 6}}
-            selected={newSurvey.type}
+            gridProps={{ xs: 12, sm: 4, lg: 6 }}
+            selected={surveyData.type}
             disabled={item.isDisabled}
             color={item.color}
             name='custom-radios-basic'
             handleChange={handleOptionChange}
-            data={typeof item.asset === 'string' ? {...item, asset} : item}
+            data={typeof item.asset === 'string' ? { ...item, asset } : item}
           />
         )
       })}
@@ -91,7 +87,7 @@ const StepSurveyType = ({activeStep, handleNext, handlePrev, steps}) => {
             color='secondary'
             disabled={activeStep === 0}
             onClick={handlePrev}
-            startIcon={<DirectionalIcon ltrIconClass='tabler-arrow-left' rtlIconClass='tabler-arrow-right'/>}
+            startIcon={<DirectionalIcon ltrIconClass='tabler-arrow-left' rtlIconClass='tabler-arrow-right' />}
           >
             Previous
           </Button>
@@ -101,9 +97,9 @@ const StepSurveyType = ({activeStep, handleNext, handlePrev, steps}) => {
             onClick={handleNext}
             endIcon={
               activeStep === steps.length - 1 ? (
-                <i className='tabler-check'/>
+                <i className='tabler-check' />
               ) : (
-                <DirectionalIcon ltrIconClass='tabler-arrow-right' rtlIconClass='tabler-arrow-left'/>
+                <DirectionalIcon ltrIconClass='tabler-arrow-right' rtlIconClass='tabler-arrow-left' />
               )
             }
           >

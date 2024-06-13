@@ -1,3 +1,4 @@
+import { useState } from 'react'
 // MUI Imports
 import Button from '@mui/material/Button'
 import Chip from '@mui/material/Chip'
@@ -12,8 +13,8 @@ import classnames from 'classnames'
 
 // Component Imports
 import DirectionalIcon from '@components/DirectionalIcon'
-import { useAtomValue } from 'jotai/index'
-import { newSurveyAtom } from '@/app/store/atoms'
+// import { useAtomValue } from 'jotai/index'
+// import { newSurveyAtom } from '@/app/store/atoms'
 import { encrypt, sign, signMessage } from '@othent/kms'
 import Arweave from 'arweave/web'
 import { useEffect } from 'react'
@@ -25,8 +26,8 @@ import { createDataItemSigner, message } from '@permaweb/aoconnect'
 
 const permissions = ['ACCESS_ADDRESS', 'SIGNATURE', 'SIGN_TRANSACTION', 'DISPATCH']
 
-const StepReview = ({ activeStep, handleNext, handlePrev, steps }) => {
-  const newSurvey = useAtomValue(newSurveyAtom)
+const StepReview = ({ surveyData, onChangeSurveyData, activeStep, handleNext, handlePrev, steps }) => {
+  // const [newSurvey, setNewSurvey] = useState(newSurveyData)
   // Hooks
   const theme = useTheme()
   const arweave = Arweave.init({
@@ -36,7 +37,7 @@ const StepReview = ({ activeStep, handleNext, handlePrev, steps }) => {
   })
 
   const sendToArweave = async () => {
-    console.log('survey to send to Arweave ', newSurvey)
+    console.log('survey to send to Arweave ', surveyData)
     // const res = await signMessage({
     //   d: 'ROJuwTBQwZkw1KP9e98MrdoY3cMOaPM5leDnw1ooPQBsTwUjUQu_zi0J8O6fVLnksHhfWWPruPBKk2mWfcN2yAEJT73R3gwalwOSQLi5FB66uwPoWHbeeFKc08NVw6qlnCokmwHLQlCzKRteLGkO6sGNFH-OMXEanTZEA_vRgBtqZGQNkhaSrI-WV5GjuhDAccQBi_49adjX4yUid0_LrsTnLp0yE48kM7ZFSnOLKunCjESxhqirVNdE1NTMLuR8mtu2T8iLPdRPJklZcSVowGa-L6hb3KvN6BjL4UGMffdiz7hQRbRl6WFxn7TmbsiqoSjwNQLYEEOVgi56FqeiV9FyS2x9ObQ2Vad70kr9Ca1MAUIY-0e5gFo2qvUIcyWOizl7E2bZSnsz1IBATZK_Ee2r0GkFIllgAt2KeC09kuYiBmiM5-gxdIeS3YxDbkHD76CXKBBuPlYCiLGJsILhi9mnM_2KfjfmKw-M5d_9euwlO2sfdkb75042dt3mwjfFrEoIn44axTdAWs1hnw-W14z23_Ki2VXpQrfJ0Vx7PTIoIHZF4CtOu7sY1QCsxc9TDet7-csfOkc5CJ8FFopw2McMPuUnxdymiDWCmTPsOlv1IgaV3RIEds7g5aulvnFZoPrnJepksrssMJUd1lWrBOWE_8gabt78F30yHIMSZIE',
     //   dp: '6ZBV8Vji0y8YR3J_uGqqN0Na_Q9dxlSzLkiVhfAgFwm53Iq7AGzbyQMTuQCp8WFC6nu2MFMr8D9hzwb7htQOaA3eLQKGaz9X-3yWuvd5ayw2oMX5XM2QPfXhjbywUF9YiaCl-FFPV_ayV9OK2oktvs5cMa5NbDPh2VhTmD96_ELuVy6Mtok9jEJXUU_P4c3vmpFRQOlAZ7uG0WkyZapnZICZvvc8TISMSY1ne5J_dhK8TtCurf1P7D9HZ7tKl1drfYa2Wdqtz7m4uBGK9n4C0-fFG29nMmy3zEr2B6IXqEgrYC114p3ZJDsc4d2Lkcv-Pw3c5A-22RL-t7CQDv2e-Q',
@@ -93,7 +94,7 @@ const StepReview = ({ activeStep, handleNext, handlePrev, steps }) => {
         process: 'ENnyYpVeZlS0j01ss-Rht9rHVpmZ73vItDb2Xtrtikc',
         signer: createDataItemSigner(window.arweaveWallet),
         // the survey as stringified JSON
-        data: JSON.stringify(newSurvey),
+        data: JSON.stringify(surveyData),
         tags: [{ name: 'Action', value: 'AddSurvey' }]
       })
 
@@ -107,11 +108,11 @@ const StepReview = ({ activeStep, handleNext, handlePrev, steps }) => {
   }
 
   useEffect(() => {
-    console.log(newSurvey)
+    console.log(surveyData)
   }, [])
 
   const sendToArweaveEncrypted = async () => {
-    const encryptedData = await encrypt(JSON.stringify(newSurvey))
+    const encryptedData = await encrypt(JSON.stringify(surveyData))
     const transaction = await arweave.createTransaction({
       data: encryptedData
     })
@@ -139,7 +140,7 @@ const StepReview = ({ activeStep, handleNext, handlePrev, steps }) => {
         </Typography>
         <Typography className='mb-4'>Confirm your target groups information.</Typography>
 
-        {newSurvey.targetGroups
+        {surveyData.targetGroups
           .filter(item => item.visible)
           .map((item, index) => (
             <Grid key={index} item xs={12} lg={6}>
