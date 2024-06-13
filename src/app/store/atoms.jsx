@@ -1141,7 +1141,7 @@ export const newTargetGroupAtom = atom({
     surveyData32Atom,
     surveyData33Atom,
     surveyData34Atom,
-    surveyData34Atom,
+    surveyData35Atom,
     surveyData36Atom,
     surveyData37Atom,
     surveyData38Atom,
