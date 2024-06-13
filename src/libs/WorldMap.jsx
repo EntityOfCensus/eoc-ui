@@ -38,8 +38,8 @@ const WorldMap = ({ surveyData, onChangeSurveyData }) => {
     if (!surveyData.targetGroups) {
       changeTargetGroup = true
       targetGroup = {
-        minimumAge: 0,
-        maximumAge: 0,
+        minimumAge: 18,
+        maximumAge: 64,
         gender: 'both',
         country: '',
         wantedCompletes: surveyData.wantedRespondents,

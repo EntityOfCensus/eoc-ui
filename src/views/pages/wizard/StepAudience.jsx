@@ -16,13 +16,50 @@ import React from 'react'
 import GlobalProfiling from '@views/pages/shared/GlobalProfiling'
 import ProfileQuestion from '@views/pages/forms/ProfileQuestion'
 import { profileCategories } from '@/app/store/consts'
+import RadioGroup from '@mui/material/RadioGroup'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Radio from '@mui/material/Radio'
+import FormLabel from '@mui/material/FormLabel'
 
 import dynamic from 'next/dynamic'
+import CustomTextField from '@core/components/mui/TextField'
 
 const WorldMap = dynamic(() => import('@/libs/WorldMap'), { ssr: false })
 
 const StepAudience = ({ surveyData, onChangeSurveyData, activeStep, handleNext, handlePrev, steps }) => {
   const [categoryTitle, setCategoryTitle] = useState('')
+
+  const isGender = gender => {
+    return surveyData.targetGroups[0].gender === gender
+  }
+
+  const onAnswerChange = (answers, question) => {
+    console.log('answers', answers)
+    console.log('question', question)
+    let targetGroup = surveyData.targetGroups[0]
+    for (var i = 0; i < targetGroup.surveyData.length; ++i) {
+      if (
+        targetGroup.surveyData[i].question == question.question &&
+        targetGroup.surveyData[i].category == question.category
+      ) {
+        targetGroup.surveyData[i].answers = answers
+      }
+    }
+    onChangeSurveyData(prev => ({
+      ...prev,
+      targetGroups: [targetGroup]
+    }))
+  }
+
+  const handleChange = event => {
+    const { name, value } = event.target
+    let targetGroup = surveyData.targetGroups[0]
+    targetGroup[name] = value
+    onChangeSurveyData(prev => ({
+      ...prev,
+      targetGroups: [targetGroup]
+    }))
+  }
 
   return (
     <Grid container spacing={3}>
@@ -75,33 +112,89 @@ const StepAudience = ({ surveyData, onChangeSurveyData, activeStep, handleNext, 
           or less, impacting the cost of the survey.
         </Typography>
       </Grid>
-      <GlobalProfiling
-        category={categoryTitle}
-        profileCategories={profileCategories}
-        surveyData={surveyData.targetGroups ? surveyData.targetGroups[0].surveyData : []}
-        render={(category, open) => (
-          <React.Fragment>
-            <Grid container spacing={6}>
-              <Grid item xs={12}>
-                <Typography component='span' variant='h5' className='flex flex-col'>
-                  {category}
-                </Typography>
-                <Typography component='span' variant='h6' className='flex flex-col'>
-                  Below are the questions that the panelists hae responded to. You can select any number of attributes
-                  that matches your target criteria. The target group will then contain only panelists who have answered
-                  these selected attributes (as well as any other attributes you have selected in other categories).
-                </Typography>
-                {open &&
-                  surveyData.targetGroups &&
-                  surveyData.targetGroups[0].surveyData &&
-                  surveyData.targetGroups[0].surveyData.map((item, index) => (
-                    <ProfileQuestion key={index} questionItem={item} category={category} />
-                  ))}
-              </Grid>
+      {surveyData.targetGroups && (
+        <React.Fragment>
+          <Grid item xs={12} sm={12} ls={12}>
+            <Typography variant='h5' className='sm:mbs-2 lg:mbs-0'>
+              Demographics
+            </Typography>
+            <Grid item xs={6} sm={6} lg={6}>
+              <CustomTextField
+                type='number'
+                name='minimumAge'
+                defaultValue={surveyData.targetGroups[0].minimumAge}
+                style={{ marginRight: 10 }}
+                label='Minimum age'
+                onChange={e => {
+                  handleChange(e)
+                }}
+                placeholder={18}
+              />
             </Grid>
-          </React.Fragment>
-        )}
-      />
+            <Grid item xs={6} sm={6} lg={6}>
+              <CustomTextField
+                type='number'
+                name='maximumAge'
+                defaultValue={surveyData.targetGroups[0].maximumAge}
+                label='Maximum age'
+                onChange={e => {
+                  handleChange(e)
+                }}
+                placeholder={64}
+              />
+            </Grid>
+            <Grid item xs={12} sm={12} ls={12}>
+              <FormLabel>Gender</FormLabel>
+              <RadioGroup
+                row
+                name='gender'
+                onChange={e => {
+                  handleChange(e)
+                }}
+              >
+                <FormControlLabel value='female' control={<Radio checked={isGender('female')} />} label='Female' />
+                <FormControlLabel value='male' control={<Radio checked={isGender('male')} />} label='Male' />
+                <FormControlLabel value='both' control={<Radio checked={isGender('both')} />} label='Both' />
+              </RadioGroup>
+            </Grid>
+          </Grid>
+
+          <GlobalProfiling
+            category={categoryTitle}
+            profileCategories={profileCategories}
+            surveyData={surveyData.targetGroups ? surveyData.targetGroups[0].surveyData : []}
+            render={(category, open) => (
+              <React.Fragment>
+                <Grid container spacing={6}>
+                  <Grid item xs={12}>
+                    <Typography component='span' variant='h5' className='flex flex-col'>
+                      {category}
+                    </Typography>
+                    <Typography component='span' variant='h6' className='flex flex-col'>
+                      Below are the questions that the panelists hae responded to. You can select any number of
+                      attributes that matches your target criteria. The target group will then contain only panelists
+                      who have answered these selected attributes (as well as any other attributes you have selected in
+                      other categories).
+                    </Typography>
+                    {open &&
+                      surveyData.targetGroups &&
+                      surveyData.targetGroups[0].surveyData &&
+                      surveyData.targetGroups[0].surveyData.map((item, index) => (
+                        <ProfileQuestion
+                          key={index}
+                          questionItem={item}
+                          onAnswerChange={onAnswerChange}
+                          category={category}
+                        />
+                      ))}
+                  </Grid>
+                </Grid>
+              </React.Fragment>
+            )}
+          />
+        </React.Fragment>
+      )}
+
       <Grid item xs={12}>
         <div className='flex items-center justify-between'>
           <Button

@@ -15,7 +15,7 @@ import Radio from '@mui/material/Radio'
 import Checkbox from '@mui/material/Checkbox'
 import { useState } from 'react'
 
-const ProfileQuestion = ({ questionItem, category }) => {
+const ProfileQuestion = ({ questionItem, category, onAnswerChange }) => {
   const [question, setQuestion] = useState(questionItem)
 
   const [categoryTitle, setCategoryTitle] = useState(category)
@@ -38,6 +38,9 @@ const ProfileQuestion = ({ questionItem, category }) => {
       ...prev,
       answers: answers
     }))
+    if (onAnswerChange) {
+      onAnswerChange(answers, question)
+    }
   }
 
   return (

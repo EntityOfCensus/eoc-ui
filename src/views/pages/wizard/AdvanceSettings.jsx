@@ -73,7 +73,7 @@ const profileCategories = [
     label: 'Travel'
   }
 ]
-const BasicSettings = ({ targetGroup }) => {
+const AdvanceSettings = ({ targetGroup }) => {
   const {
     control,
     handleSubmit,
