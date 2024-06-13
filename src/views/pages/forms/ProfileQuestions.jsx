@@ -14,7 +14,7 @@ import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 
 // Components Imports
-import { newProfileSurveyAtom, newArConnectGlobalIsConnected } from '@/app/store/atoms'
+import { newProfileSurveyAtom } from '@/app/store/atoms'
 import { useAtom } from 'jotai/index'
 import ProfileQuestion from './ProfileQuestion'
 
@@ -36,6 +36,8 @@ import GlobalProfiling from '@views/pages/shared/GlobalProfiling'
 import Typography from '@mui/material/Typography'
 import { profileCategories } from '@/app/store/consts'
 
+import * as othentSinger from '@othent/kms'
+
 const getInitSurveyData = surveyData => {
   surveyData.question = surveyData.init.question
   surveyData.category = surveyData.init.category
@@ -53,7 +55,7 @@ const initSurveyData = surveyData => {
 }
 
 const ProfileQuestions = ({ question, answers }) => {
-  const [arConnectGlobalIsConnected, setArConnectGlobalIsConnected] = useAtom(newArConnectGlobalIsConnected)
+  // const [arConnectGlobalIsConnected, setArConnectGlobalIsConnected] = useAtom(newArConnectGlobalIsConnected)
 
   const [categoryTitle, setCategoryTitle] = useState('')
 
@@ -70,6 +72,16 @@ const ProfileQuestions = ({ question, answers }) => {
   const [questionStatisticApi, setQuestionStatisticApi] = useState(
     new QuestionStatisticApi(RespondentProfileSurveyApiClient.instance)
   )
+
+  const getSinger = () => {
+    const singer = Object.assign({}, othentSinger, {
+      getActiveAddress: () => othentSinger.getActiveKey(),
+      getAddress: () => othentSinger.getActiveKey(),
+      singer: tx => othentSinger.sign(tx),
+      type: 'arweave'
+    })
+    return singer
+  }
 
   useEffect(() => {
     if (
@@ -140,7 +152,7 @@ const ProfileQuestions = ({ question, answers }) => {
     try {
       const messageId = await message({
         process: 'ENnyYpVeZlS0j01ss-Rht9rHVpmZ73vItDb2Xtrtikc',
-        signer: createDataItemSigner(window.arweaveWallet),
+        signer: createDataItemSigner(await getSinger()),
         // the survey as stringified JSON
         data: JSON.stringify(survey),
         tags: [{ name: 'Action', value: 'AddSurvey' }]
@@ -372,11 +384,7 @@ const ProfileQuestions = ({ question, answers }) => {
                           ))}
                       </Grid>
                       <Grid item xs={12} className='flex gap-4'>
-                        <Button
-                          variant='contained'
-                          type='submit'
-                          disabled={!arConnectGlobalIsConnected.connected || isSaving}
-                        >
+                        <Button variant='contained' type='submit' disabled={isSaving}>
                           {(isSaving && 'Saving...') || (!isSaving && 'Save')}
                         </Button>
                       </Grid>

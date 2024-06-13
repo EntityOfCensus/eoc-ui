@@ -17,19 +17,14 @@ import { newSurveyAtom } from '@/app/store/atoms'
 import { encrypt, sign, signMessage } from '@othent/kms'
 import Arweave from 'arweave/web'
 import { useEffect } from 'react'
-import { PermissionType } from 'arconnect'
+// import { PermissionType } from 'arconnect'
 
 import { jwtDecode } from 'jwt-decode'
 import { createDataItemSigner, message } from '@permaweb/aoconnect'
 
 // const TESTING_CENSUS_PROCESS_ID = 'ENnyYpVeZlS0j01ss-Rht9rHVpmZ73vItDb2Xtrtikc'
 
-const permissions = [
-  'ACCESS_ADDRESS',
-  'SIGNATURE',
-  'SIGN_TRANSACTION',
-  'DISPATCH'
-]
+const permissions = ['ACCESS_ADDRESS', 'SIGNATURE', 'SIGN_TRANSACTION', 'DISPATCH']
 
 const StepReview = ({ activeStep, handleNext, handlePrev, steps }) => {
   const newSurvey = useAtomValue(newSurveyAtom)
@@ -76,19 +71,19 @@ const StepReview = ({ activeStep, handleNext, handlePrev, steps }) => {
     // const txn = await arweave.transactions.post(transaction)
     // console.log(txn)
     const { walletAddress } = jwtDecode(localStorage.getItem('id_token'))
-  //   await window.arweaveWallet.connect(
-  //     permissions,
-  //     {
-  //         name: walletAddress,
-  //         logo: "4eTBOaxZSSyGbpKlHyilxNKhXbocuZdiMBYIORjS4f0"
-  //     }
-  // )
-  // try {
-  //     const address = await window.arweaveWallet.getActiveAddress()
-  //     // setAddress(address)
-  // } catch(error) {
-  //     console.error(error)
-  // }
+    //   await window.arweaveWallet.connect(
+    //     permissions,
+    //     {
+    //         name: walletAddress,
+    //         logo: "4eTBOaxZSSyGbpKlHyilxNKhXbocuZdiMBYIORjS4f0"
+    //     }
+    // )
+    // try {
+    //     const address = await window.arweaveWallet.getActiveAddress()
+    //     // setAddress(address)
+    // } catch(error) {
+    //     console.error(error)
+    // }
 
     try {
       window.arweaveWallet.connect(permissions, {

@@ -26,7 +26,6 @@
     "@othent/kms": "^1.0.12",
     "@permaweb/aoconnect": "^0.0.55",
     "apexcharts": "3.47.0",
-    "arweave": "^1.15.1",
     "classnames": "2.5.1",
     "country-list": "^2.3.0",
     "date-fns": "3.3.1",
@@ -50,7 +49,6 @@
   "devDependencies": {
     "@iconify/tools": "4.0.2",
     "@iconify/utils": "2.1.22",
-    "arconnect": "^1.0.3",
     "autoprefixer": "10.4.18",
     "eslint": "8.57.0",
     "eslint-config-next": "14.1.3",

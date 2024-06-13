@@ -14,11 +14,11 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import Radio from '@mui/material/Radio'
 import Checkbox from '@mui/material/Checkbox'
 import { useState } from 'react'
-import { newArConnectGlobalIsConnected } from '@/app/store/atoms'
+// import { newArConnectGlobalIsConnected } from '@/app/store/atoms'
 import { useAtom } from 'jotai/index'
 
 const ProfileQuestion = ({ questionItem, category }) => {
-  const [arConnectGlobalIsConnected, setArConnectGlobalIsConnected] = useAtom(newArConnectGlobalIsConnected)
+  // const [arConnectGlobalIsConnected, setArConnectGlobalIsConnected] = useAtom(newArConnectGlobalIsConnected)
 
   const [question, setQuestion] = useState(questionItem)
 
@@ -58,15 +58,9 @@ const ProfileQuestion = ({ questionItem, category }) => {
                   onChange={handleAnswer}
                   control={
                     question.type === 'simple' ? (
-                      <Radio
-                        checked={question.answers.includes(index)}
-                        disabled={!arConnectGlobalIsConnected.connected}
-                      />
+                      <Radio checked={question.answers.includes(index)} />
                     ) : (
-                      <Checkbox
-                        checked={question.answers.includes(index)}
-                        disabled={!arConnectGlobalIsConnected.connected}
-                      />
+                      <Checkbox checked={question.answers.includes(index)} />
                     )
                   }
                   label={item}

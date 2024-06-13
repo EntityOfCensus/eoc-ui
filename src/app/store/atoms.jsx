@@ -1188,4 +1188,4 @@ export const newProfileSurveyAtom = atom({
   targetGroups: [newTargetGroupAtom]
 })
 
-export const newArConnectGlobalIsConnected = atom({ connected: false })
+// export const newArConnectGlobalIsConnected = atom({ connected: false })

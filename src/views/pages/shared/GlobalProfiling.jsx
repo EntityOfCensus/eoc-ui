@@ -9,7 +9,7 @@ import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
 
 // Components Imports
-import { newArConnectGlobalIsConnected } from '@/app/store/atoms'
+// import { newArConnectGlobalIsConnected } from '@/app/store/atoms'
 import Typography from '@mui/material/Typography'
 import React, { useEffect, useState } from 'react'
 import Chip from '@mui/material/Chip'
@@ -19,7 +19,7 @@ import { useAtom, useAtomValue } from 'jotai/index'
 const GlobalProfiling = ({ profileCategories, render, category, surveyData }) => {
   const [categories, setCategories] = useState(profileCategories)
 
-  const [arConnectGlobalIsConnected, setArConnectGlobalIsConnected] = useAtom(newArConnectGlobalIsConnected)
+  // const [arConnectGlobalIsConnected, setArConnectGlobalIsConnected] = useAtom(newArConnectGlobalIsConnected)
 
   const [profileOpen, setProfileOpen] = useState(false)
   const [categoryTitle, setCategoryTitle] = useState(category)
