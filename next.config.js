@@ -3,7 +3,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
-  distDir: 'dist',
+  distDir: 'out',
   basePath: process.env.BASEPATH
 }
 
