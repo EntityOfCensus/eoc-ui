@@ -138,7 +138,26 @@ const CreateSurvey = () => {
             >
               {steps.map((label, index) => {
                 return (
-                  <Step key={index} onClick={() => setActiveStep(index)}>
+                  <Step
+                    key={index}
+                    disabled='true'
+                    onClick={() => {
+                      switch (index) {
+                        case 0:
+                          setActiveStep(index)
+                          break
+                        case 1:
+                          if (newSurvey.type) setActiveStep(index)
+                          break
+                        case 2:
+                          if (newSurvey.config) setActiveStep(index)
+                          break
+                        case 3:
+                          if (newSurvey.targetGroups) setActiveStep(index)
+                          break
+                      }
+                    }}
+                  >
                     <StepLabel icon={<></>} className='p-1 cursor-pointer'>
                       <div className='step-label'>
                         <CustomAvatar

@@ -7,6 +7,7 @@ import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Chip from '@mui/material/Chip'
+import WorldMap from '@/libs/WorldMap'
 
 import DirectionalIcon from '@components/DirectionalIcon'
 
@@ -21,10 +22,7 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import Radio from '@mui/material/Radio'
 import FormLabel from '@mui/material/FormLabel'
 
-import dynamic from 'next/dynamic'
 import CustomTextField from '@core/components/mui/TextField'
-
-const WorldMap = dynamic(() => import('@/libs/WorldMap'), { ssr: false })
 
 const StepAudience = ({ surveyData, onChangeSurveyData, activeStep, handleNext, handlePrev, steps }) => {
   const [categoryTitle, setCategoryTitle] = useState('')
@@ -83,34 +81,6 @@ const StepAudience = ({ surveyData, onChangeSurveyData, activeStep, handleNext, 
               className='capitalize mie-4'
             />
           ))}
-      </Grid>
-      <Grid item xs={12}>
-        <Typography variant='h4' className='sm:mbs-2 lg:mbs-0'>
-          How many respondents do you want to target?
-        </Typography>
-      </Grid>
-      <Grid item xs={12} sm={12} ls={12}>
-        <RespondentsSlider surveyData={surveyData} onChangeSurveyData={onChangeSurveyData} defaultValue={13} />
-      </Grid>
-      <Grid item xs={12} sm={12} ls={12}>
-        <Typography variant='h6' className='sm:mbs-2 lg:mbs-0'>
-          By default we address a general population. If you want to further define your respondent selection, please
-          proceed to the next step.
-        </Typography>
-      </Grid>
-      <Grid item xs={12} sm={12} ls={12}>
-        <Typography variant='h4' className='sm:mbs-2 lg:mbs-0'>
-          How many questions do you want to ask respondents?
-        </Typography>
-      </Grid>
-      <Grid item xs={12} sm={12} ls={12}>
-        <QuestionsSlider surveyData={surveyData} onChangeSurveyData={onChangeSurveyData} defaultValue={10} />
-      </Grid>
-      <Grid item xs={12} sm={12} ls={12}>
-        <Typography variant='h6' className='sm:mbs-2 lg:mbs-0'>
-          We recommend xx questions and no more than yy. Based on the number of questions, respondents will be paid more
-          or less, impacting the cost of the survey.
-        </Typography>
       </Grid>
       {surveyData.targetGroups && (
         <React.Fragment>
@@ -192,6 +162,35 @@ const StepAudience = ({ surveyData, onChangeSurveyData, activeStep, handleNext, 
               </React.Fragment>
             )}
           />
+
+          <Grid item xs={12}>
+            <Typography variant='h4' className='sm:mbs-2 lg:mbs-0'>
+              How many respondents do you want to target?
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={12} ls={12}>
+            <RespondentsSlider surveyData={surveyData} onChangeSurveyData={onChangeSurveyData} defaultValue={13} />
+          </Grid>
+          <Grid item xs={12} sm={12} ls={12}>
+            <Typography variant='h6' className='sm:mbs-2 lg:mbs-0'>
+              By default we address a general population. If you want to further define your respondent selection,
+              please proceed to the next step.
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={12} ls={12}>
+            <Typography variant='h4' className='sm:mbs-2 lg:mbs-0'>
+              How many questions do you want to ask respondents?
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={12} ls={12}>
+            <QuestionsSlider surveyData={surveyData} onChangeSurveyData={onChangeSurveyData} defaultValue={10} />
+          </Grid>
+          <Grid item xs={12} sm={12} ls={12}>
+            <Typography variant='h6' className='sm:mbs-2 lg:mbs-0'>
+              We recommend xx questions and no more than yy. Based on the number of questions, respondents will be paid
+              more or less, impacting the cost of the survey.
+            </Typography>
+          </Grid>
         </React.Fragment>
       )}
 
