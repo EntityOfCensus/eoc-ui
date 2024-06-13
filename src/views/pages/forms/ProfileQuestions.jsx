@@ -177,7 +177,7 @@ const ProfileQuestions = ({ question, answers }) => {
                     dateOfBirth: new Date(oldSurvey.targetGroups[0].startDate).toISOString(),
                     country: oldSurvey.targetGroups[0].country,
                     gender: oldSurvey.targetGroups[0].gender,
-                    category: oldSurvey.targetGroups[0].category,
+                    category: oldSurvey.targetGroups[0].surveyData[i].category,
                     count: -1,
                     profileSurveyStatisticId: oldSurvey.type
                   })
@@ -189,7 +189,7 @@ const ProfileQuestions = ({ question, answers }) => {
                     dateOfBirth: newProfileSurvey.targetGroups[0].dob,
                     country: newProfileSurvey.targetGroups[0].country,
                     gender: newProfileSurvey.targetGroups[0].gender,
-                    category: newProfileSurvey.targetGroups[0].category,
+                    category: newProfileSurvey.targetGroups[0].surveyData[i].category,
                     count: 1,
                     profileSurveyStatisticId: newProfileSurvey.type
                   })
@@ -231,6 +231,7 @@ const ProfileQuestions = ({ question, answers }) => {
                   dateOfBirth: newProfileSurvey.targetGroups[0].dob,
                   country: newProfileSurvey.targetGroups[0].country,
                   gender: newProfileSurvey.targetGroups[0].gender,
+                  category: newProfileSurvey.targetGroups[0].surveyData[i].category,
                   count: 1,
                   profileSurveyStatisticId: newProfileSurvey.type
                 })
