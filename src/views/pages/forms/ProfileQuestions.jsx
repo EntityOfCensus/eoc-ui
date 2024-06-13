@@ -321,68 +321,74 @@ const ProfileQuestions = ({ question, answers }) => {
   }
 
   return (
-    <React.StrictMode>
-      <Snackbar
-        open={profileSurveySaved}
-        autoHideDuration={3000}
-        onClose={() => {
-          setProfileSurveySaved(false)
-        }}
-      >
-        <Alert variant='filled' severity='success'>
-          <Link target='_blank' href={'https://ao_marton.g8way.io/#/message/' + newProfileSurvey.surveyId}>
-            View Block in ao Explorer
-          </Link>
-        </Alert>
-      </Snackbar>
+    newProfileSurvey.targetGroups &&
+    newProfileSurvey.targetGroups[0] &&
+    newProfileSurvey.targetGroups[0].dob &&
+    newProfileSurvey.targetGroups[0].country &&
+    newProfileSurvey.targetGroups[0].gender && (
+      <React.StrictMode>
+        <Snackbar
+          open={profileSurveySaved}
+          autoHideDuration={3000}
+          onClose={() => {
+            setProfileSurveySaved(false)
+          }}
+        >
+          <Alert variant='filled' severity='success'>
+            <Link target='_blank' href={'https://ao_marton.g8way.io/#/message/' + newProfileSurvey.surveyId}>
+              View Block in ao Explorer
+            </Link>
+          </Alert>
+        </Snackbar>
 
-      <Backdrop sx={{ color: '#fff', zIndex: theme => theme.zIndex.drawer + 1 }} open={isSaving}>
-        <CircularProgress color='inherit' />
-      </Backdrop>
-      <Card>
-        <CardHeader title='Optional info' />
-        <CardContent>
-          <GlobalProfiling
-            category={categoryTitle}
-            profileCategories={profileCategories}
-            surveyData={newProfileSurvey.targetGroups[0].surveyData}
-            render={(category, open) => (
-              <React.Fragment>
-                <form onSubmit={handleSubmit}>
-                  <Grid container spacing={6}>
-                    <Grid item xs={12}>
-                      <Typography component='span' variant='h5' className='flex flex-col'>
-                        {category}
-                      </Typography>
-                      <Typography component='span' variant='h6' className='flex flex-col'>
-                        Below are the questions that the panelists hae responded to. You can select any number of
-                        attributes that matches your target criteria. The target group will then contain only panelists
-                        who have answered these selected attributes (as well as any other attributes you have selected
-                        in other categories).
-                      </Typography>
-                      {open &&
-                        newProfileSurvey.targetGroups[0].surveyData &&
-                        newProfileSurvey.targetGroups[0].surveyData.map((item, index) => (
-                          <ProfileQuestion key={index} questionItem={item} category={category} />
-                        ))}
+        <Backdrop sx={{ color: '#fff', zIndex: theme => theme.zIndex.drawer + 1 }} open={isSaving}>
+          <CircularProgress color='inherit' />
+        </Backdrop>
+        <Card>
+          <CardHeader title='Optional info' />
+          <CardContent>
+            <GlobalProfiling
+              category={categoryTitle}
+              profileCategories={profileCategories}
+              surveyData={newProfileSurvey.targetGroups[0].surveyData}
+              render={(category, open) => (
+                <React.Fragment>
+                  <form onSubmit={handleSubmit}>
+                    <Grid container spacing={6}>
+                      <Grid item xs={12}>
+                        <Typography component='span' variant='h5' className='flex flex-col'>
+                          {category}
+                        </Typography>
+                        <Typography component='span' variant='h6' className='flex flex-col'>
+                          Below are the questions that the panelists hae responded to. You can select any number of
+                          attributes that matches your target criteria. The target group will then contain only
+                          panelists who have answered these selected attributes (as well as any other attributes you
+                          have selected in other categories).
+                        </Typography>
+                        {open &&
+                          newProfileSurvey.targetGroups[0].surveyData &&
+                          newProfileSurvey.targetGroups[0].surveyData.map((item, index) => (
+                            <ProfileQuestion key={index} questionItem={item} category={category} />
+                          ))}
+                      </Grid>
+                      <Grid item xs={12} className='flex gap-4'>
+                        <Button
+                          variant='contained'
+                          type='submit'
+                          disabled={!arConnectGlobalIsConnected.connected || isSaving}
+                        >
+                          {(isSaving && 'Saving...') || (!isSaving && 'Save')}
+                        </Button>
+                      </Grid>
                     </Grid>
-                    <Grid item xs={12} className='flex gap-4'>
-                      <Button
-                        variant='contained'
-                        type='submit'
-                        disabled={!arConnectGlobalIsConnected.connected || isSaving}
-                      >
-                        {(isSaving && 'Saving...') || (!isSaving && 'Save')}
-                      </Button>
-                    </Grid>
-                  </Grid>
-                </form>
-              </React.Fragment>
-            )}
-          />
-        </CardContent>
-      </Card>
-    </React.StrictMode>
+                  </form>
+                </React.Fragment>
+              )}
+            />
+          </CardContent>
+        </Card>
+      </React.StrictMode>
+    )
   )
 }
 
