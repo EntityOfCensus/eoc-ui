@@ -186,7 +186,7 @@ const ProfileQuestions = ({ question, answers }) => {
                   stats.push({
                     question: survey.targetGroups[0].surveyData[i].question,
                     answer: survey.targetGroups[0].surveyData[i].answers[j] + '',
-                    dateOfBirth: newProfileSurvey.targetGroups[0].dob,
+                    dateOfBirth: new Date(newProfileSurvey.targetGroups[0].dob).toISOString(),
                     country: newProfileSurvey.targetGroups[0].country,
                     gender: newProfileSurvey.targetGroups[0].gender,
                     category: newProfileSurvey.targetGroups[0].surveyData[i].category,
@@ -228,7 +228,7 @@ const ProfileQuestions = ({ question, answers }) => {
                 stats.push({
                   question: survey.targetGroups[0].surveyData[i].question,
                   answer: survey.targetGroups[0].surveyData[i].answers[j] + '',
-                  dateOfBirth: newProfileSurvey.targetGroups[0].dob,
+                  dateOfBirth: new Date(newProfileSurvey.targetGroups[0].dob).toISOString(),
                   country: newProfileSurvey.targetGroups[0].country,
                   gender: newProfileSurvey.targetGroups[0].gender,
                   category: newProfileSurvey.targetGroups[0].surveyData[i].category,
