@@ -1,8 +1,8 @@
 'use client'
 
 // React Imports
-import  * as React from 'react'
-import  { useState, useEffect } from 'react'
+import * as React from 'react'
+import { useState, useEffect } from 'react'
 
 // MUI Imports
 import Card from '@mui/material/Card'
@@ -36,8 +36,34 @@ import CustomTextField from '@core/components/mui/TextField'
 // Styled Component Imports
 import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
 
-import Backdrop from '@mui/material/Backdrop';
-import CircularProgress from '@mui/material/CircularProgress';
+import Backdrop from '@mui/material/Backdrop'
+import CircularProgress from '@mui/material/CircularProgress'
+
+const toIsoString = date => {
+  var tzo = -date.getTimezoneOffset(),
+    dif = tzo >= 0 ? '+' : '-',
+    pad = function (num) {
+      return (num < 10 ? '0' : '') + num
+    }
+
+  return (
+    date.getFullYear() +
+    '-' +
+    pad(date.getMonth() + 1) +
+    '-' +
+    pad(date.getDate()) +
+    'T' +
+    pad(date.getHours()) +
+    ':' +
+    pad(date.getMinutes()) +
+    ':' +
+    pad(date.getSeconds()) +
+    dif +
+    pad(Math.floor(Math.abs(tzo) / 60)) +
+    ':' +
+    pad(Math.abs(tzo) % 60)
+  )
+}
 
 const MandatoryUserData = () => {
   const [newProfileSurvey, setNewProfileSurvey] = useAtom(newProfileSurveyAtom)
@@ -120,7 +146,7 @@ const MandatoryUserData = () => {
       firstName: data.firstName,
       lastName: data.lastName,
       email: data.email,
-      dateOfBirth: new Date(data.dob).toISOString().substring(0, 10),
+      dateOfBirth: toIsoString(new Date(data.dob)).substring(0, 10),
       country: data.select,
       city: data.city,
       county: data.county,
@@ -177,211 +203,208 @@ const MandatoryUserData = () => {
 
   return (
     <React.Fragment>
-      <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={isSaving}
-      >
-        <CircularProgress color="inherit" />
+      <Backdrop sx={{ color: '#fff', zIndex: theme => theme.zIndex.drawer + 1 }} open={isSaving}>
+        <CircularProgress color='inherit' />
       </Backdrop>
-    <Card>
-      <CardHeader title='Mandatory Info' />
-      <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Grid container spacing={6}>
-            <Grid item xs={12} sm={6}>
-              <Controller
-                name='firstName'
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <CustomTextField
-                    {...field}
-                    fullWidth
-                    label='First Name'
-                    placeholder='John'
-                    {...(errors.firstName && { error: true, helperText: 'This field is required.' })}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Controller
-                name='lastName'
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <CustomTextField
-                    {...field}
-                    fullWidth
-                    label='Last Name'
-                    placeholder='Doe'
-                    {...(errors.lastName && { error: true, helperText: 'This field is required.' })}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Controller
-                name='email'
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <CustomTextField
-                    {...field}
-                    fullWidth
-                    type='email'
-                    label='Email'
-                    placeholder='johndoe@gmail.com'
-                    {...(errors.email && { error: true, helperText: 'This field is required.' })}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Controller
-                name='dob'
-                control={control}
-                rules={{ required: true }}
-                render={({ field: { value, onChange } }) => (
-                  <AppReactDatepicker
-                    selected={value}
-                    showYearDropdown
-                    showMonthDropdown
-                    onChange={onChange}
-                    placeholderText='MM/DD/YYYY'
-                    customInput={
-                      <CustomTextField
-                        value={value}
-                        onChange={onChange}
-                        fullWidth
-                        label='Date Of Birth'
-                        {...(errors.dob && { error: true, helperText: 'This field is required.' })}
-                      />
-                    }
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Controller
-                name='select'
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <CustomTextField
-                    select
-                    value={field.value}
-                    fullWidth
-                    label='Country'
-                    {...field}
-                    error={Boolean(errors.select)}
-                  >
-                    <MenuItem value=''>Select Country</MenuItem>
-                    {}
-                    <MenuItem value='UK'>UK</MenuItem>
-                    <MenuItem value='USA'>USA</MenuItem>
-                    <MenuItem value='Australia'>Australia</MenuItem>
-                    <MenuItem value='Germany'>Germany</MenuItem>
-                  </CustomTextField>
-                )}
-              />
-              {errors.select && <FormHelperText error>This field is required.</FormHelperText>}
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Controller
-                name='city'
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <CustomTextField
-                    {...field}
-                    fullWidth
-                    label='City'
-                    placeholder='Bucharest'
-                    {...(errors.lastName && { error: true, helperText: 'This field is required.' })}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Controller
-                name='county'
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <CustomTextField
-                    {...field}
-                    fullWidth
-                    label='County'
-                    placeholder='Bucharest'
-                    {...(errors.lastName && { error: true, helperText: 'This field is required.' })}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Controller
-                name='postal_code'
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <CustomTextField
-                    {...field}
-                    fullWidth
-                    label='Postal Code'
-                    placeholder='140022'
-                    {...(errors.lastName && { error: true, helperText: 'This field is required.' })}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <FormControl error={Boolean(errors.radio)}>
-                <FormLabel>Gender</FormLabel>
+      <Card>
+        <CardHeader title='Mandatory Info' />
+        <CardContent>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Grid container spacing={6}>
+              <Grid item xs={12} sm={6}>
                 <Controller
-                  name='radio'
+                  name='firstName'
                   control={control}
                   rules={{ required: true }}
                   render={({ field }) => (
-                    <RadioGroup row {...field} name='radio-buttons-group'>
-                      <FormControlLabel value='female' control={<Radio />} label='Female' />
-                      <FormControlLabel value='male' control={<Radio />} label='Male' />
-                      <FormControlLabel value='other' control={<Radio />} label='Other' />
-                    </RadioGroup>
-                  )}
-                />
-                {errors.radio && <FormHelperText error>This field is required.</FormHelperText>}
-              </FormControl>
-            </Grid>
-            <Grid item xs={12}>
-              <FormControl error={Boolean(errors.checkbox)}>
-                <Controller
-                  name='checkbox'
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field }) => (
-                    <FormControlLabel
-                      control={<Checkbox {...field} checked={field.value} />}
-                      label='Agree to our terms and conditions'
+                    <CustomTextField
+                      {...field}
+                      fullWidth
+                      label='First Name'
+                      placeholder='John'
+                      {...(errors.firstName && { error: true, helperText: 'This field is required.' })}
                     />
                   )}
                 />
-                {errors.checkbox && <FormHelperText error>This field is required.</FormHelperText>}
-              </FormControl>
-            </Grid>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Controller
+                  name='lastName'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field }) => (
+                    <CustomTextField
+                      {...field}
+                      fullWidth
+                      label='Last Name'
+                      placeholder='Doe'
+                      {...(errors.lastName && { error: true, helperText: 'This field is required.' })}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Controller
+                  name='email'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field }) => (
+                    <CustomTextField
+                      {...field}
+                      fullWidth
+                      type='email'
+                      label='Email'
+                      placeholder='johndoe@gmail.com'
+                      {...(errors.email && { error: true, helperText: 'This field is required.' })}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Controller
+                  name='dob'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <AppReactDatepicker
+                      selected={value}
+                      showYearDropdown
+                      showMonthDropdown
+                      onChange={onChange}
+                      placeholderText='MM/DD/YYYY'
+                      customInput={
+                        <CustomTextField
+                          value={value}
+                          onChange={onChange}
+                          fullWidth
+                          label='Date Of Birth'
+                          {...(errors.dob && { error: true, helperText: 'This field is required.' })}
+                        />
+                      }
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Controller
+                  name='select'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field }) => (
+                    <CustomTextField
+                      select
+                      value={field.value}
+                      fullWidth
+                      label='Country'
+                      {...field}
+                      error={Boolean(errors.select)}
+                    >
+                      <MenuItem value=''>Select Country</MenuItem>
+                      {}
+                      <MenuItem value='UK'>UK</MenuItem>
+                      <MenuItem value='USA'>USA</MenuItem>
+                      <MenuItem value='Australia'>Australia</MenuItem>
+                      <MenuItem value='Germany'>Germany</MenuItem>
+                    </CustomTextField>
+                  )}
+                />
+                {errors.select && <FormHelperText error>This field is required.</FormHelperText>}
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Controller
+                  name='city'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field }) => (
+                    <CustomTextField
+                      {...field}
+                      fullWidth
+                      label='City'
+                      placeholder='Bucharest'
+                      {...(errors.lastName && { error: true, helperText: 'This field is required.' })}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Controller
+                  name='county'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field }) => (
+                    <CustomTextField
+                      {...field}
+                      fullWidth
+                      label='County'
+                      placeholder='Bucharest'
+                      {...(errors.lastName && { error: true, helperText: 'This field is required.' })}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Controller
+                  name='postal_code'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field }) => (
+                    <CustomTextField
+                      {...field}
+                      fullWidth
+                      label='Postal Code'
+                      placeholder='140022'
+                      {...(errors.lastName && { error: true, helperText: 'This field is required.' })}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl error={Boolean(errors.radio)}>
+                  <FormLabel>Gender</FormLabel>
+                  <Controller
+                    name='radio'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <RadioGroup row {...field} name='radio-buttons-group'>
+                        <FormControlLabel value='female' control={<Radio />} label='Female' />
+                        <FormControlLabel value='male' control={<Radio />} label='Male' />
+                        <FormControlLabel value='other' control={<Radio />} label='Other' />
+                      </RadioGroup>
+                    )}
+                  />
+                  {errors.radio && <FormHelperText error>This field is required.</FormHelperText>}
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl error={Boolean(errors.checkbox)}>
+                  <Controller
+                    name='checkbox'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <FormControlLabel
+                        control={<Checkbox {...field} checked={field.value} />}
+                        label='Agree to our terms and conditions'
+                      />
+                    )}
+                  />
+                  {errors.checkbox && <FormHelperText error>This field is required.</FormHelperText>}
+                </FormControl>
+              </Grid>
 
-            <Grid item xs={12} className='flex gap-4'>
-              <Button variant='contained' type='submit' disabled={isSaving}>
-              {isSaving && ('Saving...') || (!isSaving && ('Save'))}
-              </Button>
-              {/* <Button variant='tonal' color='secondary' type='reset' onClick={() => reset()}>
+              <Grid item xs={12} className='flex gap-4'>
+                <Button variant='contained' type='submit' disabled={isSaving}>
+                  {(isSaving && 'Saving...') || (!isSaving && 'Save')}
+                </Button>
+                {/* <Button variant='tonal' color='secondary' type='reset' onClick={() => reset()}>
                 Reset
               </Button> */}
+              </Grid>
             </Grid>
-          </Grid>
-        </form>
-      </CardContent>
-    </Card>
+          </form>
+        </CardContent>
+      </Card>
     </React.Fragment>
   )
 }

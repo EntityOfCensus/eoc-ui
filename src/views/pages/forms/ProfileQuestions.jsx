@@ -54,6 +54,32 @@ const initSurveyData = surveyData => {
   return surveyData
 }
 
+const toIsoString = date => {
+  var tzo = -date.getTimezoneOffset(),
+    dif = tzo >= 0 ? '+' : '-',
+    pad = function (num) {
+      return (num < 10 ? '0' : '') + num
+    }
+
+  return (
+    date.getFullYear() +
+    '-' +
+    pad(date.getMonth() + 1) +
+    '-' +
+    pad(date.getDate()) +
+    'T' +
+    pad(date.getHours()) +
+    ':' +
+    pad(date.getMinutes()) +
+    ':' +
+    pad(date.getSeconds()) +
+    dif +
+    pad(Math.floor(Math.abs(tzo) / 60)) +
+    ':' +
+    pad(Math.abs(tzo) % 60)
+  )
+}
+
 const ProfileQuestions = ({ question, answers }) => {
   // const [arConnectGlobalIsConnected, setArConnectGlobalIsConnected] = useAtom(newArConnectGlobalIsConnected)
 
@@ -143,7 +169,7 @@ const ProfileQuestions = ({ question, answers }) => {
           loi: '',
           daysInField: '',
           startDate: targetGroup.dob,
-          time: new Date().toISOString(),
+          time: toIsoString(new Date()).substring(0, 10),
           visible: true,
           surveyData: surveyDataDto
         }
@@ -186,7 +212,7 @@ const ProfileQuestions = ({ question, answers }) => {
                   stats.push({
                     question: oldSurvey.targetGroups[0].surveyData[i].question,
                     answer: oldSurvey.targetGroups[0].surveyData[i].answers[j] + '',
-                    dateOfBirth: new Date(oldSurvey.targetGroups[0].startDate).toISOString(),
+                    dateOfBirth: toIsoString(new Date(oldSurvey.targetGroups[0].startDate)).substring(0, 10),
                     country: oldSurvey.targetGroups[0].country,
                     gender: oldSurvey.targetGroups[0].gender,
                     category: oldSurvey.targetGroups[0].surveyData[i].category,
@@ -198,7 +224,7 @@ const ProfileQuestions = ({ question, answers }) => {
                   stats.push({
                     question: survey.targetGroups[0].surveyData[i].question,
                     answer: survey.targetGroups[0].surveyData[i].answers[j] + '',
-                    dateOfBirth: new Date(newProfileSurvey.targetGroups[0].dob).toISOString(),
+                    dateOfBirth: toIsoString(new Date(newProfileSurvey.targetGroups[0].dob)).substring(0, 10),
                     country: newProfileSurvey.targetGroups[0].country,
                     gender: newProfileSurvey.targetGroups[0].gender,
                     category: newProfileSurvey.targetGroups[0].surveyData[i].category,
@@ -240,7 +266,7 @@ const ProfileQuestions = ({ question, answers }) => {
                 stats.push({
                   question: survey.targetGroups[0].surveyData[i].question,
                   answer: survey.targetGroups[0].surveyData[i].answers[j] + '',
-                  dateOfBirth: new Date(newProfileSurvey.targetGroups[0].dob).toISOString(),
+                  dateOfBirth: toIsoString(new Date(newProfileSurvey.targetGroups[0].dob)).substring(0, 10),
                   country: newProfileSurvey.targetGroups[0].country,
                   gender: newProfileSurvey.targetGroups[0].gender,
                   category: newProfileSurvey.targetGroups[0].surveyData[i].category,
