@@ -81,8 +81,6 @@ const toIsoString = date => {
 }
 
 const ProfileQuestions = ({ question, answers }) => {
-  // const [arConnectGlobalIsConnected, setArConnectGlobalIsConnected] = useAtom(newArConnectGlobalIsConnected)
-
   const [categoryTitle, setCategoryTitle] = useState('')
 
   const [newProfileSurvey, setNewProfileSurvey] = useAtom(newProfileSurveyAtom)

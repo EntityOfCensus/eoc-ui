@@ -9,21 +9,18 @@ import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
 
 // Components Imports
-// import { newArConnectGlobalIsConnected } from '@/app/store/atoms'
 import Typography from '@mui/material/Typography'
 import React, { useEffect, useState } from 'react'
 import Chip from '@mui/material/Chip'
-import ProfileModal from '@views/pages/wizard/ProfileModal'
-import { useAtom, useAtomValue } from 'jotai/index'
+import useMediaQuery from '@menu/hooks/useMediaQuery'
 
 const GlobalProfiling = ({ profileCategories, render, category, surveyData }) => {
   const [categories, setCategories] = useState(profileCategories)
 
-  // const [arConnectGlobalIsConnected, setArConnectGlobalIsConnected] = useAtom(newArConnectGlobalIsConnected)
-
   const [profileOpen, setProfileOpen] = useState(false)
   const [categoryTitle, setCategoryTitle] = useState(category)
   const [open, setOpen] = useState(false)
+  const isMobile = useMediaQuery('600px')
 
   // const [data, setData] = useState(surveyData)
 
@@ -40,6 +37,9 @@ const GlobalProfiling = ({ profileCategories, render, category, surveyData }) =>
   }, [open])
 
   const handleClick = e => {
+    if (isMobile) {
+      setProfileOpen(prev => !prev)
+    }
     if (open) {
       setOpen(false)
     } else {

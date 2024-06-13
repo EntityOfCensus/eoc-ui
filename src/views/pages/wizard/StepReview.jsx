@@ -17,7 +17,6 @@ import { newSurveyAtom } from '@/app/store/atoms'
 import { encrypt, sign, signMessage } from '@othent/kms'
 import Arweave from 'arweave/web'
 import { useEffect } from 'react'
-// import { PermissionType } from 'arconnect'
 
 import { jwtDecode } from 'jwt-decode'
 import { createDataItemSigner, message } from '@permaweb/aoconnect'

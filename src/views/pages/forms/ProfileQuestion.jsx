@@ -14,12 +14,8 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import Radio from '@mui/material/Radio'
 import Checkbox from '@mui/material/Checkbox'
 import { useState } from 'react'
-// import { newArConnectGlobalIsConnected } from '@/app/store/atoms'
-import { useAtom } from 'jotai/index'
 
 const ProfileQuestion = ({ questionItem, category }) => {
-  // const [arConnectGlobalIsConnected, setArConnectGlobalIsConnected] = useAtom(newArConnectGlobalIsConnected)
-
   const [question, setQuestion] = useState(questionItem)
 
   const [categoryTitle, setCategoryTitle] = useState(category)

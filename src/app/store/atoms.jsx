@@ -1187,5 +1187,3 @@ export const newProfileSurveyAtom = atom({
   respondentOthentSub: '',
   targetGroups: [newTargetGroupAtom]
 })
-
-// export const newArConnectGlobalIsConnected = atom({ connected: false })
