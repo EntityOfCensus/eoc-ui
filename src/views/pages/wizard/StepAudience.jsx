@@ -177,7 +177,7 @@ const StepAudience = ({ surveyData, onChangeSurveyData, activeStep, handleNext, 
               please proceed to the next step.
             </Typography>
           </Grid>
-          <Grid item xs={12} sm={12} ls={12}>
+          {/* <Grid item xs={12} sm={12} ls={12}>
             <Typography variant='h4' className='sm:mbs-2 lg:mbs-0'>
               How many questions do you want to ask respondents?
             </Typography>
@@ -190,7 +190,7 @@ const StepAudience = ({ surveyData, onChangeSurveyData, activeStep, handleNext, 
               We recommend xx questions and no more than yy. Based on the number of questions, respondents will be paid
               more or less, impacting the cost of the survey.
             </Typography>
-          </Grid>
+          </Grid> */}
         </React.Fragment>
       )}
 
