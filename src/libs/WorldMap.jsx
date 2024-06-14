@@ -44,10 +44,6 @@ const WorldMap = ({ surveyData, onChangeSurveyData }) => {
         country: '',
         wantedCompletes: surveyData.wantedRespondents,
         ir: '100',
-        loi: (surveyData.wantedQuestions / 3).toFixed(),
-        daysInField: '7',
-        startDate: '',
-        time: '00:00',
         visible: true,
         surveyData: initSurveyData(newTargetGroup.surveyData)
       }

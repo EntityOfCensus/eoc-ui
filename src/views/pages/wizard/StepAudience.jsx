@@ -145,7 +145,7 @@ const StepAudience = ({ surveyData, onChangeSurveyData, activeStep, handleNext, 
                 <Grid item xs={12} sm={12} md={6} lg={6}>
                   <CustomTextField
                     name='ir'
-                    defaultValue={surveyData.targetGroups[0].ir}
+                    defaultValue={surveyData.ir ? surveyData.ir : '100'}
                     style={{ width: '90%' }}
                     label='Estimated incidence rate (IR)'
                     onChange={e => {
@@ -157,7 +157,7 @@ const StepAudience = ({ surveyData, onChangeSurveyData, activeStep, handleNext, 
                 <Grid item xs={12} sm={12} md={6} lg={6}>
                   <CustomTextField
                     name='loi'
-                    defaultValue={surveyData.targetGroups[0].loi}
+                    defaultValue={surveyData.loi ? surveyData.loi : ''}
                     style={{ marginRight: 30, width: '90%' }}
                     label='Estimated length of interview (LOI)'
                     onChange={e => {
@@ -169,7 +169,7 @@ const StepAudience = ({ surveyData, onChangeSurveyData, activeStep, handleNext, 
                 <Grid item xs={12} sm={12} md={6} lg={6}>
                   <CustomTextField
                     name='daysInField'
-                    defaultValue={surveyData.targetGroups[0].daysInField}
+                    defaultValue={surveyData.daysInField ? surveyData.daysInField : ''}
                     label='Number of days in field'
                     style={{ width: '90%' }}
                     onChange={e => {
@@ -180,20 +180,22 @@ const StepAudience = ({ surveyData, onChangeSurveyData, activeStep, handleNext, 
                 </Grid>
                 <Grid item xs={12} sm={12} md={6} lg={6}>
                   <AppReactDatepicker
-                    selected={surveyData.targetGroups[0].startDate}
+                    selected={surveyData.startDate ? surveyData.startDate : ''}
                     showYearDropdown
                     showMonthDropdown
+                    onChange={newDate =>
+                      onChangeSurveyData(prev => ({
+                        ...prev,
+                        startDate: newDate
+                      }))
+                    }
                     // onChange={onChange}
                     placeholderText='MM/DD/YYYY'
                     customInput={
                       <CustomTextField
-                        name='startDate'
-                        defaultValue={surveyData.targetGroups[0].startDate}
+                        defaultValue={surveyData.startDate ? surveyData.startDate : ''}
                         style={{ marginTop: 10, marginRight: 30, width: '90%' }}
                         label='Start Date'
-                        onChange={e => {
-                          handleChange(e)
-                        }}
                       />
                     }
                   />
@@ -201,11 +203,10 @@ const StepAudience = ({ surveyData, onChangeSurveyData, activeStep, handleNext, 
                 <Grid item xs={12} sm={12} md={6} lg={6}>
                   <CustomTextField
                     name='time'
-                    defaultValue={surveyData.targetGroups[0].time}
+                    defaultValue={surveyData.time}
                     style={{ marginTop: 10, width: '90%' }}
                     label='Time'
                     onChange={e => {
-                      field.onChange(e)
                       handleChange(e)
                     }}
                     placeholder={'12:53'}

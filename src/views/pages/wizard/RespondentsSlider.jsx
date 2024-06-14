@@ -11,14 +11,16 @@ export default function InputSlider({ surveyData, onChangeSurveyData, defaultVal
   const handleSliderChange = (event, newValue) => {
     onChangeSurveyData(prev => ({
       ...prev,
-      wantedRespondents: event.target.value
+      wantedRespondents: event.target.value,
+      loi: (Number(event.target.value) / 3).toFixed(3)
     }))
   }
 
   const handleInputChange = event => {
     onChangeSurveyData(prev => ({
       ...prev,
-      wantedRespondents: event.target.value === '' ? 1 : Number(event.target.value)
+      wantedRespondents: event.target.value === '' ? 1 : Number(event.target.value),
+      loi: event.target.value === '' ? (1 / 3).toFixed(3) : (Number(event.target.value) / 3).toFixed(3)
     }))
   }
 
@@ -26,12 +28,14 @@ export default function InputSlider({ surveyData, onChangeSurveyData, defaultVal
     if (surveyData.wantedCompletes < 1) {
       onChangeSurveyData(prev => ({
         ...prev,
-        wantedRespondents: 1
+        wantedRespondents: 1,
+        loi: (1 / 3).toFixed(3)
       }))
     } else if (surveyData.wantedRespondents > 230) {
       onChangeSurveyData(prev => ({
         ...prev,
-        wantedRespondents: 230
+        wantedRespondents: 230,
+        loi: (230 / 3).toFixed(3)
       }))
     }
   }
