@@ -33,8 +33,6 @@ const StepAudience = ({ surveyData, onChangeSurveyData, activeStep, handleNext, 
   }
 
   const onAnswerChange = (answers, question) => {
-    console.log('answers', answers)
-    console.log('question', question)
     let targetGroup = surveyData.targetGroups[0]
     for (var i = 0; i < targetGroup.surveyData.length; ++i) {
       if (
@@ -83,39 +81,6 @@ const StepAudience = ({ surveyData, onChangeSurveyData, activeStep, handleNext, 
       </Grid>
       {surveyData.targetGroups && (
         <Grid item xs={12}>
-          <GlobalProfiling
-            category={categoryTitle}
-            profileCategories={profileCategories}
-            surveyData={surveyData.targetGroups ? surveyData.targetGroups[0].surveyData : []}
-            render={(category, open) => (
-              <React.Fragment>
-                <Grid container spacing={6}>
-                  <Grid item xs={12}>
-                    <Typography component='span' variant='h5' className='flex flex-col'>
-                      {category}
-                    </Typography>
-                    <Typography component='span' variant='h6' className='flex flex-col'>
-                      Below are the questions that the panelists hae responded to. You can select any number of
-                      attributes that matches your target criteria. The target group will then contain only panelists
-                      who have answered these selected attributes (as well as any other attributes you have selected in
-                      other categories).
-                    </Typography>
-                    {open &&
-                      surveyData.targetGroups &&
-                      surveyData.targetGroups[0].surveyData &&
-                      surveyData.targetGroups[0].surveyData.map((item, index) => (
-                        <ProfileQuestion
-                          key={index}
-                          questionItem={item}
-                          onAnswerChange={onAnswerChange}
-                          category={category}
-                        />
-                      ))}
-                  </Grid>
-                </Grid>
-              </React.Fragment>
-            )}
-          />
           <Grid container spacing={6}>
             <Grid item xs={12} sm={12} md={12} lg={12}>
               <Grid container spacing={3}>
@@ -176,6 +141,41 @@ const StepAudience = ({ surveyData, onChangeSurveyData, activeStep, handleNext, 
                 </Grid>
               </Grid>
             </Grid>
+          </Grid>
+          <Grid container spacing={6}>
+            <GlobalProfiling
+              category={categoryTitle}
+              profileCategories={profileCategories}
+              surveyData={surveyData.targetGroups ? surveyData.targetGroups[0].surveyData : []}
+              render={(category, open) => (
+                <React.Fragment>
+                  <Grid container spacing={6}>
+                    <Grid item xs={12}>
+                      <Typography component='span' variant='h5' className='flex flex-col'>
+                        {category}
+                      </Typography>
+                      <Typography component='span' variant='h6' className='flex flex-col'>
+                        Below are the questions that the panelists hae responded to. You can select any number of
+                        attributes that matches your target criteria. The target group will then contain only panelists
+                        who have answered these selected attributes (as well as any other attributes you have selected
+                        in other categories).
+                      </Typography>
+                      {open &&
+                        surveyData.targetGroups &&
+                        surveyData.targetGroups[0].surveyData &&
+                        surveyData.targetGroups[0].surveyData.map((item, index) => (
+                          <ProfileQuestion
+                            key={index}
+                            questionItem={item}
+                            onAnswerChange={onAnswerChange}
+                            category={category}
+                          />
+                        ))}
+                    </Grid>
+                  </Grid>
+                </React.Fragment>
+              )}
+            />
           </Grid>
           <Grid container spacing={6}>
             <Grid item xs={12} sm={12} md={12} lg={12}>

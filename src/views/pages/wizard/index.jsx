@@ -100,26 +100,14 @@ const CreateSurvey = () => {
   }
 
   const handleNext = async () => {
-    console.log('newSurvey', newSurvey)
     if (activeStep !== steps.length - 1) {
       setActiveStep(activeStep + 1)
     } else {
-      // setNewSurvey(prev => ({
-      //   type: 'survey',
-      //   config: 'easy',
-      //   countryCodes: [],
-      //   countryNames: [],
-      //   wantedRespondents: 1000,
-      //   wantedQuestions: 50,
-      //   targetGroups: []
-      // }))
-
       router.push('/home')
     }
   }
 
   const handlePrev = () => {
-    console.log('newSurvey', newSurvey)
     if (activeStep !== 0) {
       setActiveStep(activeStep - 1)
     }
