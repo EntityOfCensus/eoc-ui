@@ -21,6 +21,7 @@ import RadioGroup from '@mui/material/RadioGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Radio from '@mui/material/Radio'
 import FormLabel from '@mui/material/FormLabel'
+import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
 
 import CustomTextField from '@core/components/mui/TextField'
 
@@ -83,101 +84,184 @@ const StepAudience = ({ surveyData, onChangeSurveyData, activeStep, handleNext, 
           ))}
       </Grid>
       {surveyData.targetGroups && (
-        <React.Fragment>
-          <Grid item xs={12} sm={12} ls={12}>
-            <Typography variant='h5' className='sm:mbs-2 lg:mbs-0'>
-              Demographics
-            </Typography>
-            <Grid item xs={6} sm={6} lg={6}>
-              <CustomTextField
-                type='number'
-                name='minimumAge'
-                defaultValue={surveyData.targetGroups[0].minimumAge}
-                style={{ marginRight: 10 }}
-                label='Minimum age'
-                onChange={e => {
-                  handleChange(e)
-                }}
-                placeholder={18}
-              />
+        <Grid item xs={12}>
+          <Grid container spacing={6}>
+            <Grid item xs={12} sm={12} md={12} lg={5}>
+              <Grid container spacing={3}>
+                <Grid item xs={12}>
+                  <Typography variant='h5' className='sm:mbs-2 lg:mbs-0'>
+                    Demographics
+                  </Typography>
+                </Grid>
+                <Grid item xs={6} sm={6} lg={6}>
+                  <CustomTextField
+                    type='number'
+                    name='minimumAge'
+                    defaultValue={surveyData.targetGroups[0].minimumAge}
+                    style={{ marginRight: 10 }}
+                    label='Minimum age'
+                    onChange={e => {
+                      handleChange(e)
+                    }}
+                    placeholder={18}
+                  />
+                </Grid>
+                <Grid item xs={6} sm={6} lg={6}>
+                  <CustomTextField
+                    type='number'
+                    name='maximumAge'
+                    defaultValue={surveyData.targetGroups[0].maximumAge}
+                    label='Maximum age'
+                    onChange={e => {
+                      handleChange(e)
+                    }}
+                    placeholder={64}
+                  />
+                </Grid>
+              </Grid>
+
+              <Grid item xs={12}>
+                <FormLabel>Gender</FormLabel>
+                <RadioGroup
+                  row
+                  name='gender'
+                  onChange={e => {
+                    handleChange(e)
+                  }}
+                >
+                  <FormControlLabel value='female' control={<Radio checked={isGender('female')} />} label='Female' />
+                  <FormControlLabel value='male' control={<Radio checked={isGender('male')} />} label='Male' />
+                  <FormControlLabel value='both' control={<Radio checked={isGender('both')} />} label='Both' />
+                </RadioGroup>
+              </Grid>
             </Grid>
-            <Grid item xs={6} sm={6} lg={6}>
-              <CustomTextField
-                type='number'
-                name='maximumAge'
-                defaultValue={surveyData.targetGroups[0].maximumAge}
-                label='Maximum age'
-                onChange={e => {
-                  handleChange(e)
-                }}
-                placeholder={64}
-              />
+            <Grid item xs={12} sm={12} md={12} lg={7}>
+              <Grid container spacing={3}>
+                <Grid item xs={12} sm={12} lg={12}>
+                  <Typography variant='h5' className='sm:mbs-2 lg:mbs-0'>
+                    Survey specific data
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={12} md={6} lg={6}>
+                  <CustomTextField
+                    name='ir'
+                    defaultValue={surveyData.targetGroups[0].ir}
+                    style={{ width: '90%' }}
+                    label='Estimated incidence rate (IR)'
+                    onChange={e => {
+                      handleChange(e)
+                    }}
+                    helperText='Percentage (%)'
+                  />
+                </Grid>
+                <Grid item xs={12} sm={12} md={6} lg={6}>
+                  <CustomTextField
+                    name='loi'
+                    defaultValue={surveyData.targetGroups[0].loi}
+                    style={{ marginRight: 30, width: '90%' }}
+                    label='Estimated length of interview (LOI)'
+                    onChange={e => {
+                      handleChange(e)
+                    }}
+                    helperText='Minutes'
+                  />
+                </Grid>
+                <Grid item xs={12} sm={12} md={6} lg={6}>
+                  <CustomTextField
+                    name='daysInField'
+                    defaultValue={surveyData.targetGroups[0].daysInField}
+                    label='Number of days in field'
+                    style={{ width: '90%' }}
+                    onChange={e => {
+                      handleChange(e)
+                    }}
+                    placeholder={'7'}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={12} md={6} lg={6}>
+                  <AppReactDatepicker
+                    selected={surveyData.targetGroups[0].startDate}
+                    showYearDropdown
+                    showMonthDropdown
+                    // onChange={onChange}
+                    placeholderText='MM/DD/YYYY'
+                    customInput={
+                      <CustomTextField
+                        name='startDate'
+                        defaultValue={surveyData.targetGroups[0].startDate}
+                        style={{ marginTop: 10, marginRight: 30, width: '90%' }}
+                        label='Start Date'
+                        onChange={e => {
+                          handleChange(e)
+                        }}
+                      />
+                    }
+                  />
+                </Grid>
+                <Grid item xs={12} sm={12} md={6} lg={6}>
+                  <CustomTextField
+                    name='time'
+                    defaultValue={surveyData.targetGroups[0].time}
+                    style={{ marginTop: 10, width: '90%' }}
+                    label='Time'
+                    onChange={e => {
+                      field.onChange(e)
+                      handleChange(e)
+                    }}
+                    placeholder={'12:53'}
+                  />
+                </Grid>
+              </Grid>
+            </Grid>
+            <GlobalProfiling
+              category={categoryTitle}
+              profileCategories={profileCategories}
+              surveyData={surveyData.targetGroups ? surveyData.targetGroups[0].surveyData : []}
+              render={(category, open) => (
+                <React.Fragment>
+                  <Grid container spacing={6}>
+                    <Grid item xs={12}>
+                      <Typography component='span' variant='h5' className='flex flex-col'>
+                        {category}
+                      </Typography>
+                      <Typography component='span' variant='h6' className='flex flex-col'>
+                        Below are the questions that the panelists hae responded to. You can select any number of
+                        attributes that matches your target criteria. The target group will then contain only panelists
+                        who have answered these selected attributes (as well as any other attributes you have selected
+                        in other categories).
+                      </Typography>
+                      {open &&
+                        surveyData.targetGroups &&
+                        surveyData.targetGroups[0].surveyData &&
+                        surveyData.targetGroups[0].surveyData.map((item, index) => (
+                          <ProfileQuestion
+                            key={index}
+                            questionItem={item}
+                            onAnswerChange={onAnswerChange}
+                            category={category}
+                          />
+                        ))}
+                    </Grid>
+                  </Grid>
+                </React.Fragment>
+              )}
+            />
+
+            <Grid item xs={12}>
+              <Typography variant='h4' className='sm:mbs-2 lg:mbs-0'>
+                How many respondents do you want to target?
+              </Typography>
             </Grid>
             <Grid item xs={12} sm={12} ls={12}>
-              <FormLabel>Gender</FormLabel>
-              <RadioGroup
-                row
-                name='gender'
-                onChange={e => {
-                  handleChange(e)
-                }}
-              >
-                <FormControlLabel value='female' control={<Radio checked={isGender('female')} />} label='Female' />
-                <FormControlLabel value='male' control={<Radio checked={isGender('male')} />} label='Male' />
-                <FormControlLabel value='both' control={<Radio checked={isGender('both')} />} label='Both' />
-              </RadioGroup>
+              <RespondentsSlider surveyData={surveyData} onChangeSurveyData={onChangeSurveyData} defaultValue={13} />
             </Grid>
-          </Grid>
-
-          <GlobalProfiling
-            category={categoryTitle}
-            profileCategories={profileCategories}
-            surveyData={surveyData.targetGroups ? surveyData.targetGroups[0].surveyData : []}
-            render={(category, open) => (
-              <React.Fragment>
-                <Grid container spacing={6}>
-                  <Grid item xs={12}>
-                    <Typography component='span' variant='h5' className='flex flex-col'>
-                      {category}
-                    </Typography>
-                    <Typography component='span' variant='h6' className='flex flex-col'>
-                      Below are the questions that the panelists hae responded to. You can select any number of
-                      attributes that matches your target criteria. The target group will then contain only panelists
-                      who have answered these selected attributes (as well as any other attributes you have selected in
-                      other categories).
-                    </Typography>
-                    {open &&
-                      surveyData.targetGroups &&
-                      surveyData.targetGroups[0].surveyData &&
-                      surveyData.targetGroups[0].surveyData.map((item, index) => (
-                        <ProfileQuestion
-                          key={index}
-                          questionItem={item}
-                          onAnswerChange={onAnswerChange}
-                          category={category}
-                        />
-                      ))}
-                  </Grid>
-                </Grid>
-              </React.Fragment>
-            )}
-          />
-
-          <Grid item xs={12}>
-            <Typography variant='h4' className='sm:mbs-2 lg:mbs-0'>
-              How many respondents do you want to target?
-            </Typography>
-          </Grid>
-          <Grid item xs={12} sm={12} ls={12}>
-            <RespondentsSlider surveyData={surveyData} onChangeSurveyData={onChangeSurveyData} defaultValue={13} />
-          </Grid>
-          <Grid item xs={12} sm={12} ls={12}>
-            <Typography variant='h6' className='sm:mbs-2 lg:mbs-0'>
-              By default we address a general population. If you want to further define your respondent selection,
-              please proceed to the next step.
-            </Typography>
-          </Grid>
-          {/* <Grid item xs={12} sm={12} ls={12}>
+            <Grid item xs={12} sm={12} ls={12}>
+              <Typography variant='h6' className='sm:mbs-2 lg:mbs-0'>
+                By default we address a general population. If you want to further define your respondent selection,
+                please proceed to the next step.
+              </Typography>
+            </Grid>
+            {/* <Grid item xs={12} sm={12} ls={12}>
             <Typography variant='h4' className='sm:mbs-2 lg:mbs-0'>
               How many questions do you want to ask respondents?
             </Typography>
@@ -191,7 +275,8 @@ const StepAudience = ({ surveyData, onChangeSurveyData, activeStep, handleNext, 
               more or less, impacting the cost of the survey.
             </Typography>
           </Grid> */}
-        </React.Fragment>
+          </Grid>
+        </Grid>
       )}
 
       <Grid item xs={12}>
