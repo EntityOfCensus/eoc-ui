@@ -12,6 +12,8 @@ import CustomInputVertical from '@core/components/custom-inputs/Vertical'
 import DirectionalIcon from '@components/DirectionalIcon'
 import React, { useState } from 'react'
 import DraggableDialog from '@/libs/DraggableDialog'
+import { useAtom } from 'jotai'
+import { mapDataAtom } from '@/app/store/atoms'
 
 // Vars
 const data = [
@@ -31,7 +33,13 @@ const data = [
 ]
 
 const StepConfigType = ({ surveyData, onChangeSurveyData, activeStep, handleNext, handlePrev, steps }) => {
+  const [mapData, setMapData] = useAtom(mapDataAtom)
+
   const [confirmConfigTypeChange, setConfirmConfigTypeChange] = useState(false)
+
+  const [confirmConfigTypeChangeTitle, setConfirmConfigTypeChangeTitle] = useState('')
+
+  const [confirmConfigTypeChangeContent, setConfirmConfigTypeChangeContent] = useState('')
 
   const [prop, setProp] = useState(null)
 
@@ -52,23 +60,54 @@ const StepConfigType = ({ surveyData, onChangeSurveyData, activeStep, handleNext
         }))
       } else {
         setProp(prop)
+        if (surveyData.config === 'easy') {
+          setConfirmConfigTypeChangeTitle('Change to advance configuration type?')
+          setConfirmConfigTypeChangeContent(
+            'Changing to advance configuration, the easy configuration will be smart distributed into advance configuration'
+          )
+        } else {
+          setConfirmConfigTypeChangeTitle('Change to easy configuration type?')
+          setConfirmConfigTypeChangeContent('Changing to easy configuration, all audience setup will be reset')
+        }
         setConfirmConfigTypeChange(true)
       }
     }
   }
 
   const handleOptionChange = () => {
-    onChangeSurveyData(prev => ({
-      ...prev,
-      config: prop.target.value
-    }))
+    if (prop.target.value == 'advanced') {
+      setMapData({})
+      onChangeSurveyData(prev => ({
+        ...prev,
+        ir: null,
+        loi: null,
+        minimumAge: null,
+        maximumAge: null,
+        gender: null,
+        daysInField: null,
+        startDate: null,
+        time: null,
+        targetGroups: null,
+        wantedRespondents: null,
+        wantedQuestions: null,
+        countryCodes: [],
+        countryNames: [],
+        config: prop.target.value
+      }))
+    } else {
+      onChangeSurveyData(prev => ({
+        ...prev,
+        targetGroups: null,
+        config: prop.target.value
+      }))
+    }
   }
 
   return (
     <React.Fragment>
       <DraggableDialog
-        title='Confirm'
-        content='Confirm change'
+        title={confirmConfigTypeChangeTitle}
+        content={confirmConfigTypeChangeContent}
         confirmCallback={handleOptionChange}
         confirm={confirmConfigTypeChange}
         onClose={setConfirmConfigTypeChange}

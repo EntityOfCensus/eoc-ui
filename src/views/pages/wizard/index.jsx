@@ -140,7 +140,6 @@ const CreateSurvey = () => {
                 return (
                   <Step
                     key={index}
-                    disabled='true'
                     onClick={() => {
                       switch (index) {
                         case 0:

@@ -11,16 +11,14 @@ export default function InputSlider({ surveyData, onChangeSurveyData, defaultVal
   const handleSliderChange = (event, newValue) => {
     onChangeSurveyData(prev => ({
       ...prev,
-      wantedRespondents: event.target.value,
-      loi: (Number(event.target.value) / 3).toFixed(3)
+      wantedRespondents: event.target.value
     }))
   }
 
   const handleInputChange = event => {
     onChangeSurveyData(prev => ({
       ...prev,
-      wantedRespondents: event.target.value === '' ? 1 : Number(event.target.value),
-      loi: event.target.value === '' ? (1 / 3).toFixed(3) : (Number(event.target.value) / 3).toFixed(3)
+      wantedRespondents: event.target.value === '' ? 1 : Number(event.target.value)
     }))
   }
 
@@ -34,8 +32,7 @@ export default function InputSlider({ surveyData, onChangeSurveyData, defaultVal
     } else if (surveyData.wantedRespondents > 230) {
       onChangeSurveyData(prev => ({
         ...prev,
-        wantedRespondents: 230,
-        loi: (230 / 3).toFixed(3)
+        wantedRespondents: 230
       }))
     }
   }
@@ -55,12 +52,11 @@ export default function InputSlider({ surveyData, onChangeSurveyData, defaultVal
     <Grid container alignItems='center'>
       <Grid item xs={8} sm={8} lg={8}>
         <Slider
-          defaultValue={defaultValue}
-          min={1}
+          min={0}
           max={230}
           aria-label='Default'
           valueLabelDisplay='auto'
-          value={typeof surveyData.wantedRespondents === 'number' ? surveyData.wantedRespondents : 1}
+          value={typeof surveyData.wantedRespondents === 'number' ? surveyData.wantedRespondents : 0}
           onChange={handleSliderChange}
           aria-labelledby='input-slider'
           getAriaValueText={e => surveyData.wantedRespondents}
@@ -69,13 +65,13 @@ export default function InputSlider({ surveyData, onChangeSurveyData, defaultVal
       </Grid>
       <Grid item style={{ marginLeft: 23 }} xs={3} sm={3} lg={3}>
         <Input
-          value={surveyData.wantedRespondents}
+          value={surveyData.wantedRespondents ? surveyData.wantedRespondents : 0}
           size='small'
           onChange={handleInputChange}
           onBlur={handleBlur}
           inputProps={{
             step: 1,
-            min: 1,
+            min: 0,
             max: 230,
             type: 'number',
             'aria-labelledby': 'input-slider'

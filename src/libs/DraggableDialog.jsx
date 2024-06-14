@@ -46,7 +46,7 @@ const DraggableDialog = ({ title, content, confirmCallback, confirm, onClose }) 
           <Button autoFocus onClick={handleClose}>
             Cancel
           </Button>
-          <Button onClick={handleConfirm}>Subscribe</Button>
+          <Button onClick={handleConfirm}>Confirm</Button>
         </DialogActions>
       </Dialog>
     </React.Fragment>

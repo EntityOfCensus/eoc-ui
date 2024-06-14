@@ -184,7 +184,7 @@ const BasicSettings = ({ targetGroup }) => {
                             field.onChange(e)
                             handleChange(e)
                           }}
-                          placeholder={18}
+                          placeholder={'18'}
                         />
                       )}
                     />
@@ -205,7 +205,7 @@ const BasicSettings = ({ targetGroup }) => {
                             field.onChange(e)
                             handleChange(e)
                           }}
-                          placeholder={64}
+                          placeholder={'64'}
                         />
                       )}
                     />
