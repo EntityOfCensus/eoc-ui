@@ -13,7 +13,9 @@ import DirectionalIcon from '@components/DirectionalIcon'
 import React, { useState } from 'react'
 import DraggableDialog from '@/libs/DraggableDialog'
 import { useAtom } from 'jotai'
-import { mapDataAtom } from '@/app/store/atoms'
+import { mapDataAtom, newTargetGroupAtom } from '@/app/store/atoms'
+import { getName } from 'country-list'
+import axios from 'axios'
 
 // Vars
 const data = [
@@ -32,8 +34,26 @@ const data = [
   }
 ]
 
+const getInitSurveyData = surveyData => {
+  surveyData.question = surveyData.init.question
+  surveyData.category = surveyData.init.category
+  surveyData.type = surveyData.init.type
+  surveyData.possibleAnswers = surveyData.init.possibleAnswers
+  surveyData.answers = surveyData.init.answers
+  return surveyData
+}
+
+const initSurveyData = surveyData => {
+  for (var i = 0; i < surveyData.length; ++i) {
+    surveyData[i] = getInitSurveyData(surveyData[i])
+  }
+  return surveyData
+}
+
 const StepConfigType = ({ surveyData, onChangeSurveyData, activeStep, handleNext, handlePrev, steps }) => {
   const [mapData, setMapData] = useAtom(mapDataAtom)
+
+  const [newTargetGroup, setNewTargetGroup] = useAtom(newTargetGroupAtom)
 
   const [confirmConfigTypeChange, setConfirmConfigTypeChange] = useState(false)
 
@@ -74,22 +94,47 @@ const StepConfigType = ({ surveyData, onChangeSurveyData, activeStep, handleNext
     }
   }
 
-  const handleOptionChange = () => {
+  const handleOptionChange = async () => {
     if (prop.target.value == 'advanced') {
       setMapData({})
+      const res = await axios.get(`https://restcountries.com/v3.1/alpha?codes=${surveyData.countryCodes}`)
+      let totalPop = res.data.map(item => item.population).reduce((sum, a) => sum + a, 0)
+      const today = new Date()
+      const tomorrow = new Date(today)
+      tomorrow.setDate(tomorrow.getDate() + 1)
+      const targetGroups = res.data.map(countryIndex => ({
+        minimumAge: surveyData.minimumAge ? surveyData.minimumAge : 18,
+        maximumAge: surveyData.maximumAge ? surveyData.maximumAge : 64,
+        gender: surveyData.gender ? surveyData.gender : 'both',
+        country: getName(countryIndex.cca2),
+        wantedCompletes: surveyData.wantedRespondents
+          ? ((countryIndex.population / totalPop) * surveyData.wantedRespondents).toFixed()
+          : '',
+        ir: surveyData.maximumAge ? surveyData.maximumAge : '100',
+        loi: surveyData.loi
+          ? surveyData.loi
+          : surveyData.wantedQuestions
+            ? (surveyData.wantedQuestions / 3).toFixed()
+            : '',
+        daysInField: surveyData.daysInField ? surveyData.daysInField : '7',
+        startDate: surveyData.startDate ? surveyData.startDate : tomorrow,
+        time: surveyData.time ? surveyData.time : '00:00',
+        surveyData: surveyData.targetGroups
+          ? surveyData.targetGroups[0].surveyData
+          : initSurveyData(newTargetGroup.surveyData),
+        visible: true
+      }))
+
       onChangeSurveyData(prev => ({
         ...prev,
         ir: null,
-        loi: null,
         minimumAge: null,
         maximumAge: null,
         gender: null,
         daysInField: null,
         startDate: null,
         time: null,
-        targetGroups: null,
-        wantedRespondents: null,
-        wantedQuestions: null,
+        targetGroups: targetGroups,
         countryCodes: [],
         countryNames: [],
         config: prop.target.value
