@@ -5,30 +5,12 @@ import React, { Suspense, useEffect } from 'react'
 import { VectorMap } from 'react-jvectormap'
 import './world-map.css'
 import { useAtom } from 'jotai'
-import { mapDataAtom, newTargetGroupAtom } from '../../src/app/store/atoms'
-
+import { mapDataAtom } from '@/app/store/atoms'
 const { getName } = require('country-list')
-
-const getInitSurveyData = surveyData => {
-  surveyData.question = surveyData.init.question
-  surveyData.category = surveyData.init.category
-  surveyData.type = surveyData.init.type
-  surveyData.possibleAnswers = surveyData.init.possibleAnswers
-  surveyData.answers = surveyData.init.answers
-  return surveyData
-}
-
-const initSurveyData = surveyData => {
-  for (var i = 0; i < surveyData.length; ++i) {
-    surveyData[i] = getInitSurveyData(surveyData[i])
-  }
-  return surveyData
-}
+import { respondentSurveyData, initSurveyData } from '@/app/store/consts'
 
 const WorldMap = ({ surveyData, onChangeSurveyData }) => {
   const [mapData, setMapData] = useAtom(mapDataAtom)
-
-  const [newTargetGroup, setNewTargetGroup] = useAtom(newTargetGroupAtom)
 
   const mapClick = (e, countryCode) => {
     let countryCodes = surveyData.countryCodes ? surveyData.countryCodes : []
@@ -45,7 +27,7 @@ const WorldMap = ({ surveyData, onChangeSurveyData }) => {
         wantedCompletes: surveyData.wantedRespondents,
         ir: '100',
         visible: true,
-        surveyData: initSurveyData(newTargetGroup.surveyData)
+        surveyData: initSurveyData(respondentSurveyData)
       }
     }
     const index = countryCodes.indexOf(countryCode)

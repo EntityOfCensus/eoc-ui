@@ -11,69 +11,13 @@ import FormHelperText from '@mui/material/FormHelperText'
 import React, { useEffect, useState } from 'react'
 import Button from '@mui/material/Button'
 import Chip from '@mui/material/Chip'
-import ProfileModal from '@views/pages/wizard/ProfileModal'
 import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
-import { useAtom, useAtomValue } from 'jotai/index'
-import { newSurveyAtom } from '@/app/store/atoms'
 import MenuItem from '@mui/material/MenuItem'
+import GlobalProfiling from '@views/pages/shared/GlobalProfiling'
+import ProfileQuestion from '@views/pages/forms/ProfileQuestion'
+import { profileCategories } from '@/app/store/consts'
 
-const profileCategories = [
-  {
-    label: 'Automotive'
-  },
-  {
-    label: 'Business & Occupation'
-  },
-  {
-    label: 'Education'
-  },
-  {
-    label: 'Electronics'
-  },
-  {
-    label: 'Ethnicity'
-  },
-  {
-    label: 'Finance'
-  },
-  {
-    label: 'Food & Beverage'
-  },
-  {
-    label: 'Gaming'
-  },
-  {
-    label: 'Healthcare Consumer'
-  },
-  {
-    label: 'Hobbies & Interests'
-  },
-  {
-    label: 'Household'
-  },
-  {
-    label: 'Media'
-  },
-  {
-    label: 'Mobile'
-  },
-  {
-    label: 'Mother & Baby'
-  },
-  {
-    label: 'Region'
-  },
-  {
-    label: 'Research'
-  },
-  {
-    label: 'Smoking'
-  },
-  {
-    label: 'Travel'
-  }
-]
-const AdvanceSettings = ({ targetGroup }) => {
+const AdvancedSettings = ({ surveyData, onChangeSurveyData, targetGroup, index, countries }) => {
   const {
     control,
     handleSubmit,
@@ -99,27 +43,12 @@ const AdvanceSettings = ({ targetGroup }) => {
 
   const formValues = watch()
 
-  const [categoryTitle, setCategoryTitle] = useState('')
-  const [open, setOpen] = useState(false)
-  const [profileOpen, setProfileOpen] = useState(false)
-  const [categories, setCategories] = useState(profileCategories)
   const [disabled, setDisabled] = useState(false)
   const [visible, setVisible] = useState(targetGroup.visible)
-  const [newSurvey, setNewSurvey] = useAtom(newSurveyAtom)
 
   useEffect(() => {
-    setDisabled(newSurvey.config === 'easy')
+    setDisabled(surveyData.config === 'easy')
   }, [])
-
-  const handleProfilingClick = e => {
-    setProfileOpen(prev => !prev)
-  }
-
-  const handleClick = e => {
-    setOpen(true)
-    setCategoryTitle(e.target.outerText)
-    setCategories([...categories])
-  }
 
   const isGender = gender => {
     return targetGroup.gender === gender
@@ -131,20 +60,36 @@ const AdvanceSettings = ({ targetGroup }) => {
     targetGroup.visible = formValues.visible
   }
 
+  const onAnswerChange = (answers, question) => {
+    let targetGroup = surveyData.targetGroups[0]
+    for (var i = 0; i < targetGroup.surveyData.length; ++i) {
+      if (
+        targetGroup.surveyData[i].question == question.question &&
+        targetGroup.surveyData[i].category == question.category
+      ) {
+        targetGroup.surveyData[i].answers = answers
+      }
+    }
+    onChangeSurveyData(prev => ({
+      ...prev,
+      targetGroups: [targetGroup]
+    }))
+  }
+
   const handleChange = event => {
     const { name, value } = event.target
     formValues[name] = value
 
     console.log('Form values:', formValues)
 
-    let targetGroups = newSurvey.targetGroups
-    let index = targetGroups.findIndex(obj => obj === targetGroup)
-    targetGroups.splice(index, 1, formValues)
+    // let targetGroups = newSurvey.targetGroups
+    // let index = targetGroups.findIndex(obj => obj === targetGroup)
+    // targetGroups.splice(index, 1, formValues)
 
-    setNewSurvey(prev => ({
-      ...prev,
-      targetGroups: targetGroups
-    }))
+    // setNewSurvey(prev => ({
+    //   ...prev,
+    //   targetGroups: targetGroups
+    // }))
   }
 
   return (
@@ -157,6 +102,40 @@ const AdvanceSettings = ({ targetGroup }) => {
             </Button>
           </Grid>
         )}
+        <Grid container spacing={6}>
+          <GlobalProfiling
+            profileCategories={profileCategories}
+            surveyData={surveyData.targetGroups ? surveyData.targetGroups[0].surveyData : []}
+            render={(category, open) => (
+              <React.Fragment>
+                <Grid container spacing={6}>
+                  <Grid item xs={12}>
+                    <Typography component='span' variant='h5' className='flex flex-col'>
+                      {category}
+                    </Typography>
+                    <Typography component='span' variant='h6' className='flex flex-col'>
+                      Below are the questions that the panelists hae responded to. You can select any number of
+                      attributes that matches your target criteria. The target group will then contain only panelists
+                      who have answered these selected attributes (as well as any other attributes you have selected in
+                      other categories).
+                    </Typography>
+                    {open &&
+                      surveyData.targetGroups &&
+                      surveyData.targetGroups[0].surveyData &&
+                      surveyData.targetGroups[0].surveyData.map((item, index) => (
+                        <ProfileQuestion
+                          key={index}
+                          questionItem={item}
+                          onAnswerChange={onAnswerChange}
+                          category={category}
+                        />
+                      ))}
+                  </Grid>
+                </Grid>
+              </React.Fragment>
+            )}
+          />
+        </Grid>
         <Grid item xs={12}>
           <form>
             <Grid container spacing={6}>
@@ -228,9 +207,9 @@ const AdvanceSettings = ({ targetGroup }) => {
                               handleChange(e)
                             }}
                           >
-                            {...newSurvey.countryNames.map((country, index) => (
-                              <MenuItem key={index} value={country}>
-                                {country}
+                            {countries.map((country, index) => (
+                              <MenuItem key={index} value={country.code}>
+                                {country.name}
                               </MenuItem>
                             ))}
                           </CustomTextField>
@@ -435,32 +414,9 @@ const AdvanceSettings = ({ targetGroup }) => {
             </Grid>
           </form>
         </Grid>
-        <Grid item xs={12}>
-          <Typography variant='h5' className='sm:mbs-2 lg:mbs-0'>
-            Global profiling category
-            <Button style={{ margin: 10 }} color={'primary'} variant={'contained'} onClick={handleProfilingClick}>
-              {profileOpen ? 'Hide' : 'Show'}
-            </Button>
-          </Typography>
-          {profileOpen &&
-            profileCategories &&
-            profileCategories.map((item, index) => (
-              <Chip
-                key={index}
-                style={{ width: '200px', marginRight: 10, marginBottom: 10 }}
-                variant='filled'
-                label={item.label}
-                color={item.color ? item.color : 'primary'}
-                size='medium'
-                className='capitalize mie-4'
-                onClick={handleClick}
-              />
-            ))}
-          <ProfileModal open={open} setOpen={setOpen} categoryTitle={categoryTitle} />
-        </Grid>
       </Grid>
     )
   )
 }
 
-export default BasicSettings
+export default AdvancedSettings

@@ -27,6 +27,7 @@
     "@permaweb/aoconnect": "^0.0.55",
     "apexcharts": "3.47.0",
     "classnames": "2.5.1",
+    "countries-list": "^3.1.0",
     "country-list": "^2.3.0",
     "date-fns": "3.3.1",
     "jotai": "^2.8.0",

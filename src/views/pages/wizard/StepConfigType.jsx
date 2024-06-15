@@ -13,9 +13,10 @@ import DirectionalIcon from '@components/DirectionalIcon'
 import React, { useState } from 'react'
 import DraggableDialog from '@/libs/DraggableDialog'
 import { useAtom } from 'jotai'
-import { mapDataAtom, newTargetGroupAtom } from '@/app/store/atoms'
+import { mapDataAtom } from '@/app/store/atoms'
 import { getName } from 'country-list'
 import axios from 'axios'
+import { respondentSurveyData, initSurveyData } from '@/app/store/consts'
 
 // Vars
 const data = [
@@ -34,26 +35,8 @@ const data = [
   }
 ]
 
-const getInitSurveyData = surveyData => {
-  surveyData.question = surveyData.init.question
-  surveyData.category = surveyData.init.category
-  surveyData.type = surveyData.init.type
-  surveyData.possibleAnswers = surveyData.init.possibleAnswers
-  surveyData.answers = surveyData.init.answers
-  return surveyData
-}
-
-const initSurveyData = surveyData => {
-  for (var i = 0; i < surveyData.length; ++i) {
-    surveyData[i] = getInitSurveyData(surveyData[i])
-  }
-  return surveyData
-}
-
 const StepConfigType = ({ surveyData, onChangeSurveyData, activeStep, handleNext, handlePrev, steps }) => {
   const [mapData, setMapData] = useAtom(mapDataAtom)
-
-  const [newTargetGroup, setNewTargetGroup] = useAtom(newTargetGroupAtom)
 
   const [confirmConfigTypeChange, setConfirmConfigTypeChange] = useState(false)
 
@@ -121,7 +104,7 @@ const StepConfigType = ({ surveyData, onChangeSurveyData, activeStep, handleNext
         time: surveyData.time ? surveyData.time : '00:00',
         surveyData: surveyData.targetGroups
           ? surveyData.targetGroups[0].surveyData
-          : initSurveyData(newTargetGroup.surveyData),
+          : initSurveyData(respondentSurveyData),
         visible: true
       }))
 

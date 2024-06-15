@@ -34,25 +34,9 @@ import Snackbar from '@mui/material/Snackbar'
 
 import GlobalProfiling from '@views/pages/shared/GlobalProfiling'
 import Typography from '@mui/material/Typography'
-import { profileCategories } from '@/app/store/consts'
+import { profileCategories, respondentSurveyData, initSurveyData } from '@/app/store/consts'
 
 import * as othentSinger from '@othent/kms'
-
-const getInitSurveyData = surveyData => {
-  surveyData.question = surveyData.init.question
-  surveyData.category = surveyData.init.category
-  surveyData.type = surveyData.init.type
-  surveyData.possibleAnswers = surveyData.init.possibleAnswers
-  surveyData.answers = surveyData.init.answers
-  return surveyData
-}
-
-const initSurveyData = surveyData => {
-  for (var i = 0; i < surveyData.length; ++i) {
-    surveyData[i] = getInitSurveyData(surveyData[i])
-  }
-  return surveyData
-}
 
 const toIsoString = date => {
   var tzo = -date.getTimezoneOffset(),
@@ -81,8 +65,6 @@ const toIsoString = date => {
 }
 
 const ProfileQuestions = ({ question, answers }) => {
-  const [categoryTitle, setCategoryTitle] = useState('')
-
   const [newProfileSurvey, setNewProfileSurvey] = useAtom(newProfileSurveyAtom)
 
   const [isSaving, setIsSaving] = useState(false)
@@ -329,10 +311,10 @@ const ProfileQuestions = ({ question, answers }) => {
       let sd = []
       for (var i = 0; i < survey.targetGroups[0].surveyData.length; ++i) {
         sd.push({
-          question: newProfileSurvey.targetGroups[0].init.surveyData[i].init.question,
-          type: newProfileSurvey.targetGroups[0].init.surveyData[i].init.type,
-          category: newProfileSurvey.targetGroups[0].init.surveyData[i].init.category,
-          possibleAnswers: newProfileSurvey.targetGroups[0].init.surveyData[i].init.possibleAnswers,
+          question: respondentSurveyData[i].question,
+          type: respondentSurveyData[i].type,
+          category: respondentSurveyData[i].category,
+          possibleAnswers: respondentSurveyData[i].possibleAnswers,
           answers: survey.targetGroups[0].surveyData[i].answers
         })
       }
@@ -347,7 +329,7 @@ const ProfileQuestions = ({ question, answers }) => {
     } catch (error) {
       console.log(error)
       let targetGroup = newProfileSurvey.targetGroups[0]
-      targetGroup.surveyData = initSurveyData(newProfileSurvey.targetGroups[0].init.surveyData)
+      targetGroup.surveyData = initSurveyData(respondentSurveyData)
 
       setNewProfileSurvey(prev => ({
         ...prev,
@@ -384,7 +366,6 @@ const ProfileQuestions = ({ question, answers }) => {
           <CardHeader title='Optional info' />
           <CardContent>
             <GlobalProfiling
-              category={categoryTitle}
               profileCategories={profileCategories}
               surveyData={newProfileSurvey.targetGroups[0].surveyData}
               render={(category, open) => (

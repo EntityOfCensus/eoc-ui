@@ -20,6 +20,7 @@ import CustomAvatar from '@core/components/mui/Avatar'
 import StepSurveyType from './StepSurveyType'
 import StepConfigType from './StepConfigType'
 import StepBasicSettings from './StepBasicSettings'
+import StepAdvancedSettings from './StepAdvancedSettings'
 import StepReview from './StepReview'
 
 // Styled Component Imports
@@ -84,7 +85,7 @@ const CreateSurvey = () => {
           : step === 2
             ? newSurvey.config == 'easy'
               ? StepAudience
-              : StepBasicSettings
+              : StepAdvancedSettings
             : StepReview
 
     return (

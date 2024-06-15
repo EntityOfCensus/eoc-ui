@@ -14,11 +14,11 @@ import React, { useEffect, useState } from 'react'
 import Chip from '@mui/material/Chip'
 import useMediaQuery from '@menu/hooks/useMediaQuery'
 
-const GlobalProfiling = ({ profileCategories, render, category, surveyData }) => {
+const GlobalProfiling = ({ profileCategories, render, surveyData }) => {
   const [categories, setCategories] = useState(profileCategories)
 
   const [profileOpen, setProfileOpen] = useState(false)
-  const [categoryTitle, setCategoryTitle] = useState(category)
+  const [categoryTitle, setCategoryTitle] = useState('')
   const [open, setOpen] = useState(false)
   const isMobile = useMediaQuery('600px')
 

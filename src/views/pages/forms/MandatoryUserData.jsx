@@ -27,6 +27,7 @@ import { useAtom } from 'jotai/index'
 // Third-party Imports
 import { toast } from 'react-toastify'
 import { useForm, Controller } from 'react-hook-form'
+import { countries } from 'countries-list'
 
 import { RespondentBasicDataApi, RespondentBasicDataApiClient } from '../../../@bff/respondent-basic-info-api'
 
@@ -70,6 +71,8 @@ const MandatoryUserData = () => {
 
   const [isSaving, setIsSaving] = useState(false)
 
+  const [countriesList, setCountriesList] = useState([])
+
   // Hooks
   const {
     control,
@@ -100,6 +103,11 @@ const MandatoryUserData = () => {
 
   useEffect(() => {
     if (!respondentBasicData) {
+      let list = []
+      for (var key in countries) {
+        list.push({ code: key, name: countries[key].name })
+      }
+      setCountriesList(list)
       const { sub } = jwtDecode(localStorage.getItem('id_token'))
       respondentBasicDataApi.apiClient.authentications = {
         bearerAuth: {
@@ -300,11 +308,11 @@ const MandatoryUserData = () => {
                       error={Boolean(errors.select)}
                     >
                       <MenuItem value=''>Select Country</MenuItem>
-                      {}
-                      <MenuItem value='UK'>UK</MenuItem>
-                      <MenuItem value='USA'>USA</MenuItem>
-                      <MenuItem value='Australia'>Australia</MenuItem>
-                      <MenuItem value='Germany'>Germany</MenuItem>
+                      {countriesList.map((country, index) => (
+                        <MenuItem key={index} value={country.code}>
+                          {country.name}
+                        </MenuItem>
+                      ))}
                     </CustomTextField>
                   )}
                 />

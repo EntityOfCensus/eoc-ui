@@ -26,8 +26,6 @@ import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
 import CustomTextField from '@core/components/mui/TextField'
 
 const StepAudience = ({ surveyData, onChangeSurveyData, activeStep, handleNext, handlePrev, steps }) => {
-  const [categoryTitle, setCategoryTitle] = useState('')
-
   const isGender = gender => {
     return surveyData.gender && surveyData.gender === gender
   }
@@ -144,7 +142,6 @@ const StepAudience = ({ surveyData, onChangeSurveyData, activeStep, handleNext, 
           </Grid>
           <Grid container spacing={6}>
             <GlobalProfiling
-              category={categoryTitle}
               profileCategories={profileCategories}
               surveyData={surveyData.targetGroups ? surveyData.targetGroups[0].surveyData : []}
               render={(category, open) => (
