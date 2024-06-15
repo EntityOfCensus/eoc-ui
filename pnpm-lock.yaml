@@ -50,6 +50,9 @@ importers:
       classnames:
         specifier: 2.5.1
         version: 2.5.1
+      countries-list:
+        specifier: ^3.1.0
+        version: 3.1.0
       country-list:
         specifier: ^2.3.0
         version: 2.3.0
@@ -1128,6 +1131,9 @@ packages:
     peerDependenciesMeta:
       typescript:
         optional: true
+
+  countries-list@3.1.0:
+    resolution: {integrity: sha512-HpTBLZba1VPTZSjUnUwR7SykxV7Z/7/+ZM5x5wi5tO99Qvom6bE2SC+AQ18016ujg3jSlYBbMITrHNnPAHSM9Q==}
 
   country-list@2.3.0:
     resolution: {integrity: sha512-qZk66RlmQm7fQjMYWku1AyjlKPogjPEorAZJG88owPExoPV8EsyCcuFLvO2afTXHEhi9liVOoyd+5A6ZS5QwaA==}
@@ -4119,6 +4125,8 @@ snapshots:
       parse-json: 5.2.0
     optionalDependencies:
       typescript: 5.4.5
+
+  countries-list@3.1.0: {}
 
   country-list@2.3.0: {}
 
