@@ -90,7 +90,7 @@ const StepBasicSettings = ({ surveyData, onChangeSurveyData, activeStep, handleN
   }
 
   return (
-    <Grid container spacing={6}>
+    <Grid container spacing={6} justifyContent='space-between'>
       <Grid item xs={12}>
         {surveyData.config === 'advanced' &&
           surveyData.targetGroups &&

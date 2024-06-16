@@ -14,7 +14,6 @@ import React, { useState } from 'react'
 import DraggableDialog from '@/libs/DraggableDialog'
 import { useAtom } from 'jotai'
 import { mapDataAtom } from '@/app/store/atoms'
-import { getName } from 'country-list'
 import axios from 'axios'
 import { respondentSurveyData, initSurveyData } from '@/app/store/consts'
 
@@ -89,7 +88,7 @@ const StepConfigType = ({ surveyData, onChangeSurveyData, activeStep, handleNext
         minimumAge: surveyData.minimumAge ? surveyData.minimumAge : 18,
         maximumAge: surveyData.maximumAge ? surveyData.maximumAge : 64,
         gender: surveyData.gender ? surveyData.gender : 'both',
-        country: getName(countryIndex.cca2),
+        country: countryIndex.cca2,
         wantedCompletes: surveyData.wantedRespondents
           ? ((countryIndex.population / totalPop) * surveyData.wantedRespondents).toFixed()
           : '',

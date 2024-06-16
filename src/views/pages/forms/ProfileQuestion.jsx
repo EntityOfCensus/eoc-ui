@@ -34,12 +34,13 @@ const ProfileQuestion = ({ questionItem, category, onAnswerChange }) => {
         answers.push(parseInt(e.target.value))
       }
     }
-    setQuestion(prev => ({
-      ...prev,
-      answers: answers
-    }))
     if (onAnswerChange) {
       onAnswerChange(answers, question)
+    } else {
+      setQuestion(prev => ({
+        ...prev,
+        answers: answers
+      }))
     }
   }
 

@@ -17,7 +17,7 @@ import GlobalProfiling from '@views/pages/shared/GlobalProfiling'
 import ProfileQuestion from '@views/pages/forms/ProfileQuestion'
 import { profileCategories } from '@/app/store/consts'
 
-const AdvancedSettings = ({ surveyData, onChangeSurveyData, targetGroup, index, countries }) => {
+const AdvancedSettings = ({ surveyData, onChangeSurveyData, targetGroup, targetGroupIndex, countries }) => {
   const {
     control,
     handleSubmit,
@@ -55,13 +55,17 @@ const AdvancedSettings = ({ surveyData, onChangeSurveyData, targetGroup, index, 
   }
 
   const handleDeleteTargetGroup = event => {
-    setVisible(prev => !prev)
-    formValues.visible = !formValues.visible
-    targetGroup.visible = formValues.visible
+    let targetGroups = surveyData.targetGroups
+    targetGroups.splice(targetGroupIndex, 1)
+    onChangeSurveyData(prev => ({
+      ...prev,
+      targetGroups: targetGroups
+    }))
   }
 
   const onAnswerChange = (answers, question) => {
-    let targetGroup = surveyData.targetGroups[0]
+    let targetGroups = surveyData.targetGroups
+    let targetGroup = targetGroups[targetGroupIndex]
     for (var i = 0; i < targetGroup.surveyData.length; ++i) {
       if (
         targetGroup.surveyData[i].question == question.question &&
@@ -70,9 +74,10 @@ const AdvancedSettings = ({ surveyData, onChangeSurveyData, targetGroup, index, 
         targetGroup.surveyData[i].answers = answers
       }
     }
+    targetGroups.splice(targetGroupIndex, 1, targetGroup)
     onChangeSurveyData(prev => ({
       ...prev,
-      targetGroups: [targetGroup]
+      targetGroups: targetGroups
     }))
   }
 
@@ -94,51 +99,51 @@ const AdvancedSettings = ({ surveyData, onChangeSurveyData, targetGroup, index, 
 
   return (
     visible && (
-      <Grid container spacing={3}>
+      <Grid container spacing={3} justifyContent='space-between' m={2}>
         {!disabled && (
-          <Grid container justifyContent='flex-end'>
-            <Button size={'small'} color={'secondary'} variant={'contained'} onClick={handleDeleteTargetGroup}>
-              <i className='tabler-x' />
-            </Button>
+          <Grid item xs={12}>
+            <Grid container justifyContent='flex-end'>
+              <Button size={'small'} color={'secondary'} variant={'contained'} onClick={handleDeleteTargetGroup}>
+                <i className='tabler-x' />
+              </Button>
+            </Grid>
           </Grid>
         )}
-        <Grid container spacing={6}>
-          <GlobalProfiling
-            profileCategories={profileCategories}
-            surveyData={surveyData.targetGroups ? surveyData.targetGroups[0].surveyData : []}
-            render={(category, open) => (
-              <React.Fragment>
-                <Grid container spacing={6}>
-                  <Grid item xs={12}>
-                    <Typography component='span' variant='h5' className='flex flex-col'>
-                      {category}
-                    </Typography>
-                    <Typography component='span' variant='h6' className='flex flex-col'>
-                      Below are the questions that the panelists hae responded to. You can select any number of
-                      attributes that matches your target criteria. The target group will then contain only panelists
-                      who have answered these selected attributes (as well as any other attributes you have selected in
-                      other categories).
-                    </Typography>
-                    {open &&
-                      surveyData.targetGroups &&
-                      surveyData.targetGroups[0].surveyData &&
-                      surveyData.targetGroups[0].surveyData.map((item, index) => (
-                        <ProfileQuestion
-                          key={index}
-                          questionItem={item}
-                          onAnswerChange={onAnswerChange}
-                          category={category}
-                        />
-                      ))}
-                  </Grid>
+        <GlobalProfiling
+          profileCategories={profileCategories}
+          surveyData={surveyData.targetGroups ? surveyData.targetGroups[targetGroupIndex].surveyData : []}
+          render={(category, open) => (
+            <React.Fragment>
+              <Grid container spacing={6}>
+                <Grid item xs={12}>
+                  <Typography component='span' variant='h5' className='flex flex-col'>
+                    {category}
+                  </Typography>
+                  <Typography component='span' variant='h6' className='flex flex-col'>
+                    Below are the questions that the panelists hae responded to. You can select any number of attributes
+                    that matches your target criteria. The target group will then contain only panelists who have
+                    answered these selected attributes (as well as any other attributes you have selected in other
+                    categories).
+                  </Typography>
+                  {open &&
+                    surveyData.targetGroups &&
+                    surveyData.targetGroups[targetGroupIndex].surveyData &&
+                    surveyData.targetGroups[targetGroupIndex].surveyData.map((item, index) => (
+                      <ProfileQuestion
+                        key={index}
+                        questionItem={item}
+                        onAnswerChange={onAnswerChange}
+                        category={category}
+                      />
+                    ))}
                 </Grid>
-              </React.Fragment>
-            )}
-          />
-        </Grid>
+              </Grid>
+            </React.Fragment>
+          )}
+        />
         <Grid item xs={12}>
           <form>
-            <Grid container spacing={6}>
+            <Grid container spacing={6} justifyContent='space-between'>
               <Grid item xs={12} sm={12} md={12} lg={5}>
                 <Grid container spacing={3}>
                   <Grid item xs={12}>

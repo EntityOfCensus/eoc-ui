@@ -8,6 +8,8 @@ import React, { useEffect, useState } from 'react'
 import AdvancedSettings from '@views/pages/wizard/AdvancedSettings'
 import { respondentSurveyData, initSurveyData } from '@/app/store/consts'
 import { countries } from 'countries-list'
+import QuestionsSlider from './QuestionsSlider'
+import Typography from '@mui/material/Typography'
 
 const StepAdvancedSettings = ({ surveyData, onChangeSurveyData, activeStep, handleNext, handlePrev, steps }) => {
   const [countriesList, setCountriesList] = useState([])
@@ -57,7 +59,23 @@ const StepAdvancedSettings = ({ surveyData, onChangeSurveyData, activeStep, hand
   }
 
   return (
-    <Grid container spacing={6}>
+    <Grid container spacing={6} justifyContent='space-between'>
+      <Grid item xs={12} sm={12} md={12} lg={12}>
+        <Grid item xs={12} sm={12} ls={12}>
+          <Typography variant='h4' className='sm:mbs-2 lg:mbs-0'>
+            How many questions do you want to ask respondents?
+          </Typography>
+        </Grid>
+        <Grid item xs={12} sm={12} ls={12}>
+          <QuestionsSlider surveyData={surveyData} onChangeSurveyData={onChangeSurveyData} defaultValue={10} />
+        </Grid>
+        <Grid item xs={12} sm={12} ls={12}>
+          <Typography variant='h6' className='sm:mbs-2 lg:mbs-0'>
+            We recommend xx questions and no more than yy. Based on the number of questions, respondents will be paid
+            more or less, impacting the cost of the survey.
+          </Typography>
+        </Grid>
+      </Grid>
       <Grid item xs={12}>
         {surveyData.targetGroups &&
           surveyData.targetGroups.map((item, index) => (
@@ -66,15 +84,17 @@ const StepAdvancedSettings = ({ surveyData, onChangeSurveyData, activeStep, hand
               targetGroup={item}
               surveyData={surveyData}
               onChangeSurveyData={onChangeSurveyData}
-              index={index}
+              targetGroupIndex={index}
               countries={countriesList}
             />
           ))}
       </Grid>
-      <Grid container justifyContent='flex-end'>
-        <Button color={'secondary'} variant={'contained'} onClick={handleAddTargetGroup}>
-          Add Target Group
-        </Button>
+      <Grid item xs={12}>
+        <Grid container justifyContent='flex-end'>
+          <Button color={'secondary'} variant={'contained'} onClick={handleAddTargetGroup}>
+            Add Target Group
+          </Button>
+        </Grid>
       </Grid>
       <Grid item xs={12}>
         <div className='flex items-center justify-between'>
