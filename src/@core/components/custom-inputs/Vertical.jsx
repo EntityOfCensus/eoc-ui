@@ -97,7 +97,14 @@ const CustomInputVertical = props => {
           {title ? typeof title === 'string' ? <Title>{title}</Title> : title : null}
           {content ? typeof content === 'string' ? <Content>{content}</Content> : content : null}
           {type === 'radio' ? (
-            <RadioInput disabled={disabled} name={name} color={color} value={value} onChange={handleChange} checked={selected === value} />
+            <RadioInput
+              disabled={disabled}
+              name={name}
+              color={color}
+              value={value}
+              onChange={handleChange}
+              checked={selected === value}
+            />
           ) : (
             <CheckboxInput
               color={color}

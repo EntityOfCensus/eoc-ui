@@ -43,7 +43,7 @@ const StepConfigType = ({ surveyData, onChangeSurveyData, activeStep, handleNext
 
   const [confirmConfigTypeChangeContent, setConfirmConfigTypeChangeContent] = useState('')
 
-  const [prop, setProp] = useState(null)
+  const [configType, setConfigType] = useState(null)
 
   // const [confirmConfigTypeChange, setConfirmConfigTypeChange] = useState(false)
 
@@ -53,31 +53,51 @@ const StepConfigType = ({ surveyData, onChangeSurveyData, activeStep, handleNext
     if (typeof prop === 'string') {
       if (prop === 'disabled') {
         //doNothing
-      }
-    } else {
-      if (!surveyData.targetGroups) {
-        onChangeSurveyData(prev => ({
-          ...prev,
-          config: prop.target.value
-        }))
       } else {
-        setProp(prop)
-        if (surveyData.config === 'easy') {
-          setConfirmConfigTypeChangeTitle('Change to advance configuration type?')
-          setConfirmConfigTypeChangeContent(
-            'Changing to advance configuration, the easy configuration will be smart distributed into advance configuration'
-          )
+        setConfigType(prop)
+        if (!surveyData.targetGroups) {
+          onChangeSurveyData(prev => ({
+            ...prev,
+            config: prop
+          }))
         } else {
-          setConfirmConfigTypeChangeTitle('Change to easy configuration type?')
-          setConfirmConfigTypeChangeContent('Changing to easy configuration, all audience setup will be reset')
+          if (surveyData.config === 'easy') {
+            setConfirmConfigTypeChangeTitle('Change to advance configuration type?')
+            setConfirmConfigTypeChangeContent(
+              'Changing to advance configuration, the easy configuration will be smart distributed into advance configuration'
+            )
+          } else {
+            setConfirmConfigTypeChangeTitle('Change to easy configuration type?')
+            setConfirmConfigTypeChangeContent('Changing to easy configuration, all audience setup will be reset')
+          }
+          setConfirmConfigTypeChange(true)
         }
-        setConfirmConfigTypeChange(true)
       }
     }
+    // else if (configType != prop.target.value) {
+    //   setConfigType(prop.target.value)
+    //   if (!surveyData.targetGroups) {
+    //     onChangeSurveyData(prev => ({
+    //       ...prev,
+    //       config: prop.target.value
+    //     }))
+    //   } else {
+    //     if (surveyData.config === 'easy') {
+    //       setConfirmConfigTypeChangeTitle('Change to advance configuration type?')
+    //       setConfirmConfigTypeChangeContent(
+    //         'Changing to advance configuration, the easy configuration will be smart distributed into advance configuration'
+    //       )
+    //     } else {
+    //       setConfirmConfigTypeChangeTitle('Change to easy configuration type?')
+    //       setConfirmConfigTypeChangeContent('Changing to easy configuration, all audience setup will be reset')
+    //     }
+    //     setConfirmConfigTypeChange(true)
+    //   }
+    // }
   }
 
   const handleOptionChange = async () => {
-    if (prop.target.value == 'advanced') {
+    if (configType == 'advanced') {
       setMapData({})
       const res = await axios.get(`https://restcountries.com/v3.1/alpha?codes=${surveyData.countryCodes}`)
       let totalPop = res.data.map(item => item.population).reduce((sum, a) => sum + a, 0)
@@ -102,8 +122,8 @@ const StepConfigType = ({ surveyData, onChangeSurveyData, activeStep, handleNext
         startDate: surveyData.startDate ? surveyData.startDate : tomorrow,
         time: surveyData.time ? surveyData.time : '00:00',
         surveyData: surveyData.targetGroups
-          ? surveyData.targetGroups[0].surveyData
-          : initSurveyData(respondentSurveyData),
+          ? JSON.parse(JSON.stringify(surveyData.targetGroups[0].surveyData))
+          : JSON.parse(JSON.stringify(respondentSurveyData)),
         visible: true
       }))
 
@@ -119,13 +139,15 @@ const StepConfigType = ({ surveyData, onChangeSurveyData, activeStep, handleNext
         targetGroups: targetGroups,
         countryCodes: [],
         countryNames: [],
-        config: prop.target.value
+        config: configType
       }))
     } else {
       onChangeSurveyData(prev => ({
         ...prev,
+        countryCodes: [],
+        countryNames: [],
         targetGroups: null,
-        config: prop.target.value
+        config: configType
       }))
     }
   }

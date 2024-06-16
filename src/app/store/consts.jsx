@@ -55,7 +55,7 @@ export const profileCategories = [
   }
 ]
 
-export const surveyData1 = {
+const surveyData1 = {
   question: 'T1 Automotive În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'simple',
   category: 'Automotive',
@@ -70,7 +70,7 @@ export const surveyData1 = {
   answers: []
 }
 
-export const surveyData2 = {
+const surveyData2 = {
   question: 'T2  Automotive În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'simple',
   category: 'Automotive',
@@ -85,7 +85,7 @@ export const surveyData2 = {
   answers: []
 }
 
-export const surveyData3 = {
+const surveyData3 = {
   question: 'T3 Automotive În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'multiple',
   category: 'Automotive',
@@ -100,7 +100,7 @@ export const surveyData3 = {
   answers: []
 }
 
-export const surveyData4 = {
+const surveyData4 = {
   question: 'T4  Automotive În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'multiple',
   category: 'Automotive',
@@ -115,7 +115,7 @@ export const surveyData4 = {
   answers: []
 }
 
-export const surveyData5 = {
+const surveyData5 = {
   question: 'T1 Business & Occupation În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'simple',
   category: 'Business & Occupation',
@@ -130,7 +130,7 @@ export const surveyData5 = {
   answers: []
 }
 
-export const surveyData6 = {
+const surveyData6 = {
   question: 'T2 Business & Occupation În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'simple',
   category: 'Business & Occupation',
@@ -145,7 +145,7 @@ export const surveyData6 = {
   answers: []
 }
 
-export const surveyData7 = {
+const surveyData7 = {
   question: 'T3 Business & Occupation În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'multiple',
   category: 'Business & Occupation',
@@ -160,7 +160,7 @@ export const surveyData7 = {
   answers: []
 }
 
-export const surveyData8 = {
+const surveyData8 = {
   question: 'T4 Business & Occupation În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'multiple',
   category: 'Business & Occupation',
@@ -175,7 +175,7 @@ export const surveyData8 = {
   answers: []
 }
 
-export const surveyData9 = {
+const surveyData9 = {
   question: 'T1 Education În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'simple',
   category: 'Education',
@@ -190,7 +190,7 @@ export const surveyData9 = {
   answers: []
 }
 
-export const surveyData10 = {
+const surveyData10 = {
   question: 'T2 Education În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'simple',
   category: 'Education',
@@ -205,7 +205,7 @@ export const surveyData10 = {
   answers: []
 }
 
-export const surveyData11 = {
+const surveyData11 = {
   question: 'T3  Education În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'multiple',
   category: 'Education',
@@ -220,7 +220,7 @@ export const surveyData11 = {
   answers: []
 }
 
-export const surveyData12 = {
+const surveyData12 = {
   question: 'T4 Education În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'multiple',
   category: 'Education',
@@ -235,7 +235,7 @@ export const surveyData12 = {
   answers: []
 }
 
-export const surveyData13 = {
+const surveyData13 = {
   question: 'T1 Electronics În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'simple',
   category: 'Electronics',
@@ -250,7 +250,7 @@ export const surveyData13 = {
   answers: []
 }
 
-export const surveyData14 = {
+const surveyData14 = {
   question: 'T2 Electronics În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'simple',
   category: 'Electronics',
@@ -265,7 +265,7 @@ export const surveyData14 = {
   answers: []
 }
 
-export const surveyData15 = {
+const surveyData15 = {
   question: 'T3 Electronics În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'multiple',
   category: 'Electronics',
@@ -280,7 +280,7 @@ export const surveyData15 = {
   answers: []
 }
 
-export const surveyData16 = {
+const surveyData16 = {
   question: 'T4 Electronics În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'multiple',
   category: 'Electronics',
@@ -295,7 +295,7 @@ export const surveyData16 = {
   answers: []
 }
 
-export const surveyData17 = {
+const surveyData17 = {
   question: 'T1 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'simple',
   category: 'Ethnicity',
@@ -310,7 +310,7 @@ export const surveyData17 = {
   answers: []
 }
 
-export const surveyData18 = {
+const surveyData18 = {
   question: 'T2 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'simple',
   category: 'Ethnicity',
@@ -325,7 +325,7 @@ export const surveyData18 = {
   answers: []
 }
 
-export const surveyData19 = {
+const surveyData19 = {
   question: 'T3 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'multiple',
   category: 'Ethnicity',
@@ -340,7 +340,7 @@ export const surveyData19 = {
   answers: []
 }
 
-export const surveyData20 = {
+const surveyData20 = {
   question: 'T4 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'multiple',
   category: 'Ethnicity',
@@ -355,7 +355,7 @@ export const surveyData20 = {
   answers: []
 }
 
-export const surveyData21 = {
+const surveyData21 = {
   question: 'T1 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'simple',
   category: 'Finance',
@@ -370,7 +370,7 @@ export const surveyData21 = {
   answers: []
 }
 
-export const surveyData22 = {
+const surveyData22 = {
   question: 'T2 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'simple',
   category: 'Finance',
@@ -385,7 +385,7 @@ export const surveyData22 = {
   answers: []
 }
 
-export const surveyData23 = {
+const surveyData23 = {
   question: 'T3 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'multiple',
   category: 'Finance',
@@ -400,7 +400,7 @@ export const surveyData23 = {
   answers: []
 }
 
-export const surveyData24 = {
+const surveyData24 = {
   question: 'T4 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'multiple',
   category: 'Finance',
@@ -415,7 +415,7 @@ export const surveyData24 = {
   answers: []
 }
 
-export const surveyData25 = {
+const surveyData25 = {
   question: 'T1 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'simple',
   category: 'Food & Beverage',
@@ -430,7 +430,7 @@ export const surveyData25 = {
   answers: []
 }
 
-export const surveyData26 = {
+const surveyData26 = {
   question: 'T2 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'simple',
   category: 'Food & Beverage',
@@ -445,7 +445,7 @@ export const surveyData26 = {
   answers: []
 }
 
-export const surveyData27 = {
+const surveyData27 = {
   question: 'T3 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'multiple',
   category: 'Food & Beverage',
@@ -460,7 +460,7 @@ export const surveyData27 = {
   answers: []
 }
 
-export const surveyData28 = {
+const surveyData28 = {
   question: 'T4 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'multiple',
   category: 'Food & Beverage',
@@ -475,7 +475,7 @@ export const surveyData28 = {
   answers: []
 }
 
-export const surveyData29 = {
+const surveyData29 = {
   question: 'T1 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'simple',
   category: 'Gaming',
@@ -490,7 +490,7 @@ export const surveyData29 = {
   answers: []
 }
 
-export const surveyData30 = {
+const surveyData30 = {
   question: 'T2 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'simple',
   category: 'Gaming',
@@ -505,7 +505,7 @@ export const surveyData30 = {
   answers: []
 }
 
-export const surveyData31 = {
+const surveyData31 = {
   question: 'T3 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'multiple',
   category: 'Gaming',
@@ -520,7 +520,7 @@ export const surveyData31 = {
   answers: []
 }
 
-export const surveyData32 = {
+const surveyData32 = {
   question: 'T4 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'multiple',
   category: 'Gaming',
@@ -535,7 +535,7 @@ export const surveyData32 = {
   answers: []
 }
 
-export const surveyData33 = {
+const surveyData33 = {
   question: 'T1 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'simple',
   category: 'Healthcare Consumer',
@@ -550,7 +550,7 @@ export const surveyData33 = {
   answers: []
 }
 
-export const surveyData34 = {
+const surveyData34 = {
   question: 'T2 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'simple',
   category: 'Healthcare Consumer',
@@ -565,7 +565,7 @@ export const surveyData34 = {
   answers: []
 }
 
-export const surveyData35 = {
+const surveyData35 = {
   question: 'T3 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'multiple',
   category: 'Healthcare Consumer',
@@ -580,7 +580,7 @@ export const surveyData35 = {
   answers: []
 }
 
-export const surveyData36 = {
+const surveyData36 = {
   question: 'T4 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'multiple',
   category: 'Healthcare Consumer',
@@ -595,7 +595,7 @@ export const surveyData36 = {
   answers: []
 }
 
-export const surveyData37 = {
+const surveyData37 = {
   question: 'T1 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'simple',
   category: 'Hobbies & Interests',
@@ -610,7 +610,7 @@ export const surveyData37 = {
   answers: []
 }
 
-export const surveyData38 = {
+const surveyData38 = {
   question: 'T2 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'simple',
   category: 'Hobbies & Interests',
@@ -625,7 +625,7 @@ export const surveyData38 = {
   answers: []
 }
 
-export const surveyData39 = {
+const surveyData39 = {
   question: 'T3 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'multiple',
   category: 'Hobbies & Interests',
@@ -640,7 +640,7 @@ export const surveyData39 = {
   answers: []
 }
 
-export const surveyData40 = {
+const surveyData40 = {
   question: 'T4 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'multiple',
   category: 'Hobbies & Interests',
@@ -655,7 +655,7 @@ export const surveyData40 = {
   answers: []
 }
 
-export const surveyData41 = {
+const surveyData41 = {
   question: 'T1 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'simple',
   category: 'Household',
@@ -670,7 +670,7 @@ export const surveyData41 = {
   answers: []
 }
 
-export const surveyData42 = {
+const surveyData42 = {
   question: 'T2 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'simple',
   category: 'Household',
@@ -685,7 +685,7 @@ export const surveyData42 = {
   answers: []
 }
 
-export const surveyData43 = {
+const surveyData43 = {
   question: 'T3 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'multiple',
   category: 'Household',
@@ -700,7 +700,7 @@ export const surveyData43 = {
   answers: []
 }
 
-export const surveyData44 = {
+const surveyData44 = {
   question: 'T4 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'multiple',
   category: 'Household',
@@ -715,7 +715,7 @@ export const surveyData44 = {
   answers: []
 }
 
-export const surveyData45 = {
+const surveyData45 = {
   question: 'T1 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'simple',
   category: 'Media',
@@ -730,7 +730,7 @@ export const surveyData45 = {
   answers: []
 }
 
-export const surveyData46 = {
+const surveyData46 = {
   question: 'T2 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'simple',
   category: 'Media',
@@ -745,7 +745,7 @@ export const surveyData46 = {
   answers: []
 }
 
-export const surveyData47 = {
+const surveyData47 = {
   question: 'T4 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'multiple',
   category: 'Media',
@@ -760,7 +760,7 @@ export const surveyData47 = {
   answers: []
 }
 
-export const surveyData48 = {
+const surveyData48 = {
   question: 'T3 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'multiple',
   category: 'Media',
@@ -775,7 +775,7 @@ export const surveyData48 = {
   answers: []
 }
 
-export const surveyData49 = {
+const surveyData49 = {
   question: 'T1 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'simple',
   category: 'Mobile',
@@ -790,7 +790,7 @@ export const surveyData49 = {
   answers: []
 }
 
-export const surveyData50 = {
+const surveyData50 = {
   question: 'T2 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'simple',
   category: 'Mobile',
@@ -805,7 +805,7 @@ export const surveyData50 = {
   answers: []
 }
 
-export const surveyData51 = {
+const surveyData51 = {
   question: 'T4 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'multiple',
   category: 'Mobile',
@@ -820,7 +820,7 @@ export const surveyData51 = {
   answers: []
 }
 
-export const surveyData52 = {
+const surveyData52 = {
   question: 'T3 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'multiple',
   category: 'Mobile',
@@ -835,7 +835,7 @@ export const surveyData52 = {
   answers: []
 }
 
-export const surveyData53 = {
+const surveyData53 = {
   question: 'T1 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'simple',
   category: 'Mother & Baby',
@@ -850,7 +850,7 @@ export const surveyData53 = {
   answers: []
 }
 
-export const surveyData54 = {
+const surveyData54 = {
   question: 'T2 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'simple',
   category: 'Mother & Baby',
@@ -865,7 +865,7 @@ export const surveyData54 = {
   answers: []
 }
 
-export const surveyData55 = {
+const surveyData55 = {
   question: 'T4 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'multiple',
   category: 'Mother & Baby',
@@ -880,7 +880,7 @@ export const surveyData55 = {
   answers: []
 }
 
-export const surveyData56 = {
+const surveyData56 = {
   question: 'T3 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'multiple',
   category: 'Mother & Baby',
@@ -895,7 +895,7 @@ export const surveyData56 = {
   answers: []
 }
 
-export const surveyData57 = {
+const surveyData57 = {
   question: 'T1 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'simple',
   category: 'Region',
@@ -910,7 +910,7 @@ export const surveyData57 = {
   answers: []
 }
 
-export const surveyData58 = {
+const surveyData58 = {
   question: 'T2 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'simple',
   category: 'Region',
@@ -925,7 +925,7 @@ export const surveyData58 = {
   answers: []
 }
 
-export const surveyData59 = {
+const surveyData59 = {
   question: 'T4 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'multiple',
   category: 'Region',
@@ -940,7 +940,7 @@ export const surveyData59 = {
   answers: []
 }
 
-export const surveyData60 = {
+const surveyData60 = {
   question: 'T3 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'multiple',
   category: 'Region',
@@ -955,7 +955,7 @@ export const surveyData60 = {
   answers: []
 }
 
-export const surveyData61 = {
+const surveyData61 = {
   question: 'T1 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'simple',
   category: 'Research',
@@ -970,7 +970,7 @@ export const surveyData61 = {
   answers: []
 }
 
-export const surveyData62 = {
+const surveyData62 = {
   question: 'T2 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'simple',
   category: 'Research',
@@ -985,7 +985,7 @@ export const surveyData62 = {
   answers: []
 }
 
-export const surveyData63 = {
+const surveyData63 = {
   question: 'T4 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'multiple',
   category: 'Research',
@@ -1000,7 +1000,7 @@ export const surveyData63 = {
   answers: []
 }
 
-export const surveyData64 = {
+const surveyData64 = {
   question: 'T3 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'multiple',
   category: 'Research',
@@ -1015,7 +1015,7 @@ export const surveyData64 = {
   answers: []
 }
 
-export const surveyData65 = {
+const surveyData65 = {
   question: 'T1 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'simple',
   category: 'Smoking',
@@ -1030,7 +1030,7 @@ export const surveyData65 = {
   answers: []
 }
 
-export const surveyData66 = {
+const surveyData66 = {
   question: 'T2 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'simple',
   category: 'Smoking',
@@ -1045,7 +1045,7 @@ export const surveyData66 = {
   answers: []
 }
 
-export const surveyData67 = {
+const surveyData67 = {
   question: 'T4 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'multiple',
   category: 'Smoking',
@@ -1060,7 +1060,7 @@ export const surveyData67 = {
   answers: []
 }
 
-export const surveyData68 = {
+const surveyData68 = {
   question: 'T3 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'multiple',
   category: 'Smoking',
@@ -1075,7 +1075,7 @@ export const surveyData68 = {
   answers: []
 }
 
-export const surveyData69 = {
+const surveyData69 = {
   question: 'T1 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'simple',
   category: 'Travel',
@@ -1090,7 +1090,7 @@ export const surveyData69 = {
   answers: []
 }
 
-export const surveyData70 = {
+const surveyData70 = {
   question: 'T2 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'simple',
   category: 'Travel',
@@ -1105,7 +1105,7 @@ export const surveyData70 = {
   answers: []
 }
 
-export const surveyData71 = {
+const surveyData71 = {
   question: 'T4 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'multiple',
   category: 'Travel',
@@ -1120,7 +1120,7 @@ export const surveyData71 = {
   answers: []
 }
 
-export const surveyData72 = {
+const surveyData72 = {
   question: 'T3 În medie, câte ore vă uitați la televizor într-o săptămână obișnuită?',
   type: 'multiple',
   category: 'Travel',
@@ -1136,10 +1136,10 @@ export const surveyData72 = {
 }
 
 export const respondentSurveyData = [
-  surveyData1,
-  surveyData2,
-  surveyData3,
-  surveyData4,
+  JSON.parse(JSON.stringify(surveyData1)),
+  JSON.parse(JSON.stringify(surveyData2)),
+  JSON.parse(JSON.stringify(surveyData3)),
+  JSON.parse(JSON.stringify(surveyData4)),
   surveyData5,
   surveyData6,
   surveyData7,

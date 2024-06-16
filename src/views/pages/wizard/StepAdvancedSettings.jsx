@@ -27,7 +27,7 @@ const StepAdvancedSettings = ({ surveyData, onChangeSurveyData, activeStep, hand
     daysInField: '7',
     startDate: '',
     time: '00:00',
-    surveyData: initSurveyData(respondentSurveyData),
+    surveyData: JSON.parse(JSON.stringify(respondentSurveyData)),
     visible: true
   }
 
@@ -35,7 +35,7 @@ const StepAdvancedSettings = ({ surveyData, onChangeSurveyData, activeStep, hand
     if (!surveyData.targetGroups || surveyData.targetGroups.length === 0) {
       onChangeSurveyData(prev => ({
         ...prev,
-        targetGroups: Array(1).fill(defaultTargetGroup)
+        targetGroups: [JSON.parse(JSON.stringify(defaultTargetGroup))]
       }))
     }
     let list = []

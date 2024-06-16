@@ -19,11 +19,13 @@ const PaperComponent = props => {
 const DraggableDialog = ({ title, content, confirmCallback, confirm, onClose }) => {
   // const [open, setOpen] = React.useState(confirm)
 
-  const handleClose = () => {
+  const handleClose = e => {
+    e.preventDefault()
     onClose(false)
   }
 
-  const handleConfirm = () => {
+  const handleConfirm = e => {
+    e.preventDefault()
     onClose(false)
     confirmCallback()
   }

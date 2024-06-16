@@ -10,7 +10,6 @@ import Radio from '@mui/material/Radio'
 import FormHelperText from '@mui/material/FormHelperText'
 import React, { useEffect, useState } from 'react'
 import Button from '@mui/material/Button'
-import Chip from '@mui/material/Chip'
 import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
 import MenuItem from '@mui/material/MenuItem'
 import GlobalProfiling from '@views/pages/shared/GlobalProfiling'
@@ -18,6 +17,9 @@ import ProfileQuestion from '@views/pages/forms/ProfileQuestion'
 import { profileCategories } from '@/app/store/consts'
 
 const AdvancedSettings = ({ surveyData, onChangeSurveyData, targetGroupIndex, countries }) => {
+  const [mounted, setMounted] = useState(false)
+  const [questions, setQuestions] = useState([])
+
   const {
     control,
     handleSubmit,
@@ -47,7 +49,17 @@ const AdvancedSettings = ({ surveyData, onChangeSurveyData, targetGroupIndex, co
   const [visible, setVisible] = useState(surveyData.targetGroups[targetGroupIndex].visible)
 
   useEffect(() => {
+    if (mounted) {
+      setMounted(true)
+      setQuestions(JSON.parse(JSON.stringify(surveyData.targetGroups[targetGroupIndex].surveyData)))
+    }
+  }, [mounted])
+
+  useEffect(() => {
     setDisabled(surveyData.config === 'easy')
+    if (!mounted) {
+      setMounted(true)
+    }
   }, [])
 
   const isGender = gender => {
@@ -64,16 +76,14 @@ const AdvancedSettings = ({ surveyData, onChangeSurveyData, targetGroupIndex, co
   }
 
   const onAnswerChange = (answers, question) => {
-    let targetGroups = surveyData.targetGroups
-    let targetGroup = targetGroups[targetGroupIndex]
-    for (var i = 0; i < targetGroup.surveyData.length; ++i) {
-      if (
-        targetGroup.surveyData[i].question == question.question &&
-        targetGroup.surveyData[i].category == question.category
-      ) {
-        targetGroup.surveyData[i].answers = answers
+    for (var i = 0; i < questions.length; ++i) {
+      if (questions.question == question.question && questions.category == question.category) {
+        questions.answers = answers
       }
     }
+    let targetGroups = JSON.parse(JSON.stringify(surveyData.targetGroups))
+    let targetGroup = targetGroups[targetGroupIndex]
+    targetGroup.surveyData = JSON.parse(JSON.stringify(questions))
     targetGroups.splice(targetGroupIndex, 1, targetGroup)
     onChangeSurveyData(prev => ({
       ...prev,
@@ -126,9 +136,7 @@ const AdvancedSettings = ({ surveyData, onChangeSurveyData, targetGroupIndex, co
                     categories).
                   </Typography>
                   {open &&
-                    surveyData.targetGroups &&
-                    surveyData.targetGroups[targetGroupIndex].surveyData &&
-                    surveyData.targetGroups[targetGroupIndex].surveyData.map((item, index) => (
+                    questions.map((item, index) => (
                       <ProfileQuestion
                         key={index}
                         questionItem={item}
