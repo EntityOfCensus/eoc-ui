@@ -23,7 +23,7 @@ const StepAdvancedSettings = ({ surveyData, onChangeSurveyData, activeStep, hand
     country: '',
     wantedCompletes: surveyData.wantedRespondents,
     ir: '100',
-    loi: (surveyData.wantedQuestions / 3).toFixed(),
+    loi: surveyData.wantedQuestions ? (surveyData.wantedQuestions / 3).toFixed() : '',
     daysInField: '7',
     startDate: '',
     time: '00:00',
