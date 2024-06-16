@@ -81,7 +81,6 @@ const StepAdvancedSettings = ({ surveyData, onChangeSurveyData, activeStep, hand
           surveyData.targetGroups.map((item, index) => (
             <AdvancedSettings
               key={index}
-              targetGroup={item}
               surveyData={surveyData}
               onChangeSurveyData={onChangeSurveyData}
               targetGroupIndex={index}

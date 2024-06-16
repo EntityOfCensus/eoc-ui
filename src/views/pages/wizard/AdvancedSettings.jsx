@@ -17,7 +17,7 @@ import GlobalProfiling from '@views/pages/shared/GlobalProfiling'
 import ProfileQuestion from '@views/pages/forms/ProfileQuestion'
 import { profileCategories } from '@/app/store/consts'
 
-const AdvancedSettings = ({ surveyData, onChangeSurveyData, targetGroup, targetGroupIndex, countries }) => {
+const AdvancedSettings = ({ surveyData, onChangeSurveyData, targetGroupIndex, countries }) => {
   const {
     control,
     handleSubmit,
@@ -27,16 +27,16 @@ const AdvancedSettings = ({ surveyData, onChangeSurveyData, targetGroup, targetG
     formState: { errors }
   } = useForm({
     defaultValues: {
-      minimumAge: targetGroup.minimumAge || '',
-      maximumAge: targetGroup.maximumAge || '',
-      gender: targetGroup.gender || '',
-      country: targetGroup.country || '',
-      wantedCompletes: targetGroup.wantedCompletes || '',
-      ir: targetGroup.ir || '',
-      loi: targetGroup.loi || '',
-      daysInField: targetGroup.daysInField || '',
-      startDate: targetGroup.startDate || '',
-      time: targetGroup.time || '',
+      minimumAge: '18',
+      maximumAge: '64',
+      gender: '',
+      country: '',
+      wantedCompletes: '',
+      ir: '100',
+      loi: '',
+      daysInField: '',
+      startDate: '',
+      time: '',
       visible: true
     }
   })
@@ -44,14 +44,14 @@ const AdvancedSettings = ({ surveyData, onChangeSurveyData, targetGroup, targetG
   const formValues = watch()
 
   const [disabled, setDisabled] = useState(false)
-  const [visible, setVisible] = useState(targetGroup.visible)
+  const [visible, setVisible] = useState(surveyData.targetGroups[targetGroupIndex].visible)
 
   useEffect(() => {
     setDisabled(surveyData.config === 'easy')
   }, [])
 
   const isGender = gender => {
-    return targetGroup.gender === gender
+    return surveyData.targetGroups[targetGroupIndex].gender === gender
   }
 
   const handleDeleteTargetGroup = event => {
@@ -87,14 +87,14 @@ const AdvancedSettings = ({ surveyData, onChangeSurveyData, targetGroup, targetG
 
     console.log('Form values:', formValues)
 
-    // let targetGroups = newSurvey.targetGroups
-    // let index = targetGroups.findIndex(obj => obj === targetGroup)
-    // targetGroups.splice(index, 1, formValues)
+    let targetGroups = surveyData.targetGroups
+    formValues['surveyData'] = surveyData.targetGroups[targetGroupIndex].surveyData
+    targetGroups.splice(targetGroupIndex, 1, formValues)
 
-    // setNewSurvey(prev => ({
-    //   ...prev,
-    //   targetGroups: targetGroups
-    // }))
+    onChangeSurveyData(prev => ({
+      ...prev,
+      targetGroups: targetGroups
+    }))
   }
 
   return (
@@ -161,7 +161,7 @@ const AdvancedSettings = ({ surveyData, onChangeSurveyData, targetGroup, targetG
                           {...field}
                           disabled={disabled}
                           type='number'
-                          defaultValue={targetGroup.minimumAge}
+                          value={surveyData.targetGroups[targetGroupIndex].minimumAge}
                           style={{ marginRight: 10 }}
                           label='Minimum age'
                           onChange={e => {
@@ -183,7 +183,7 @@ const AdvancedSettings = ({ surveyData, onChangeSurveyData, targetGroup, targetG
                           {...field}
                           disabled={disabled}
                           type='number'
-                          defaultValue={targetGroup.maximumAge}
+                          value={surveyData.targetGroups[targetGroupIndex].maximumAge}
                           label='Maximum age'
                           onChange={e => {
                             field.onChange(e)
@@ -224,7 +224,7 @@ const AdvancedSettings = ({ surveyData, onChangeSurveyData, targetGroup, targetG
                     {disabled && (
                       <CustomTextField
                         disabled={disabled}
-                        defaultValue={targetGroup.country}
+                        value={surveyData.targetGroups[targetGroupIndex].country}
                         type='string'
                         style={{ marginRight: 10 }}
                         onChange={e => {
@@ -240,30 +240,35 @@ const AdvancedSettings = ({ surveyData, onChangeSurveyData, targetGroup, targetG
                       <FormLabel>Gender</FormLabel>
                       <Controller
                         name='gender'
-                        defaultValue={targetGroup.gender}
+                        value={surveyData.targetGroups[targetGroupIndex].gender}
                         control={control}
                         rules={{ required: true }}
                         render={({ field }) => (
-                          <RadioGroup row {...field} name='gender'>
+                          <RadioGroup
+                            row
+                            {...field}
+                            onChange={e => {
+                              field.onChange(e)
+                              handleChange(e)
+                            }}
+                            name='gender'
+                          >
                             <FormControlLabel
                               value='female'
-                              defaultValue={isGender('female')}
                               disabled={disabled}
-                              control={<Radio defaultChecked />}
+                              control={<Radio checked={isGender('female')} />}
                               label='Female'
                             />
                             <FormControlLabel
                               value='male'
-                              defaultValue={isGender('male')}
                               disabled={disabled}
-                              control={<Radio defaultChecked />}
+                              control={<Radio checked={isGender('male')} />}
                               label='Male'
                             />
                             <FormControlLabel
                               value='both'
-                              defaultValue={isGender('both')}
                               disabled={disabled}
-                              control={<Radio defaultChecked />}
+                              control={<Radio checked={isGender('both')} />}
                               label='Both'
                             />
                           </RadioGroup>
@@ -289,7 +294,7 @@ const AdvancedSettings = ({ surveyData, onChangeSurveyData, targetGroup, targetG
                       render={({ field }) => (
                         <CustomTextField
                           {...field}
-                          defaultValue={targetGroup.wantedCompletes}
+                          value={surveyData.targetGroups[targetGroupIndex].wantedCompletes}
                           disabled={disabled}
                           style={{ width: '90%' }}
                           onChange={e => {
@@ -310,7 +315,7 @@ const AdvancedSettings = ({ surveyData, onChangeSurveyData, targetGroup, targetG
                         <CustomTextField
                           {...field}
                           disabled={disabled}
-                          defaultValue={targetGroup.ir}
+                          value={surveyData.targetGroups[targetGroupIndex].ir}
                           style={{ width: '90%' }}
                           label='Estimated incidence rate (IR)'
                           onChange={e => {
@@ -331,7 +336,7 @@ const AdvancedSettings = ({ surveyData, onChangeSurveyData, targetGroup, targetG
                         <CustomTextField
                           {...field}
                           disabled={disabled}
-                          defaultValue={targetGroup.loi}
+                          value={surveyData.targetGroups[targetGroupIndex].loi}
                           style={{ marginRight: 30, width: '90%' }}
                           label='Estimated length of interview (LOI)'
                           onChange={e => {
@@ -352,7 +357,7 @@ const AdvancedSettings = ({ surveyData, onChangeSurveyData, targetGroup, targetG
                         <CustomTextField
                           {...field}
                           disabled={disabled}
-                          defaultValue={targetGroup.daysInField}
+                          value={surveyData.targetGroups[targetGroupIndex].daysInField}
                           label='Number of days in field'
                           style={{ width: '90%' }}
                           onChange={e => {
@@ -379,7 +384,7 @@ const AdvancedSettings = ({ surveyData, onChangeSurveyData, targetGroup, targetG
                           customInput={
                             <CustomTextField
                               disabled={disabled}
-                              defaultValue={targetGroup.startDate}
+                              value={surveyData.targetGroups[targetGroupIndex].startDate}
                               style={{ marginTop: 10, marginRight: 30, width: '90%' }}
                               label='Start Date'
                               onChange={e => {
@@ -402,7 +407,7 @@ const AdvancedSettings = ({ surveyData, onChangeSurveyData, targetGroup, targetG
                         <CustomTextField
                           {...field}
                           disabled={disabled}
-                          defaultValue={targetGroup.time}
+                          value={surveyData.targetGroups[targetGroupIndex].time}
                           style={{ marginTop: 10, width: '90%' }}
                           label='Time'
                           onChange={e => {
