@@ -15,7 +15,7 @@ import DraggableDialog from '@/libs/DraggableDialog'
 import { useAtom } from 'jotai'
 import { mapDataAtom } from '@/app/store/atoms'
 import axios from 'axios'
-import { respondentSurveyData, initSurveyData } from '@/app/store/consts'
+import { respondentSurveyData } from '@/app/store/consts'
 
 // Vars
 const data = [

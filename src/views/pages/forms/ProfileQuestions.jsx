@@ -34,7 +34,7 @@ import Snackbar from '@mui/material/Snackbar'
 
 import GlobalProfiling from '@views/pages/shared/GlobalProfiling'
 import Typography from '@mui/material/Typography'
-import { profileCategories, respondentSurveyData, initSurveyData } from '@/app/store/consts'
+import { profileCategories, respondentSurveyData } from '@/app/store/consts'
 
 import * as othentSinger from '@othent/kms'
 
@@ -329,7 +329,7 @@ const ProfileQuestions = ({ question, answers }) => {
     } catch (error) {
       console.log(error)
       let targetGroup = newProfileSurvey.targetGroups[0]
-      targetGroup.surveyData = initSurveyData(respondentSurveyData)
+      targetGroup.surveyData = JSON.parse(JSON.stringify(respondentSurveyData))
 
       setNewProfileSurvey(prev => ({
         ...prev,

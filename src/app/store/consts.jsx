@@ -1209,19 +1209,3 @@ export const respondentSurveyData = [
   surveyData71,
   surveyData72
 ]
-
-const getInitSurveyData = surveyData => {
-  surveyData.question = surveyData.question
-  surveyData.category = surveyData.category
-  surveyData.type = surveyData.type
-  surveyData.possibleAnswers = surveyData.possibleAnswers
-  surveyData.answers = surveyData.answers
-  return surveyData
-}
-
-export const initSurveyData = surveyData => {
-  for (var i = 0; i < surveyData.length; ++i) {
-    surveyData[i] = getInitSurveyData(surveyData[i])
-  }
-  return surveyData
-}

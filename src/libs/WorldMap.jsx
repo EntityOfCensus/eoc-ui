@@ -7,7 +7,7 @@ import './world-map.css'
 import { useAtom } from 'jotai'
 import { mapDataAtom } from '@/app/store/atoms'
 const { getName } = require('country-list')
-import { respondentSurveyData, initSurveyData } from '@/app/store/consts'
+import { respondentSurveyData } from '@/app/store/consts'
 
 const WorldMap = ({ surveyData, onChangeSurveyData }) => {
   const [mapData, setMapData] = useAtom(mapDataAtom)
@@ -27,7 +27,7 @@ const WorldMap = ({ surveyData, onChangeSurveyData }) => {
         wantedCompletes: surveyData.wantedRespondents,
         ir: '100',
         visible: true,
-        surveyData: initSurveyData(respondentSurveyData)
+        surveyData: JSON.parse(JSON.stringify(respondentSurveyData))
       }
     }
     const index = countryCodes.indexOf(countryCode)

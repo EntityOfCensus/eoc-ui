@@ -28,19 +28,7 @@ const AdvancedSettings = ({ surveyData, onChangeSurveyData, targetGroupIndex, co
     setValue,
     formState: { errors }
   } = useForm({
-    defaultValues: {
-      minimumAge: '18',
-      maximumAge: '64',
-      gender: '',
-      country: '',
-      wantedCompletes: '',
-      ir: '100',
-      loi: '',
-      daysInField: '',
-      startDate: '',
-      time: '',
-      visible: true
-    }
+    defaultValues: surveyData.targetGroups[targetGroupIndex]
   })
 
   const formValues = watch()
