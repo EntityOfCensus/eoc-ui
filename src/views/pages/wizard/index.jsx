@@ -22,6 +22,7 @@ import StepConfigType from './StepConfigType'
 import StepBasicSettings from './StepBasicSettings'
 import StepAdvancedSettings from './StepAdvancedSettings'
 import StepReview from './StepReview'
+import StepCreate from './StepCreate'
 
 // Styled Component Imports
 import StepperWrapper from '@core/styles/stepper'
@@ -53,7 +54,12 @@ const steps = [
   {
     icon: 'tabler-checkbox',
     subtitle: 'Launch a survey',
-    title: 'Review & Complete'
+    title: 'Review & Create'
+  },
+  {
+    icon: 'tabler-basket-question',
+    subtitle: 'Create questions',
+    title: 'Survey examine'
   }
 ]
 
@@ -86,7 +92,9 @@ const CreateSurvey = () => {
             ? newSurvey.config == 'easy'
               ? StepAudience
               : StepAdvancedSettings
-            : StepReview
+            : step === 3
+              ? StepCreate
+              : StepReview
 
     return (
       <Tag
@@ -141,6 +149,9 @@ const CreateSurvey = () => {
                           if (newSurvey.config) setActiveStep(index)
                           break
                         case 3:
+                          if (newSurvey.targetGroups) setActiveStep(index)
+                          break
+                        case 4:
                           if (newSurvey.targetGroups) setActiveStep(index)
                           break
                       }
