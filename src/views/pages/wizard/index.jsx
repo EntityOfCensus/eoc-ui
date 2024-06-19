@@ -58,7 +58,7 @@ const steps = [
   },
   {
     icon: 'tabler-basket-question',
-    subtitle: 'Create questions',
+    subtitle: 'Create questionnaire',
     title: 'Survey examine'
   }
 ]
