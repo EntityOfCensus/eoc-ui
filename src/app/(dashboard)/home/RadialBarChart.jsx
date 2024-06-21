@@ -2,30 +2,31 @@
 
 // Next Imports
 import dynamic from 'next/dynamic'
+import Link from 'next/link'
 
 // MUI Imports
 import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
-import {useColorScheme, useTheme} from '@mui/material/styles'
+import { useColorScheme, useTheme } from '@mui/material/styles'
 
 // Util Imports
-import {rgbaToHex} from '@/utils/rgbaToHex'
+import { rgbaToHex } from '@/utils/rgbaToHex'
 
 // Styled Component Imports
 const AppReactApexCharts = dynamic(() => import('@/libs/styles/AppReactApexCharts'))
 
-const RadialBarChart = ({serverMode, title, status, percentage}) => {
+const RadialBarChart = ({ serverMode, title, status, percentage, surveyId }) => {
   // Hooks
   const theme = useTheme()
-  const {mode} = useColorScheme()
+  const { mode } = useColorScheme()
 
   // Vars
   const _mode = (mode === 'system' ? serverMode : mode) || serverMode
   const options = {
     chart: {
-      sparkline: {enabled: true},
+      sparkline: { enabled: true },
       parentHeightOffset: 0
     },
     grid: {
@@ -42,10 +43,10 @@ const RadialBarChart = ({serverMode, title, status, percentage}) => {
       radialBar: {
         endAngle: 90,
         startAngle: -90,
-        hollow: {size: '60%'},
-        track: {background: rgbaToHex(`rgb(${theme.mainColorChannels[_mode]} / 0.12)`), strokeWidth: '40%'},
+        hollow: { size: '60%' },
+        track: { background: rgbaToHex(`rgb(${theme.mainColorChannels[_mode]} / 0.12)`), strokeWidth: '40%' },
         dataLabels: {
-          name: {show: false},
+          name: { show: false },
           value: {
             offsetY: 0,
             fontWeight: 500,
@@ -94,14 +95,16 @@ const RadialBarChart = ({serverMode, title, status, percentage}) => {
       }
     ]
   }
-  const buttonText = percentage == 100 ? 'See Results' : 'Open';
+  const buttonText = percentage == 100 ? 'See Results' : 'Open'
 
   return (
     <Card>
-      <CardHeader title={title} subheader={status} className='pbe-0'/>
+      <CardHeader title={title} subheader={status} className='pbe-0' />
       <CardContent className='flex flex-col gap-3 items-center'>
-        <AppReactApexCharts type='radialBar' height={148} width={'100%'} options={options} series={percentage}/>
-        <Button variant='tonal'>{buttonText}</Button>
+        <AppReactApexCharts type='radialBar' height={148} width={'100%'} options={options} series={percentage} />
+        <Link href={'/survey/' + surveyId}>
+          <Button variant='tonal'>{buttonText}</Button>
+        </Link>
       </CardContent>
     </Card>
   )

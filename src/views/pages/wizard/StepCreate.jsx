@@ -16,11 +16,14 @@ import DirectionalIcon from '@components/DirectionalIcon'
 // import { useAtomValue } from 'jotai/index'
 // import { newSurveyAtom } from '@/app/store/atoms'
 import { encrypt, sign, signMessage } from '@othent/kms'
-import Arweave from 'arweave/web'
 
-import { jwtDecode } from 'jwt-decode'
-import { createDataItemSigner, message } from '@permaweb/aoconnect'
 import BasicSettings from '@views/pages/wizard/BasicSettings'
+import { SurveyRepositoryApi, SurveyApiClient } from '../../../@bff/survey-repository'
+import { message, createDataItemSigner } from '@permaweb/aoconnect'
+import Backdrop from '@mui/material/Backdrop'
+import CircularProgress from '@mui/material/CircularProgress'
+
+import { getSinger } from '@/app/store/consts'
 
 // const TESTING_CENSUS_PROCESS_ID = 'ENnyYpVeZlS0j01ss-Rht9rHVpmZ73vItDb2Xtrtikc'
 
@@ -29,111 +32,66 @@ const permissions = ['ACCESS_ADDRESS', 'SIGNATURE', 'SIGN_TRANSACTION', 'DISPATC
 const StepCreate = ({ surveyData, onChangeSurveyData, activeStep, handleNext, handlePrev, steps }) => {
   // const [newSurvey, setNewSurvey] = useState(newSurveyData)
   // Hooks
+  const [isSaving, setIsSaving] = useState(false)
+
+  const [surveyRepositoryApi, setSurveyRepositoryApi] = useState(new SurveyRepositoryApi(SurveyApiClient.instance))
+
   const theme = useTheme()
-  const arweave = Arweave.init({
-    host: 'arweave.net',
-    protocol: 'https',
-    port: 443
-  })
 
-  const sendToArweave = async () => {
-    console.log('survey to send to Arweave ', surveyData)
-    // const res = await signMessage({
-    //   d: 'ROJuwTBQwZkw1KP9e98MrdoY3cMOaPM5leDnw1ooPQBsTwUjUQu_zi0J8O6fVLnksHhfWWPruPBKk2mWfcN2yAEJT73R3gwalwOSQLi5FB66uwPoWHbeeFKc08NVw6qlnCokmwHLQlCzKRteLGkO6sGNFH-OMXEanTZEA_vRgBtqZGQNkhaSrI-WV5GjuhDAccQBi_49adjX4yUid0_LrsTnLp0yE48kM7ZFSnOLKunCjESxhqirVNdE1NTMLuR8mtu2T8iLPdRPJklZcSVowGa-L6hb3KvN6BjL4UGMffdiz7hQRbRl6WFxn7TmbsiqoSjwNQLYEEOVgi56FqeiV9FyS2x9ObQ2Vad70kr9Ca1MAUIY-0e5gFo2qvUIcyWOizl7E2bZSnsz1IBATZK_Ee2r0GkFIllgAt2KeC09kuYiBmiM5-gxdIeS3YxDbkHD76CXKBBuPlYCiLGJsILhi9mnM_2KfjfmKw-M5d_9euwlO2sfdkb75042dt3mwjfFrEoIn44axTdAWs1hnw-W14z23_Ki2VXpQrfJ0Vx7PTIoIHZF4CtOu7sY1QCsxc9TDet7-csfOkc5CJ8FFopw2McMPuUnxdymiDWCmTPsOlv1IgaV3RIEds7g5aulvnFZoPrnJepksrssMJUd1lWrBOWE_8gabt78F30yHIMSZIE',
-    //   dp: '6ZBV8Vji0y8YR3J_uGqqN0Na_Q9dxlSzLkiVhfAgFwm53Iq7AGzbyQMTuQCp8WFC6nu2MFMr8D9hzwb7htQOaA3eLQKGaz9X-3yWuvd5ayw2oMX5XM2QPfXhjbywUF9YiaCl-FFPV_ayV9OK2oktvs5cMa5NbDPh2VhTmD96_ELuVy6Mtok9jEJXUU_P4c3vmpFRQOlAZ7uG0WkyZapnZICZvvc8TISMSY1ne5J_dhK8TtCurf1P7D9HZ7tKl1drfYa2Wdqtz7m4uBGK9n4C0-fFG29nMmy3zEr2B6IXqEgrYC114p3ZJDsc4d2Lkcv-Pw3c5A-22RL-t7CQDv2e-Q',
-    //   dq: 'EbJQy1iXpCSdjapSAy-FFgp2HupI_q8TO9qTDpKH7S0F-h-9Co2G7mNAUCvFZjJRAjo3HaitDpIagdevTFBUbD50Yk9p4Rjgcto_MNNshIff7E89H9-mBWNqzvKuM_hVIUtZVowYdvXcxSgaBx3LqCvr5j3hNLF7o2h-QHNeAudD2Ohh-fTiSZYLrnOVIJ0_FD5o_JHFQqe5Wn6qLmd1U3LlpUY797ngKHu2NY2A4VYXlMDBPUVomii2z_mjmXJ0ZkaiZC3GW6jvfqZb1vm6EO4Am1943XPsN-aIoRtTN_OVx0Ja6NGDKnQ37lLReg2NzG3oxIeYuJRYReTVvFsDNQ',
-    //   e: 'AQAB',
-    //   ext: true,
-    //   kty: 'RSA',
-    //   n: 'lI-3g3I3nfTmeQPCIVTSPxJJdZqJygfFk-tbdQwx7sCgQru2_vKP1lLDF2ytO8GJZ5hYTWWkHTdChDJcMOC7uW-VYzta2O1wI0ysKb4aUynxl5f4a9NO4QqF97Y3Hudx_RmVOObQN8TfkIQn1B6O15nCp3LDQHUZbWxZDDsVkNbxnApCtJYPurypws4fKu9GAsz55pcciuLvBC_l0h9_qvPRZGv4_0139BeHgPeoGphb18I_YSsdqqHlnZ3y45lAhnSrr0BJYSVpmJ7Hx6XoqbJIGWVKaawuq5OpjKpbC-2KUh0MFKmHaV3fdTihPWxIMgmDo49Kdsff9_I4UW193JWBcnZnUDrLaFow2fT_6-IziGMq0Yi4S57HeLCKFMD-Y87sUy4K4tgaa16r46vCU77HuHHc_4OsjSW8HudOET5EGO_Dy5faMr0jIlyylafycRXGKowuYaqVe7Jnat7lY-Wze943P9mZN0vvjBSYZIOGwnVoJaZvYtUuDnmlwn82QKNXcyIC0KRtN9Tph7ESmLrvQum_tjwj4LQKsxli0uiJaxoaQvsxG3TsP_IwGL0h9g0MKbcGj8PKqY1W0aDzjMUxnUWqludI5MU32HS3T1gRAGfPQ94T4KLmeDo6sBkXcUbOTKi-TiZDYy404lyE4UDiJmFpXsyE4kycrovz_JU',
-    //   p: '7Hb4r74VaTr_hgw_ll8OzVu49ZSsLcYNwB1f8ns-nI7lHvSxEpUmDDct0MpNgy2skAZkufzAEeNucdfiufz5v3_0lxafY7uYqrQE4uHe4MCd_IvEjEr8QMVKW9xiVYHfSFkfJaptPe9P9leXbhJLq1aLd4JdBEW0swe-OkPWBAyeLkgP7xDV5GtgYv2ixzSrntQfMA49_W3eLNapI2bYqICJbqcRTwvKyzUYlRWd1qqLVJdUK7EKPKuBnpcmcDP10QDJWCB1eugOVsRtKnUmypgUChATDZeMlwBomrVmSjqpqorHX3QlElzaXe8SVdrdkAbhh1gkYuwietaW2r3PWQ',
-    //   q: 'oNWqEyYgwiFcRyPhYV0PAF_b-sKdcn6GFgEGwB5V-UnZIZwR1P4ZoQFEdibAjtjihIjMe63gF9O7jTIP1WKdAdd604J5XJQql4tYHen3Q9tg9exiGBjrDjdRauBWk0dKSn-vaIgBh06gN9bKHeLGPPnuigVylUWhPj0M2Xew-9IWg5N35mYKGVwZlB7xM_OieK-0RmP3NfYhhWEMkeXKWq2j6mky8WdE67lggIErTlCe3Oav8gkVdoO-j17PFQ3gJVAmcPiZaqgIgW6--TQwO-28YiDh9pWpcQcDN8VdBfUOVkXfYWUkh5faURySS94OMy66CuBXe0NOJZmHsVsLnQ',
-    //   qi: 'v6ENxtXvkKhfPR9PWaUw_7xujlOxePZVoiZdAkH-YDW8rBvixXjgi9O6wHxAzUhM_uXZ1IM6wSrbrja88GOwsjYV5cFF-_fcbXQ9uDK3meN2hEHqxZ1W9PkwHiSBKxhnOJADRA-Ovp0K65yxKEIqRSlGprNziwUh6cyUDjctX1ABqfjjYbBB_VEOxEG49byh-xit5hynFloCgua752SYLpQ7iLAbvy88YQsVH9yFf2QEzN8UPXNKIiWlsUH4xoJ6j_hxQ6WB5TT5L1OD_CHNlUYCco-iPGb1--W9gXQOM7gdf0GhR_EhB68zqhDblXaVxg_Cj5KKKH-pu801MPFe7w'
-    // })
-    // console.log('res', JSON.stringify(res))
+  const saveSurvey = async () => {
+    surveyRepositoryApi.apiClient.authentications = {
+      bearerAuth: {
+        type: 'oauth2',
+        accessToken: localStorage.getItem('id_token')
+      }
+    }
 
-    // let encryptedSurvey = await encrypt(JSON.stringify(newSurvey))
-    // console.log('encrypted survey ', encryptedSurvey)
-    // const transaction = await arweave.createTransaction({
-    //   data: JSON.stringify(newSurvey)
-    // })
-    // const tags = [
-    //   { name: 'AppName', value: 'EoC Test' },
-    //   { name: 'Content-Type', value: 'application/json' }
-    // ]
-    // transaction.addTag('Content-Type', 'application/json')
-    // const start = performance.now()
-    // //
-    // // console.log('JWK.n field is:', publicKey)
-    // const res = await sign(transaction, tags)
-    // const end = performance.now()
-    // console.log(`Sign: time taken: ${(end - start) / 1000} seconds,\n`, res)
-    // const txn = await arweave.transactions.post(transaction)
-    // console.log(txn)
-    const { walletAddress } = jwtDecode(localStorage.getItem('id_token'))
-    //   await window.arweaveWallet.connect(
-    //     permissions,
-    //     {
-    //         name: walletAddress,
-    //         logo: "4eTBOaxZSSyGbpKlHyilxNKhXbocuZdiMBYIORjS4f0"
-    //     }
-    // )
-    // try {
-    //     const address = await window.arweaveWallet.getActiveAddress()
-    //     // setAddress(address)
-    // } catch(error) {
-    //     console.error(error)
-    // }
-
+    setIsSaving(true)
     try {
-      window.arweaveWallet.connect(permissions, {
-        name: walletAddress,
-        logo: '4eTBOaxZSSyGbpKlHyilxNKhXbocuZdiMBYIORjS4f0'
-      })
+      if (surveyData.surveyId) {
+        surveyRepositoryApi.deleteSurvey(surveyData.surveyId, function (error, data, response) {
+          if (error) {
+            console.log('error', error)
+            return
+          }
+        })
+      }
       const messageId = await message({
         process: 'ENnyYpVeZlS0j01ss-Rht9rHVpmZ73vItDb2Xtrtikc',
-        signer: createDataItemSigner(window.arweaveWallet),
+        signer: createDataItemSigner(await getSinger()),
         // the survey as stringified JSON
         data: JSON.stringify(surveyData),
         tags: [{ name: 'Action', value: 'AddSurvey' }]
       })
-
-      console.log(messageId)
-      // return { messageId }
+      onChangeSurveyData(prev => ({
+        ...prev,
+        surveyId: messageId
+      }))
+      surveyRepositoryApi.addOrUpdateSurvey(
+        { surveyId: messageId, state: 'Intermediate' },
+        function (error, data, response) {
+          if (error) {
+            console.log('error', error)
+            return
+          }
+          setIsSaving(false)
+          handleNext(true)
+        }
+      )
     } catch (error) {
       console.log(error)
-      // return { messageId: false }
     }
-    handleNext()
   }
 
   useEffect(() => {
     console.log(surveyData)
   }, [])
 
-  const sendToArweaveEncrypted = async () => {
-    const encryptedData = await encrypt(JSON.stringify(surveyData))
-    const transaction = await arweave.createTransaction({
-      data: encryptedData
-    })
-
-    const tags = [
-      { name: 'AppName', value: 'EoC Test' },
-      { name: 'Content-Type', value: 'application/json' }
-    ]
-    transaction.addTag('Content-Type', 'application/json')
-    const start = performance.now()
-    const res = await sign(transaction, tags)
-    const end = performance.now()
-    console.log(`Sign: time taken: ${(end - start) / 1000} seconds,\n`, res)
-    const txn = await arweave.transactions.post(transaction)
-    console.log(txn)
-
-    handleNext()
-  }
-
   return (
     <Grid container spacing={6}>
+      <Backdrop sx={{ color: '#fff', zIndex: theme => theme.zIndex.drawer + 1 }} open={isSaving}>
+        <CircularProgress color='inherit' />
+      </Backdrop>
       <Grid item xs={12} lg={6}>
         <Typography variant='h4' className='mb-4'>
           Almost done! 🚀
@@ -213,7 +171,7 @@ const StepCreate = ({ surveyData, onChangeSurveyData, activeStep, handleNext, ha
           <Button
             variant='contained'
             color={activeStep === steps.length - 1 ? 'success' : 'primary'}
-            onClick={sendToArweave}
+            onClick={saveSurvey}
             endIcon={
               activeStep === steps.length - 1 ? (
                 <i className='tabler-check' />

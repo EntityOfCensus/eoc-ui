@@ -23,7 +23,7 @@ import {
   QuestionStatisticApi,
   RespondentProfileSurveyApiClient
 } from '../../../@bff/respondent-optional-info-api'
-import { dryrun, message, createDataItemSigner } from '@permaweb/aoconnect'
+import { message, createDataItemSigner } from '@permaweb/aoconnect'
 import { jwtDecode } from 'jwt-decode'
 import Backdrop from '@mui/material/Backdrop'
 import CircularProgress from '@mui/material/CircularProgress'
@@ -34,9 +34,7 @@ import Snackbar from '@mui/material/Snackbar'
 
 import GlobalProfiling from '@views/pages/shared/GlobalProfiling'
 import Typography from '@mui/material/Typography'
-import { profileCategories, respondentSurveyData } from '@/app/store/consts'
-
-import * as othentSinger from '@othent/kms'
+import { profileCategories, respondentSurveyData, getSinger, getSurvey } from '@/app/store/consts'
 
 const toIsoString = date => {
   var tzo = -date.getTimezoneOffset(),
@@ -67,6 +65,8 @@ const toIsoString = date => {
 const ProfileQuestions = ({ question, answers }) => {
   const [newProfileSurvey, setNewProfileSurvey] = useAtom(newProfileSurveyAtom)
 
+  const [mounted, setMounted] = useState(false)
+
   const [isSaving, setIsSaving] = useState(false)
 
   const [profileSurveySaved, setProfileSurveySaved] = useState(false)
@@ -79,44 +79,42 @@ const ProfileQuestions = ({ question, answers }) => {
     new QuestionStatisticApi(RespondentProfileSurveyApiClient.instance)
   )
 
-  const getSinger = () => {
-    const singer = Object.assign({}, othentSinger, {
-      getActiveAddress: () => othentSinger.getActiveKey(),
-      getAddress: () => othentSinger.getActiveKey(),
-      singer: tx => othentSinger.sign(tx),
-      type: 'arweave'
-    })
-    return singer
-  }
+  useEffect(() => {
+    if (!mounted) {
+      setMounted(true)
+    }
+  }, [])
 
   useEffect(() => {
-    if (
-      !newProfileSurvey.surveyId &&
-      (!newProfileSurvey.targetGroups ||
-        !newProfileSurvey.targetGroups[0].surveyData ||
-        newProfileSurvey.targetGroups[0].surveyData.length <= 0)
-    ) {
-      const idToken = localStorage.getItem('id_token')
-      const { sub } = jwtDecode(idToken)
-      respondentProfileSurveyIndexApi.apiClient.authentications = {
-        bearerAuth: {
-          type: 'oauth2',
-          accessToken: idToken
+    if (mounted) {
+      if (
+        !newProfileSurvey.surveyId &&
+        (!newProfileSurvey.targetGroups ||
+          !newProfileSurvey.targetGroups[0].surveyData ||
+          newProfileSurvey.targetGroups[0].surveyData.length <= 0)
+      ) {
+        const idToken = localStorage.getItem('id_token')
+        const { sub } = jwtDecode(idToken)
+        respondentProfileSurveyIndexApi.apiClient.authentications = {
+          bearerAuth: {
+            type: 'oauth2',
+            accessToken: idToken
+          }
         }
+        respondentProfileSurveyIndexApi.findRespondentProfileSurveyIndexById(sub, function (error, data, response) {
+          if (error) {
+            console.log('error', error)
+            return
+          }
+          if (data.currentSurveyId) {
+            fetchProfileSurvey(data.currentSurveyId)
+          } else {
+            fetchProfileSurvey(null)
+          }
+        })
       }
-      respondentProfileSurveyIndexApi.findRespondentProfileSurveyIndexById(sub, function (error, data, response) {
-        if (error) {
-          console.log('error', error)
-          return
-        }
-        if (data.currentSurveyId) {
-          fetchProfileSurvey(data.currentSurveyId)
-        } else {
-          fetchProfileSurvey(null)
-        }
-      })
     }
-  })
+  }, [mounted])
 
   const handleSubmit = async e => {
     e.preventDefault()
@@ -171,6 +169,12 @@ const ProfileQuestions = ({ question, answers }) => {
           accessToken: idToken
         }
       }
+      questionStatisticApi.apiClient.authentications = {
+        bearerAuth: {
+          type: 'oauth2',
+          accessToken: idToken
+        }
+      }
       if (newProfileSurvey.surveyId) {
         respondentProfileSurveyIndexApi.updateRespondentProfileSurveyIndex(
           {
@@ -185,7 +189,7 @@ const ProfileQuestions = ({ question, answers }) => {
               return
             }
             let stats = []
-            let oldSurvey = await getProfileSurvey(newProfileSurvey.surveyId)
+            let oldSurvey = await getSurvey(newProfileSurvey.surveyId)
             if (oldSurvey != null) {
               for (var i = 0; i < survey.targetGroups[0].surveyData.length; ++i) {
                 for (var j = 0; j < oldSurvey.targetGroups[0].surveyData[i].answers.length; ++j) {
@@ -279,34 +283,9 @@ const ProfileQuestions = ({ question, answers }) => {
     }
   }
 
-  const getProfileSurvey = async surveyId => {
-    try {
-      const tx = await dryrun({
-        process: 'ENnyYpVeZlS0j01ss-Rht9rHVpmZ73vItDb2Xtrtikc',
-        tags: [
-          { name: 'Action', value: 'GetSurveyByKv' },
-          { name: 'Key', value: 'ao_id' },
-          { name: 'Val', value: surveyId }
-        ]
-      })
-      return JSON.parse(tx.Messages[0].Data)
-    } catch (error) {
-      console.log(error)
-      return true
-    }
-  }
-
   const fetchProfileSurvey = async surveyId => {
     try {
-      const tx = await dryrun({
-        process: 'ENnyYpVeZlS0j01ss-Rht9rHVpmZ73vItDb2Xtrtikc',
-        tags: [
-          { name: 'Action', value: 'GetSurveyByKv' },
-          { name: 'Key', value: 'ao_id' },
-          { name: 'Val', value: surveyId }
-        ]
-      })
-      let survey = JSON.parse(tx.Messages[0].Data)
+      let survey = getSurvey(surveyId)
 
       let sd = []
       for (var i = 0; i < survey.targetGroups[0].surveyData.length; ++i) {

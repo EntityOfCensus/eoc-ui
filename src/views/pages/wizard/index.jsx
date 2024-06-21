@@ -30,8 +30,14 @@ import StoreProvider from '@/app/store/StoreProvider'
 import { countriesAtom, newSurveyAtom } from '@/app/store/atoms'
 import { useAtom, useStore } from 'jotai'
 import withAuth from '@/hoc/withAuth'
-import { useRouter } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
 import dynamic from 'next/dynamic'
+
+import Alert from '@mui/material/Alert'
+import Link from '@mui/material/Link'
+import Snackbar from '@mui/material/Snackbar'
+import { getSurvey } from '@/app/store/consts'
+
 const StepAudience = dynamic(() => import('./StepAudience'), { ssr: false })
 
 // Vars
@@ -71,6 +77,19 @@ const CreateSurvey = () => {
   const [newSurvey, setNewSurvey] = useState({})
   const router = useRouter()
 
+  const params = useParams()
+
+  const loadSurvey = async surveyId => {
+    const survey = await getSurvey(surveyId)
+    setNewSurvey(survey)
+  }
+  useState(() => {
+    if (params && params.surveyId) {
+      loadSurvey(params.surveyId)
+    }
+  }, [params])
+  const [clientSurveySaved, setClientSurveySaved] = useState(false)
+
   if (!loaded.current) {
     store.set(countriesAtom, [])
     loaded.current = true
@@ -108,7 +127,10 @@ const CreateSurvey = () => {
     )
   }
 
-  const handleNext = async () => {
+  const handleNext = async => {
+    if (activeStep == 3) {
+      setClientSurveySaved(true)
+    }
     if (activeStep !== steps.length - 1) {
       setActiveStep(activeStep + 1)
     } else {
@@ -124,6 +146,20 @@ const CreateSurvey = () => {
 
   return (
     <StoreProvider>
+      <Snackbar
+        open={clientSurveySaved}
+        autoHideDuration={3000}
+        onClose={() => {
+          setClientSurveySaved(false)
+        }}
+      >
+        <Alert variant='filled' severity='success'>
+          <Link target='_blank' href={'https://ao_marton.g8way.io/#/message/' + newSurvey.surveyId}>
+            View Block in ao Explorer
+          </Link>
+        </Alert>
+      </Snackbar>
+
       <Card className='flex flex-col md:flex-row'>
         <CardContent className='max-md:border-be md:border-ie md:min-is-[300px]'>
           <StepperWrapper>

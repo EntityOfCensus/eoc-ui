@@ -58,7 +58,10 @@ const StepConfigType = ({ surveyData, onChangeSurveyData, activeStep, handleNext
         if (!surveyData.targetGroups) {
           onChangeSurveyData(prev => ({
             ...prev,
-            config: prop
+            config: prop,
+            countryCodes: [],
+            countryNames: [],
+            wantedRespondents: 0
           }))
         } else {
           if (surveyData.config === 'easy') {

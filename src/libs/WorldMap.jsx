@@ -9,6 +9,32 @@ import { mapDataAtom } from '@/app/store/atoms'
 const { getName } = require('country-list')
 import { respondentSurveyData } from '@/app/store/consts'
 
+const toIsoString = date => {
+  var tzo = -date.getTimezoneOffset(),
+    dif = tzo >= 0 ? '+' : '-',
+    pad = function (num) {
+      return (num < 10 ? '0' : '') + num
+    }
+
+  return (
+    date.getFullYear() +
+    '-' +
+    pad(date.getMonth() + 1) +
+    '-' +
+    pad(date.getDate()) +
+    'T' +
+    pad(date.getHours()) +
+    ':' +
+    pad(date.getMinutes()) +
+    ':' +
+    pad(date.getSeconds()) +
+    dif +
+    pad(Math.floor(Math.abs(tzo) / 60)) +
+    ':' +
+    pad(Math.abs(tzo) % 60)
+  )
+}
+
 const WorldMap = ({ surveyData, onChangeSurveyData }) => {
   const [mapData, setMapData] = useAtom(mapDataAtom)
 
@@ -24,9 +50,13 @@ const WorldMap = ({ surveyData, onChangeSurveyData }) => {
         maximumAge: 64,
         gender: 'both',
         country: '',
-        wantedCompletes: surveyData.wantedRespondents,
-        ir: '100',
         visible: true,
+        wantedCompletes: '1',
+        ir: '',
+        loi: '',
+        daysInField: '',
+        startDate: toIsoString(new Date()).substring(0, 10),
+        time: toIsoString(new Date()).substring(0, 10),
         surveyData: JSON.parse(JSON.stringify(respondentSurveyData))
       }
     }

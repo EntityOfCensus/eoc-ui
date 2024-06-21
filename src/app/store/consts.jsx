@@ -1,3 +1,33 @@
+import * as othentSinger from '@othent/kms'
+import { dryrun } from '@permaweb/aoconnect'
+
+export const getSurvey = async surveyId => {
+  try {
+    const tx = await dryrun({
+      process: 'ENnyYpVeZlS0j01ss-Rht9rHVpmZ73vItDb2Xtrtikc',
+      tags: [
+        { name: 'Action', value: 'GetSurveyByKv' },
+        { name: 'Key', value: 'ao_id' },
+        { name: 'Val', value: surveyId }
+      ]
+    })
+    return JSON.parse(tx.Messages[0].Data)
+  } catch (error) {
+    console.log(error)
+    return null
+  }
+}
+
+export const getSinger = () => {
+  const singer = Object.assign({}, othentSinger, {
+    getActiveAddress: () => othentSinger.getActiveKey(),
+    getAddress: () => othentSinger.getActiveKey(),
+    singer: tx => othentSinger.sign(tx),
+    type: 'arweave'
+  })
+  return singer
+}
+
 export const profileCategories = [
   {
     label: 'Automotive'
