@@ -9,12 +9,12 @@ import withAuth from '../../../hoc/withAuth'
 import React, { useState, useEffect } from 'react'
 
 import { SurveyRepositoryApi, SurveyApiClient } from '../../../@bff/survey-repository'
-import { getSurvey } from '@/app/store/consts'
+// import { getSurvey } from '@/app/store/consts'
 
 function ClientHome() {
   const [mounted, setMounted] = useState(false)
 
-  const [surveysIdx, setSurveysIdx] = useState()
+  // const [surveysIdx, setSurveysIdx] = useState()
 
   const [surveys, setSurveys] = useState()
 
@@ -33,18 +33,18 @@ function ClientHome() {
           console.log('error', error)
           return
         }
-        let _surveysIdx = surveysIdx ? surveysIdx : []
-        let _surveys = surveys ? surveys : []
-        for (var i = 0; i < data.length; ++i) {
-          const surveyIndex = data[i]
-          const survey = await getSurvey(surveyIndex.surveyId)
-          if (survey) {
-            _surveysIdx.push(surveyIndex)
-            _surveys.push(survey)
-          }
-        }
-        setSurveysIdx(_surveysIdx)
-        setSurveys(_surveys)
+        // let _surveysIdx = surveysIdx ? surveysIdx : []
+        // let _surveys = surveys ? surveys : []
+        // for (var i = 0; i < data.length; ++i) {
+        //   const surveyIndex = data[i]
+        //   // const survey = await getSurvey(surveyIndex.surveyId)
+        //   // if (survey) {
+        //   // _surveysIdx.push(surveyIndex)
+        //   _surveys.push(survey)
+        //   // }
+        // }
+        // setSurveysIdx(_surveysIdx)
+        setSurveys(data)
       })
     }
   }, [mounted])
@@ -65,12 +65,7 @@ function ClientHome() {
       {surveys &&
         surveys.map((item, index) => (
           <Grid key={index} item xs={12} sm={6} md={4} lg={2}>
-            <RadialBarChart
-              title={item.name}
-              status={surveysIdx[index].state}
-              percentage={[0]}
-              surveyId={surveysIdx[index].surveyId}
-            />
+            <RadialBarChart title={item.name} status={item.state} percentage={[0]} surveyId={item.surveyId} />
           </Grid>
         ))}
       <Grid item xs={12} sm={6} md={4} lg={2}>

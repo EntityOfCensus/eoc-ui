@@ -68,7 +68,7 @@ const StepCreate = ({ surveyData, onChangeSurveyData, activeStep, handleNext, ha
         surveyId: messageId
       }))
       surveyRepositoryApi.addOrUpdateSurvey(
-        { surveyId: messageId, state: 'Intermediate' },
+        { surveyId: messageId, state: 'Intermediate', name: surveyData.name },
         function (error, data, response) {
           if (error) {
             console.log('error', error)
