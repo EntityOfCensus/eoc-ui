@@ -28,7 +28,6 @@
     "@othent/kms": "^1.0.12",
     "@permaweb/aoconnect": "^0.0.55",
     "apexcharts": "3.47.0",
-    "arweave": "^1.15.1",
     "classnames": "2.5.1",
     "countries-list": "^3.1.0",
     "country-list": "^2.3.0",
@@ -50,13 +49,12 @@
     "react-toastify": "^10.0.5",
     "react-use": "17.5.0",
     "server-only": "0.0.1",
-    "superagent": "^6.1.0",
+    "superagent": "^9.0.2",
     "yup": "^1.4.0"
   },
   "devDependencies": {
     "@iconify/tools": "4.0.2",
     "@iconify/utils": "2.1.22",
-    "arconnect": "^1.0.3",
     "autoprefixer": "10.4.18",
     "eslint": "8.57.0",
     "eslint-config-next": "14.1.3",

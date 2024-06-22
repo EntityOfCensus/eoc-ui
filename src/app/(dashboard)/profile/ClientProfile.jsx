@@ -11,69 +11,93 @@ import Typography from '@mui/material/Typography'
 import InputAdornment from '@mui/material/InputAdornment'
 import { useTable, usePagination } from 'react-table'
 import {
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  TableFooter, TablePagination, Paper, Card, CardContent, Chip, IconButton
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TableFooter,
+  TablePagination,
+  Paper,
+  Card,
+  CardContent,
+  Chip,
+  IconButton
 } from '@mui/material'
 import { styled } from '@mui/system'
 import CloseIcon from '@mui/icons-material/Close'
-import withAuth from "@/hoc/withAuth"
+import withAuth from '@/hoc/withAuth'
 
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const emailSchema = yup.string().matches(emailRegex, 'Invalid email format');
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const emailSchema = yup.string().matches(emailRegex, 'Invalid email format')
 
 const clientInfoSchema = yup.object().shape({
   companyName: yup.string().required('Company Name is required'),
   registeredOffice: yup.string().required('Registered Office is required'),
-  uniqueRegistrationCode: yup.string()
+  uniqueRegistrationCode: yup
+    .string()
     .length(10, 'Unique Registration Code must be exactly 10 characters')
     .matches(/^\d+$/, 'Unique Registration Code must be a number')
     .required('Unique Registration Code is required'),
-  commercialRegisterNumber: yup.string()
+  commercialRegisterNumber: yup
+    .string()
     .matches(/^\d+$/, 'Commercial Register Number must be a number')
     .required('Commercial Register Number is required'),
-  billingEmails: yup.mixed()
+  billingEmails: yup
+    .mixed()
     .test('billingEmails', 'Billing Email(s) is required', value => value && value.length > 0)
     .test('billingEmails', 'Invalid email format', value => {
       if (typeof value === 'string') {
-        return emailSchema.isValidSync(value);
+        return emailSchema.isValidSync(value)
       } else if (Array.isArray(value)) {
-        return value.every(email => emailSchema.isValidSync(email));
+        return value.every(email => emailSchema.isValidSync(email))
       }
-      return false;
+      return false
     })
     .test('billingEmails', 'You can enter up to 5 emails only', value => {
       if (Array.isArray(value)) {
-        return value.length <= 5;
+        return value.length <= 5
       }
-      return true;
+      return true
     })
-});
+})
 
-const contactDetailsSchema = (contactData) => yup.object().shape({
-  contactPerson: yup.string()
-    .required('Contact Person (Name and Surname) is required')
-    .test('uniqueContactPerson', 'Contact Person must be unique', value => 
-      !contactData.some(contact => contact.contactPerson.toLowerCase() === value.toLowerCase())
-    ),
-  contactEmail: yup.string()
-    .matches(emailRegex, 'Contact Email must be a valid email')
-    .required('Contact Email is required')
-    .test('uniqueContactEmail', 'Contact Email must be unique', value => 
-      !contactData.some(contact => contact.contactEmail.toLowerCase() === value.toLowerCase())
-    ),
-  contactPhone: yup.string()
-    .matches(/^\d+$/, 'Contact Phone must be a number')
-    .min(7, 'Contact Phone must be at least 7 digits')
-    .max(15, 'Contact Phone must be at most 15 digits')
-    .required('Contact Phone is required')
-    .test('uniqueContactPhone', 'Contact Phone must be unique', value => 
-      !contactData.some(contact => contact.contactPhone === value)
-    )
-});
+const contactDetailsSchema = contactData =>
+  yup.object().shape({
+    contactPerson: yup
+      .string()
+      .required('Contact Person (Name and Surname) is required')
+      .test(
+        'uniqueContactPerson',
+        'Contact Person must be unique',
+        value => !contactData.some(contact => contact.contactPerson.toLowerCase() === value.toLowerCase())
+      ),
+    contactEmail: yup
+      .string()
+      .matches(emailRegex, 'Contact Email must be a valid email')
+      .required('Contact Email is required')
+      .test(
+        'uniqueContactEmail',
+        'Contact Email must be unique',
+        value => !contactData.some(contact => contact.contactEmail.toLowerCase() === value.toLowerCase())
+      ),
+    contactPhone: yup
+      .string()
+      .matches(/^\d+$/, 'Contact Phone must be a number')
+      .min(7, 'Contact Phone must be at least 7 digits')
+      .max(15, 'Contact Phone must be at most 15 digits')
+      .required('Contact Phone is required')
+      .test(
+        'uniqueContactPhone',
+        'Contact Phone must be unique',
+        value => !contactData.some(contact => contact.contactPhone === value)
+      )
+  })
 
-const ClientContext = createContext();
+const ClientContext = createContext()
 
-const useClient = () => useContext(ClientContext);
+const useClient = () => useContext(ClientContext)
 
 const FormField = React.memo(({ name, control, label, errors, defaultValue, InputProps }) => (
   <Controller
@@ -91,87 +115,103 @@ const FormField = React.memo(({ name, control, label, errors, defaultValue, Inpu
       />
     )}
   />
-));
+))
 
 const ChipContainer = styled('div')({
   display: 'flex',
   flexWrap: 'wrap',
   marginTop: '10px',
   gap: '5px'
-});
+})
 
 const ClientBasicInfo = React.memo(() => {
-  const { addClientBasicInfo, clientInfo } = useClient();
-  const { control, handleSubmit, reset, setValue, getValues, formState: { errors } } = useForm({
+  const { addClientBasicInfo, clientInfo } = useClient()
+  const {
+    control,
+    handleSubmit,
+    reset,
+    setValue,
+    getValues,
+    formState: { errors }
+  } = useForm({
     resolver: yupResolver(clientInfoSchema)
   })
 
-  const [emailInput, setEmailInput] = useState("");
-  const [emailChips, setEmailChips] = useState([]);
+  const [emailInput, setEmailInput] = useState('')
+  const [emailChips, setEmailChips] = useState([])
 
-  const handleEmailChange = (event) => {
-    const inputValue = event.target.value;
-    const emails = inputValue.split(',').map(email => email.trim()).filter(email => email);
+  const handleEmailChange = event => {
+    const inputValue = event.target.value
+    const emails = inputValue
+      .split(',')
+      .map(email => email.trim())
+      .filter(email => email)
 
     if (emails.length > 1) {
-      const newEmails = emails.filter(email => emailSchema.isValidSync(email) && !emailChips.includes(email));
+      const newEmails = emails.filter(email => emailSchema.isValidSync(email) && !emailChips.includes(email))
       if (newEmails.length > 0) {
-        const updatedEmails = [...emailChips, ...newEmails];
+        const updatedEmails = [...emailChips, ...newEmails]
         if (updatedEmails.length <= 5) {
-          setEmailChips(updatedEmails);
-          setValue('billingEmails', updatedEmails);
+          setEmailChips(updatedEmails)
+          setValue('billingEmails', updatedEmails)
         } else {
-          const validEmails = newEmails.slice(0, 5 - emailChips.length);
-          setEmailChips([...emailChips, ...validEmails]);
-          setValue('billingEmails', [...emailChips, ...validEmails]);
-          setEmailInput("");
+          const validEmails = newEmails.slice(0, 5 - emailChips.length)
+          setEmailChips([...emailChips, ...validEmails])
+          setValue('billingEmails', [...emailChips, ...validEmails])
+          setEmailInput('')
         }
       }
-      setEmailInput('');
+      setEmailInput('')
     } else if (inputValue.endsWith(',')) {
-      const email = inputValue.slice(0, -1).trim();
+      const email = inputValue.slice(0, -1).trim()
       if (email && emailSchema.isValidSync(email) && !emailChips.includes(email)) {
         if (emailChips.length < 5) {
-          setEmailChips([...emailChips, email]);
-          setValue('billingEmails', [...emailChips, email]);
-          setEmailInput('');
+          setEmailChips([...emailChips, email])
+          setValue('billingEmails', [...emailChips, email])
+          setEmailInput('')
         } else {
-          setEmailInput('');
+          setEmailInput('')
         }
       } else if (emailChips.includes(email)) {
-        setEmailInput(email);
+        setEmailInput(email)
       } else {
-        setEmailInput('');
+        setEmailInput('')
       }
     } else {
-      setEmailInput(inputValue);
+      setEmailInput(inputValue)
     }
-  };
+  }
 
   const handleEmailBlur = () => {
-    const email = emailInput.trim();
+    const email = emailInput.trim()
     if (email && emailSchema.isValidSync(email) && !emailChips.includes(email)) {
       if (emailChips.length < 5) {
-        setEmailChips([...emailChips, email]);
-        setValue('billingEmails', [...emailChips, email]);
-        setEmailInput('');
+        setEmailChips([...emailChips, email])
+        setValue('billingEmails', [...emailChips, email])
+        setEmailInput('')
       }
     }
-  };
+  }
 
-  const handleEmailDelete = (emailToDelete) => () => {
-    setEmailChips((chips) => chips.filter((email) => email !== emailToDelete));
-    setValue('billingEmails', emailChips.filter(email => email !== emailToDelete));
-  };
+  const handleEmailDelete = emailToDelete => () => {
+    setEmailChips(chips => chips.filter(email => email !== emailToDelete))
+    setValue(
+      'billingEmails',
+      emailChips.filter(email => email !== emailToDelete)
+    )
+  }
 
   const onSubmit = data => {
     if (typeof data.billingEmails === 'string') {
-      data.billingEmails = data.billingEmails.split(',').map(email => email.trim()).filter(email => email);
+      data.billingEmails = data.billingEmails
+        .split(',')
+        .map(email => email.trim())
+        .filter(email => email)
     }
     addClientBasicInfo(data)
     reset()
     setEmailChips([])
-    setEmailInput("")
+    setEmailInput('')
   }
 
   return (
@@ -179,30 +219,52 @@ const ClientBasicInfo = React.memo(() => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <FormField name="companyName" control={control} label="Company Name" errors={errors} defaultValue="" />
+            <FormField name='companyName' control={control} label='Company Name' errors={errors} defaultValue='' />
           </Grid>
           <Grid item xs={12}>
-            <FormField name="registeredOffice" control={control} label="Registered Office" errors={errors} defaultValue="" />
+            <FormField
+              name='registeredOffice'
+              control={control}
+              label='Registered Office'
+              errors={errors}
+              defaultValue=''
+            />
           </Grid>
           <Grid item xs={12}>
-            <FormField name="uniqueRegistrationCode" control={control} label="Unique Registration Code" errors={errors} defaultValue="" />
+            <FormField
+              name='uniqueRegistrationCode'
+              control={control}
+              label='Unique Registration Code'
+              errors={errors}
+              defaultValue=''
+            />
           </Grid>
           <Grid item xs={12}>
-            <FormField name="commercialRegisterNumber" control={control} label="Commercial Register Number" errors={errors} defaultValue="" />
+            <FormField
+              name='commercialRegisterNumber'
+              control={control}
+              label='Commercial Register Number'
+              errors={errors}
+              defaultValue=''
+            />
           </Grid>
           <Grid item xs={12}>
             <Controller
-              name="billingEmails"
+              name='billingEmails'
               control={control}
               defaultValue={[]}
               render={({ field }) => (
                 <div>
                   <TextField
                     {...field}
-                    label="Billing Email(s)"
+                    label='Billing Email(s)'
                     fullWidth
                     error={!!errors.billingEmails}
-                    helperText={errors.billingEmails ? errors.billingEmails.message : 'Use a comma to separate emails, up to 5 emails.'}
+                    helperText={
+                      errors.billingEmails
+                        ? errors.billingEmails.message
+                        : 'Use a comma to separate emails, up to 5 emails.'
+                    }
                     value={emailInput}
                     onChange={handleEmailChange}
                     onBlur={handleEmailBlur}
@@ -222,7 +284,9 @@ const ClientBasicInfo = React.memo(() => {
             />
           </Grid>
           <Grid item xs={12}>
-            <Button type="submit" variant="contained" color="primary">Save</Button>
+            <Button type='submit' variant='contained' color='primary'>
+              Save
+            </Button>
           </Grid>
         </Grid>
       </form>
@@ -230,12 +294,22 @@ const ClientBasicInfo = React.memo(() => {
       {clientInfo && (
         <Card sx={{ mt: 2 }}>
           <CardContent>
-            <Typography variant="h6">Client Information</Typography>
-            <Typography><strong>Company Name:</strong> {clientInfo.companyName}</Typography>
-            <Typography><strong>Registered Office:</strong> {clientInfo.registeredOffice}</Typography>
-            <Typography><strong>Unique Registration Code:</strong> {clientInfo.uniqueRegistrationCode}</Typography>
-            <Typography><strong>Commercial Register Number:</strong> {clientInfo.commercialRegisterNumber}</Typography>
-            <Typography><strong>Billing Emails:</strong></Typography>
+            <Typography variant='h6'>Client Information</Typography>
+            <Typography>
+              <strong>Company Name:</strong> {clientInfo.companyName}
+            </Typography>
+            <Typography>
+              <strong>Registered Office:</strong> {clientInfo.registeredOffice}
+            </Typography>
+            <Typography>
+              <strong>Unique Registration Code:</strong> {clientInfo.uniqueRegistrationCode}
+            </Typography>
+            <Typography>
+              <strong>Commercial Register Number:</strong> {clientInfo.commercialRegisterNumber}
+            </Typography>
+            <Typography>
+              <strong>Billing Emails:</strong>
+            </Typography>
             <div style={{ marginTop: '10px' }}>
               {Array.isArray(clientInfo.billingEmails) ? (
                 clientInfo.billingEmails.map((email, index) => (
@@ -250,13 +324,18 @@ const ClientBasicInfo = React.memo(() => {
       )}
     </div>
   )
-});
+})
 
 const ContactDetailsForm = React.memo(() => {
-  const { addContactDetails, contactData } = useClient();
-  const { control, handleSubmit, reset, formState: { errors } } = useForm({
+  const { addContactDetails, contactData } = useClient()
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors }
+  } = useForm({
     resolver: yupResolver(contactDetailsSchema(contactData))
-  });
+  })
 
   const onSubmit = data => {
     addContactDetails(data)
@@ -267,30 +346,42 @@ const ContactDetailsForm = React.memo(() => {
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <FormField name="contactPerson" control={control} label="Contact Person (Name and Surname)" errors={errors} defaultValue="" />
+          <FormField
+            name='contactPerson'
+            control={control}
+            label='Contact Person (Name and Surname)'
+            errors={errors}
+            defaultValue=''
+          />
         </Grid>
         <Grid item xs={12}>
-          <FormField name="contactEmail" control={control} label="Contact Email" errors={errors} defaultValue="" />
+          <FormField name='contactEmail' control={control} label='Contact Email' errors={errors} defaultValue='' />
         </Grid>
         <Grid item xs={12}>
-          <FormField 
-            name="contactPhone" 
-            control={control} 
-            label="Contact Phone" 
-            errors={errors} 
-            defaultValue="" 
+          <FormField
+            name='contactPhone'
+            control={control}
+            label='Contact Phone'
+            errors={errors}
+            defaultValue=''
             InputProps={{
-              startAdornment: <InputAdornment position="start" style={{ color: 'gray' }}>+</InputAdornment>
+              startAdornment: (
+                <InputAdornment position='start' style={{ color: 'gray' }}>
+                  +
+                </InputAdornment>
+              )
             }}
           />
         </Grid>
         <Grid item xs={12}>
-          <Button type="submit" variant="contained" color="primary">Save</Button>
+          <Button type='submit' variant='contained' color='primary'>
+            Save
+          </Button>
         </Grid>
       </Grid>
     </form>
   )
-});
+})
 
 const ContactTable = React.memo(({ columns, data }) => {
   const {
@@ -320,21 +411,25 @@ const ContactTable = React.memo(({ columns, data }) => {
     <TableContainer component={Paper}>
       <Table {...getTableProps()}>
         <TableHead>
-          {headerGroups.map(headerGroup => (
-            <TableRow {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map(column => (
-                <TableCell {...column.getHeaderProps()}>{column.render('Header')}</TableCell>
+          {headerGroups.map((headerGroup, headerIndex) => (
+            <TableRow key={headerIndex} {...headerGroup.getHeaderGroupProps()}>
+              {headerGroup.headers.map((column, columnIndex) => (
+                <TableCell key={columnIndex} {...column.getHeaderProps()}>
+                  {column.render('Header')}
+                </TableCell>
               ))}
             </TableRow>
           ))}
         </TableHead>
         <TableBody {...getTableBodyProps()}>
-          {page.map(row => {
+          {page.map((row, pageIndex) => {
             prepareRow(row)
             return (
-              <TableRow {...row.getRowProps()}>
-                {row.cells.map(cell => (
-                  <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
+              <TableRow key={pageIndex} {...row.getRowProps()}>
+                {row.cells.map((cell, cellIndex) => (
+                  <TableCell key={cellIndex} {...cell.getCellProps()}>
+                    {cell.render('Cell')}
+                  </TableCell>
                 ))}
               </TableRow>
             )
@@ -350,7 +445,7 @@ const ContactTable = React.memo(({ columns, data }) => {
               page={pageIndex}
               SelectProps={{
                 inputProps: { 'aria-label': 'rows per page' },
-                native: true,
+                native: true
               }}
               onPageChange={(event, newPage) => gotoPage(newPage)}
               onRowsPerPageChange={event => setPageSize(Number(event.target.value))}
@@ -362,10 +457,16 @@ const ContactTable = React.memo(({ columns, data }) => {
                   <IconButton onClick={() => onPageChange(null, page - 1)} disabled={page === 0}>
                     {'<'}
                   </IconButton>
-                  <IconButton onClick={() => onPageChange(null, page + 1)} disabled={page >= Math.ceil(count / rowsPerPage) - 1}>
+                  <IconButton
+                    onClick={() => onPageChange(null, page + 1)}
+                    disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+                  >
                     {'>'}
                   </IconButton>
-                  <IconButton onClick={() => onPageChange(null, Math.ceil(count / rowsPerPage) - 1)} disabled={page >= Math.ceil(count / rowsPerPage) - 1}>
+                  <IconButton
+                    onClick={() => onPageChange(null, Math.ceil(count / rowsPerPage) - 1)}
+                    disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+                  >
                     {'>>'}
                   </IconButton>
                 </div>
@@ -376,17 +477,17 @@ const ContactTable = React.memo(({ columns, data }) => {
       </Table>
     </TableContainer>
   )
-});
+})
 
 const FormValidation = () => {
   const [clientInfo, setClientInfo] = useState(null)
   const [contactData, setContactData] = useState([])
 
-  const addClientBasicInfo = useCallback((data) => {
+  const addClientBasicInfo = useCallback(data => {
     setClientInfo(data)
   }, [])
 
-  const addContactDetails = useCallback((data) => {
+  const addContactDetails = useCallback(data => {
     setContactData(prevData => [...prevData, data])
   }, [])
 
@@ -408,12 +509,15 @@ const FormValidation = () => {
     []
   )
 
-  const contextValue = useMemo(() => ({
-    clientInfo,
-    addClientBasicInfo,
-    contactData,
-    addContactDetails
-  }), [clientInfo, contactData, addClientBasicInfo, addContactDetails])
+  const contextValue = useMemo(
+    () => ({
+      clientInfo,
+      addClientBasicInfo,
+      contactData,
+      addContactDetails
+    }),
+    [clientInfo, contactData, addClientBasicInfo, addContactDetails]
+  )
 
   return (
     <ClientContext.Provider value={contextValue}>
