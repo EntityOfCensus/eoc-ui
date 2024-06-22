@@ -1,28 +1,16 @@
 'use client'
+import ClientProfile from "@/app/(dashboard)/profile/ClientProfile";
+import RespondentProfile from "@/app/(dashboard)/profile/RespondentProfile";
+import {useEffect, useState} from "react";
 
-import Grid from '@mui/material/Grid'
-import Typography from '@mui/material/Typography'
+const ProfilePage = () => {
+  const [userType, setUserType] = useState('')
 
-import MandatoryUserData from '@views/pages/forms/MandatoryUserData'
-import ProfileQuestions from '@views/pages/forms/ProfileQuestions'
-import withAuth from '@/hoc/withAuth'
+  useEffect(() => {
+    setUserType(localStorage.getItem('user-type'))
+  }, [])
 
-//export const runtime = 'edge' // 'nodejs' (default) | 'edge'
-
-const FormValidation = () => {
-  return (
-    <Grid container spacing={6}>
-      <Grid item xs={12}>
-        <Typography variant='h4'>Respondent Profile</Typography>
-      </Grid>
-      <Grid item xs={12}>
-        <MandatoryUserData />
-      </Grid>
-      <Grid item xs={12}>
-        <ProfileQuestions />
-      </Grid>
-    </Grid>
-  )
+  return userType === 'respondent' ? <RespondentProfile/> : <ClientProfile/>
 }
 
-export default withAuth(FormValidation)
+export default ProfilePage;
