@@ -13,7 +13,7 @@
  * Do not edit the class manually.
  *
  */
-import SurveyApiClient from './SurveyApiClient';
+import SurveyRepositoryApiClient from './SurveyRepositoryApiClient';
 import Error from './model/Error';
 import Survey from './model/Survey';
 import SurveyRepositoryApi from './api/SurveyRepositoryApi';
@@ -51,10 +51,10 @@ import SurveyRepositoryApi from './api/SurveyRepositoryApi';
 */
 export {
     /**
-     * The SurveyApiClient constructor.
-     * @property {module:SurveyApiClient}
+     * The SurveyRepositoryApiClient constructor.
+     * @property {module:SurveyRepositoryApiClient}
      */
-    SurveyApiClient,
+    SurveyRepositoryApiClient,
 
     /**
      * The Error model constructor.

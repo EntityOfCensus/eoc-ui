@@ -23,7 +23,7 @@ const CreateSurvey = () => {
     <Card>
       <CardHeader title='Create Survey' subheader='Start new survey' className='pbe-0' />
       <CardContent className='flex flex-col gap-3 items-center'>
-        <AddCircleIcon largeIcon sx={{ width: 70, height: 78 }} />
+        <AddCircleIcon sx={{ width: 70, height: 78 }} />
 
         <Link href='/new-survey'>
           <Button variant='tonal'>New Survey </Button>

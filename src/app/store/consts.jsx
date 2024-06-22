@@ -14,7 +14,7 @@ export const getSurvey = async surveyId => {
     return JSON.parse(tx.Messages[0].Data)
   } catch (error) {
     console.log(error)
-    return null
+    return {}
   }
 }
 

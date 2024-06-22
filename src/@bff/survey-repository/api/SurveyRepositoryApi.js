@@ -13,7 +13,7 @@
  * Do not edit the class manually.
  *
  */
-import SurveyApiClient from "../SurveyApiClient";
+import SurveyRepositoryApiClient from "../SurveyRepositoryApiClient";
 import Error from '../model/Error';
 import Survey from '../model/Survey';
 
@@ -28,12 +28,12 @@ export default class SurveyRepositoryApi {
     * Constructs a new SurveyRepositoryApi. 
     * @alias module:api/SurveyRepositoryApi
     * @class
-    * @param {module:SurveyApiClient} [apiClient] Optional API client implementation to use,
-    * default to {@link module:SurveyApiClient#instance
+    * @param {module:SurveyRepositoryApiClient} [apiClient] Optional API client implementation to use,
+    * default to {@link module:SurveyRepositoryApiClient#instance
     e} if unspecified.
     */
     constructor(apiClient) {
-        this.apiClient = apiClient || SurveyApiClient.instance;
+        this.apiClient = apiClient || SurveyRepositoryApiClient.instance;
     }
 
     /**

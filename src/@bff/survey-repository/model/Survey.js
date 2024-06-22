@@ -13,7 +13,7 @@
  * Do not edit the class manually.
  *
  */
-import SurveyApiClient from '../SurveyApiClient'
+import SurveyRepositoryApiClient from '../SurveyRepositoryApiClient';
 
 /**
  * The Survey model module.
@@ -26,7 +26,8 @@ export default class Survey {
    * @alias module:model/Survey
    * @class
    */
-  constructor() {}
+  constructor() {
+  }
 
   /**
    * Constructs a <code>Survey</code> from a plain JavaScript object, optionally creating a new instance.
@@ -37,26 +38,30 @@ export default class Survey {
    */
   static constructFromObject(data, obj) {
     if (data) {
-      obj = obj || new Survey()
-      if (data.hasOwnProperty('surveyId')) obj.surveyId = SurveyApiClient.convertToType(data['surveyId'], 'String')
-      if (data.hasOwnProperty('state')) obj.state = SurveyApiClient.convertToType(data['state'], 'String')
-      if (data.hasOwnProperty('name')) obj.state = SurveyApiClient.convertToType(data['name'], 'String')
+      obj = obj || new Survey();
+      if (data.hasOwnProperty('surveyId'))
+        obj.surveyId = SurveyRepositoryApiClient.convertToType(data['surveyId'], 'String');
+      if (data.hasOwnProperty('name'))
+        obj.name = SurveyRepositoryApiClient.convertToType(data['name'], 'String');
+      if (data.hasOwnProperty('state'))
+        obj.state = SurveyRepositoryApiClient.convertToType(data['state'], 'String');
     }
-    return obj
+    return obj;
   }
 }
 
 /**
  * @member {String} surveyId
  */
-Survey.prototype.surveyId = undefined
-
-/**
- * @member {String} state
- */
-Survey.prototype.state = undefined
+Survey.prototype.surveyId = undefined;
 
 /**
  * @member {String} name
  */
-Survey.prototype.name = undefined
+Survey.prototype.name = undefined;
+
+/**
+ * @member {String} state
+ */
+Survey.prototype.state = undefined;
+

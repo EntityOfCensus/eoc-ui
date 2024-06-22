@@ -81,6 +81,9 @@ const CreateSurvey = () => {
 
   const loadSurvey = async surveyId => {
     const survey = await getSurvey(surveyId)
+    if (!survey.surveyId) {
+      survey['surveyId'] = params.surveyId
+    }
     setNewSurvey(survey)
   }
   useState(() => {

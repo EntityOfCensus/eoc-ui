@@ -8,17 +8,16 @@ import CreateSurvey from '@/app/(dashboard)/home/CreateSurvey'
 import withAuth from '../../../hoc/withAuth'
 import React, { useState, useEffect } from 'react'
 
-import { SurveyRepositoryApi, SurveyApiClient } from '../../../@bff/survey-repository'
-// import { getSurvey } from '@/app/store/consts'
+import { SurveyRepositoryApi, SurveyRepositoryApiClient } from '../../../@bff/survey-repository'
 
 function ClientHome() {
   const [mounted, setMounted] = useState(false)
 
-  // const [surveysIdx, setSurveysIdx] = useState()
-
   const [surveys, setSurveys] = useState()
 
-  const [surveyRepositoryApi, setSurveyRepositoryApi] = useState(new SurveyRepositoryApi(SurveyApiClient.instance))
+  const [surveyRepositoryApi, setSurveyRepositoryApi] = useState(
+    new SurveyRepositoryApi(SurveyRepositoryApiClient.instance)
+  )
 
   useEffect(() => {
     if (mounted) {
@@ -33,17 +32,6 @@ function ClientHome() {
           console.log('error', error)
           return
         }
-        // let _surveysIdx = surveysIdx ? surveysIdx : []
-        // let _surveys = surveys ? surveys : []
-        // for (var i = 0; i < data.length; ++i) {
-        //   const surveyIndex = data[i]
-        //   // const survey = await getSurvey(surveyIndex.surveyId)
-        //   // if (survey) {
-        //   // _surveysIdx.push(surveyIndex)
-        //   _surveys.push(survey)
-        //   // }
-        // }
-        // setSurveysIdx(_surveysIdx)
         setSurveys(data)
       })
     }

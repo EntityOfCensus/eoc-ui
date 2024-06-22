@@ -18,7 +18,7 @@ import DirectionalIcon from '@components/DirectionalIcon'
 import { encrypt, sign, signMessage } from '@othent/kms'
 
 import BasicSettings from '@views/pages/wizard/BasicSettings'
-import { SurveyRepositoryApi, SurveyApiClient } from '../../../@bff/survey-repository'
+import { SurveyRepositoryApi, SurveyRepositoryApiClient } from '../../../@bff/survey-repository'
 import { message, createDataItemSigner } from '@permaweb/aoconnect'
 import Backdrop from '@mui/material/Backdrop'
 import CircularProgress from '@mui/material/CircularProgress'
@@ -34,7 +34,9 @@ const StepCreate = ({ surveyData, onChangeSurveyData, activeStep, handleNext, ha
   // Hooks
   const [isSaving, setIsSaving] = useState(false)
 
-  const [surveyRepositoryApi, setSurveyRepositoryApi] = useState(new SurveyRepositoryApi(SurveyApiClient.instance))
+  const [surveyRepositoryApi, setSurveyRepositoryApi] = useState(
+    new SurveyRepositoryApi(SurveyRepositoryApiClient.instance)
+  )
 
   const theme = useTheme()
 
@@ -49,13 +51,21 @@ const StepCreate = ({ surveyData, onChangeSurveyData, activeStep, handleNext, ha
     setIsSaving(true)
     try {
       if (surveyData.surveyId) {
-        surveyRepositoryApi.deleteSurvey(surveyData.surveyId, function (error, data, response) {
+        surveyRepositoryApi.deleteSurvey(surveyData.surveyId, async function (error, data, response) {
           if (error) {
             console.log('error', error)
             return
           }
+          await persistSurvey()
         })
+      } else {
+        await persistSurvey()
       }
+    } catch (error) {
+      console.log(error)
+    }
+
+    async function persistSurvey() {
       const messageId = await message({
         process: 'ENnyYpVeZlS0j01ss-Rht9rHVpmZ73vItDb2Xtrtikc',
         signer: createDataItemSigner(await getSinger()),
@@ -75,11 +85,9 @@ const StepCreate = ({ surveyData, onChangeSurveyData, activeStep, handleNext, ha
             return
           }
           setIsSaving(false)
-          handleNext(true)
+          handleNext()
         }
       )
-    } catch (error) {
-      console.log(error)
     }
   }
 

@@ -13,7 +13,7 @@
  * Do not edit the class manually.
  *
  */
-import SurveyApiClient from '../SurveyApiClient';
+import SurveyRepositoryApiClient from '../SurveyRepositoryApiClient';
 
 /**
  * The Error model module.
@@ -42,7 +42,7 @@ export default class Error {
     if (data) {
       obj = obj || new Error();
       if (data.hasOwnProperty('message'))
-        obj.message = SurveyApiClient.convertToType(data['message'], 'String');
+        obj.message = SurveyRepositoryApiClient.convertToType(data['message'], 'String');
     }
     return obj;
   }
