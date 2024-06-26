@@ -1,10 +1,18 @@
+---
+title: EOCP2P
+description: FHE Peer To Peer Data Exchange - EOC Survey Protocol
+author: Gavianu (@gavianu)
+status: Draft
+date: 2024-06-26
+---
+
 # FHE Peer To Peer Data Exchange - EOC Survey Protocol
 
 #### Version: 0.0.1
 
 ### Abstract
 
-This document outlines a protocol where each user retains ownership of their data. Users store their data on the Permaweb Arweave network, encrypted with their own Fully Homomorphic Encryption (FHE) private key. The corresponding public key, which can be used for computation, is also stored within the data block.
+The EOC Survey Protocol defines a system where users maintain sole ownership of their data. Users store their data on the Permaweb Arweave network, encrypted with their own Fully Homomorphic Encryption (FHE) private key. The corresponding public key, which can be used for computation, is also stored within the data block.
 
 When a user requests a business engagement, other users involved are notified. Once a connection between the parties is established, the target data is securely transferred via a peer-to-peer (P2P) channel in plain text. The receiver then processes this data using their own FHE private key.
 
@@ -30,9 +38,9 @@ The respondent is an individual user account belonging to a private person. The 
 
 #### 1.2 Client
 
-The client is a user account associated with a private company, managed by an individual affiliated with the company. The primary function of the client is to publish survey studies aimed at gathering feedback from targeted groups of respondents.
+The client is a user account, managed by an individual affiliated with private person or an organization. The primary function of the client is to publish survey studies aimed at gathering feedback from targeted groups of respondents.
 
-### 2. Use cases
+### 2. Survey Lifecycle Functions
 
 #### 2.1 Publish survey data
 
@@ -44,8 +52,12 @@ Once a client publishes a survey for feedback, all online respondents are notifi
 
 #### 2.2 Request survey
 
-If a respondent matches the survey target group, they can request the survey from the client. The client will transfer the survey data to the respondent via a secure P2P channel. The respondent will own the survey data requested for feedback and store it as a Permaweb Arweave network block, encrypted with their own Fully Homomorphic Encryption (FHE) private key.
+If a respondent matches the survey target group, they can request the survey from the client. The client will transfer the survey data to the respondent via a secure P2P channel. The respondent will own the survey data requested for feedback and store it as a Permaweb Arweave network transaction, encrypted with their own Fully Homomorphic Encryption (FHE) private key.
 
 #### 2.3 Send survey feedback
 
 When a respondent decides they are ready to submit the survey results, they will establish a secure P2P channel to send the data to the client.
+
+## License
+
+This repository is license under Apache License v2.0 <http://www.apache.org/licenses/LICENSE-2.0.html>
