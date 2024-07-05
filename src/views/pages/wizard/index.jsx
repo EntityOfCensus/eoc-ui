@@ -30,6 +30,7 @@ import StoreProvider from '@/app/store/StoreProvider'
 import { countriesAtom, newSurveyAtom } from '@/app/store/atoms'
 import { useAtom, useStore } from 'jotai'
 import withAuth from '@/hoc/withAuth'
+import withPeer from '@/hoc/withPeer'
 import { useRouter, useParams } from 'next/navigation'
 import dynamic from 'next/dynamic'
 
@@ -228,4 +229,4 @@ const CreateSurvey = () => {
   )
 }
 
-export default withAuth(CreateSurvey)
+export default withAuth(withPeer(CreateSurvey))

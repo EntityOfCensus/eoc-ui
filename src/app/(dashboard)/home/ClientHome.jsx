@@ -5,7 +5,8 @@ import Typography from '@mui/material/Typography'
 
 import RadialBarChart from '@/app/(dashboard)/home/RadialBarChart'
 import CreateSurvey from '@/app/(dashboard)/home/CreateSurvey'
-import withAuth from '../../../hoc/withAuth'
+import withAuth from '@/hoc/withAuth'
+import withPeer from '@/hoc/withPeer'
 import React, { useState, useEffect } from 'react'
 
 import { SurveyRepositoryApi, SurveyRepositoryApiClient } from '../../../@bff/survey-repository'
@@ -62,4 +63,4 @@ function ClientHome() {
     </Grid>
   )
 }
-export default withAuth(ClientHome)
+export default withAuth(withPeer(ClientHome))

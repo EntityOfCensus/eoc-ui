@@ -28,6 +28,7 @@ import {
 import { styled } from '@mui/system'
 import CloseIcon from '@mui/icons-material/Close'
 import withAuth from '@/hoc/withAuth'
+import withPeer from '@/hoc/withPeer'
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const emailSchema = yup.string().matches(emailRegex, 'Invalid email format')
@@ -539,4 +540,4 @@ const FormValidation = () => {
   )
 }
 
-export default withAuth(FormValidation)
+export default withAuth(withPeer(FormValidation))

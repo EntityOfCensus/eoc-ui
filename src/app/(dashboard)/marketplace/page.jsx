@@ -2,7 +2,8 @@
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import SurveyCard from '@/app/(dashboard)/surveys/SurveyCard'
-import withAuth from '../../../hoc/withAuth'
+import withAuth from '@/hoc/withAuth'
+import withPeer from '@/hoc/withPeer'
 
 //export const runtime = 'edge' // 'nodejs' (default) | 'edge'
 
@@ -60,4 +61,4 @@ const Marketplace = () => {
   )
 }
 
-export default withAuth(Marketplace)
+export default withAuth(withPeer(Marketplace))
