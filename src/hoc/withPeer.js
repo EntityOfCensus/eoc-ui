@@ -21,13 +21,14 @@ const withPeer = WrappedComponent => {
               'https://vraf-relay.metered.live/api/v1/turn/credentials?apiKey=6f1b8d7414600ee701c3cc425bac73b8e5c9'
             )
           ).data
-          const _peer = new Peer(walletAddress, {
-            host: '46.101.193.213',
-            port: 9000,
-            config: {
-              iceServers: iceServers
-            }
-          })
+          const _peer = new Peer(walletAddress)
+          // , {
+          //   host: '46.101.193.213',
+          //   port: 9000,
+          //   config: {
+          //     iceServers: iceServers
+          //   }
+          // })
           _peer.on('open', function (id) {
             console.log('My peer ID is: ' + id)
           })
