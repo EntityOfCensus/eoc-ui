@@ -23,6 +23,9 @@ const withPeer = WrappedComponent => {
           ).data
           const _peer = new Peer(walletAddress, {
             host: 'peerjs.vraf.ro',
+            port: 80,
+            secure: false,
+            debug: 1,
             config: {
               iceServers: iceServers
             }
