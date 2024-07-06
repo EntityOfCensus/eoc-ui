@@ -7,6 +7,13 @@ import { jwtDecode } from 'jwt-decode'
 const withPeer = WrappedComponent => {
   return props => {
     const [peer, setPeer] = useState()
+    const [mounted, setMounted] = useState(false)
+
+    useEffect(() => {
+      if (!mounted) {
+        setMounted(true)
+      }
+    })
 
     useEffect(() => {
       const checkPeerReady = async () => {
@@ -24,6 +31,7 @@ const withPeer = WrappedComponent => {
           const _peer = new Peer(walletAddress, {
             host: 'peerjs.vraf.ro',
             debug: 1,
+            secure: true,
             config: {
               iceServers: iceServers
             }
@@ -52,11 +60,11 @@ const withPeer = WrappedComponent => {
           console.error(error)
         }
       }
-      if (!peer) {
+      if (mounted) {
         checkPeerReady()
       } else {
       }
-    }, [peer])
+    }, [mounted])
 
     const onReceivePeerConnectionData = connection => {
       console.log('connection', connection)
