@@ -1,13 +1,13 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { Peer } from 'peerjs'
+
 import axios from 'axios'
 import { jwtDecode } from 'jwt-decode'
 
 const withPeer = WrappedComponent => {
   return props => {
-    const [peer, setPeer] = useState()
     const [mounted, setMounted] = useState(false)
+    const [lastSeenTimestamp, setLastSeenTimestamp] = useState(0)
 
     useEffect(() => {
       if (!mounted) {
@@ -16,71 +16,64 @@ const withPeer = WrappedComponent => {
     })
 
     useEffect(() => {
-      const checkPeerReady = async () => {
-        const { walletAddress } = jwtDecode(localStorage.getItem('id_token'))
-        if (!walletAddress) {
-          return
-        }
-
-        try {
-          const iceServers = (
-            await axios.get(
-              'https://vraf-relay.metered.live/api/v1/turn/credentials?apiKey=6f1b8d7414600ee701c3cc425bac73b8e5c9'
-            )
-          ).data
-          const _peer = new Peer(walletAddress, {
-            host: 'peerjs.vraf.ro',
-            debug: 1,
-            secure: true,
-            config: {
-              iceServers: iceServers
-            }
-          })
-          _peer.on('open', function (id) {
-            console.log('My peer ID is: ' + id)
-          })
-          _peer.on('connection', function (connection) {
-            connection.on('data', function (data) {
-              console.log('data sent', data)
-              connection.send('Hi!')
-            })
-          })
-          var _conn = _peer.connect('OqF4EnU9JrL4CXvbjWLgSXi_okpQnaA9mGPnPP2K1_c')
-          _conn.on('open', function () {
-            // Receive messages
-            _conn.on('data', function (data) {
-              console.log('data received', data)
-            })
-
-            // Send messages
-            _conn.send('Hello!')
-          })
-          setPeer(_peer)
-        } catch (error) {
-          console.error(error)
-        }
-      }
       if (mounted) {
-        checkPeerReady()
+        const initAsync = async () => {
+          // const res = await axios.get(`http://edge-chat-demo.cloudflareworkers.com/api/room/#newmyroom`)
+          // console.log('response: ', res.data)
+          const { walletAddress } = jwtDecode(localStorage.getItem('id_token'))
+          const socket = new WebSocket(
+            'wss://eoc-stateless-peer-websocket.infra-workers.workers.dev/api/room/OqF4EnU9JrL4CXvbjWLgSXi_okpQnaA9mGPnPP2K1_c/websocket'
+          )
+
+          socket.onopen = () => {
+            console.log('WebSocket connection established.')
+            socket.send(JSON.stringify({ name: walletAddress }))
+          }
+
+          socket.onmessage = event => {
+            const data = JSON.parse(event.data)
+            if (data.error) {
+              console.error(data.error)
+            } else if (data.joined) {
+              console.log('peer joined: ', data.joined)
+            } else if (data.quit) {
+              console.log('peer left: ', data.quit)
+            } else if (data.ready) {
+              // All pre-join messages have been delivered.
+              console.log('data ready: ', data.ready)
+              if (walletAddress == 'OqF4EnU9JrL4CXvbjWLgSXi_okpQnaA9mGPnPP2K1_c') {
+                const message = {
+                  message: 'Hi !',
+                  timestamp: new Date().toISOString()
+                }
+                socket.send(JSON.stringify(message))
+              } else {
+                const message = {
+                  message: 'Hello !',
+                  timestamp: new Date().toISOString()
+                }
+                socket.send(JSON.stringify(message))
+              }
+            } else {
+              // A regular chat message.
+              if (data.timestamp > lastSeenTimestamp) {
+                console.log('data from: ', data.name)
+                console.log('data message: ', data.message)
+                setLastSeenTimestamp(data.timestamp)
+              }
+            }
+          }
+
+          return () => {
+            socket.close()
+          }
+        }
+        initAsync()
       } else {
       }
     }, [mounted])
 
-    const onReceivePeerConnectionData = connection => {
-      console.log('connection', connection)
-      if (connection) {
-        connection.on('data', onReceivePeerData)
-        setPeerChannel(connection)
-      }
-    }
-    const onReceivePeerData = data => {
-      console.log('data', data)
-      if (peerChannel) {
-        peerChannel.send('Hello!')
-      }
-    }
-
-    return <WrappedComponent {...props} peer={peer} />
+    return <WrappedComponent {...props} />
   }
 }
 
