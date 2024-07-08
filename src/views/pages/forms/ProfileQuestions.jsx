@@ -285,7 +285,7 @@ const ProfileQuestions = ({ question, answers }) => {
 
   const fetchProfileSurvey = async surveyId => {
     try {
-      let survey = getSurvey(surveyId)
+      let survey = await getSurvey(surveyId)
 
       let sd = []
       for (var i = 0; i < survey.targetGroups[0].surveyData.length; ++i) {
