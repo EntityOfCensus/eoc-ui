@@ -21,7 +21,7 @@ The intention of FHE storage and computation flow is that any user of the applic
 
 ## Details
 
-The actions of the actors in this floe are described by the figure 1 and figure 2.
+The actions of the actors in this flow are described by the figure 1 and figure 2.
 
 ![FHE Flow Respondent Actions](images/FHEFlowRespondentActions.png)
 
@@ -29,15 +29,23 @@ The actions of the actors in this floe are described by the figure 1 and figure 
 
 ![FHE Flow Client Actions](images/FHEFlowClientActions.png)
 
-<center><b>Figure 1: FHE Flow Client Actions</b></center>
+<center><b>Figure 2: FHE Flow Client Actions</b></center>
+
+Each user type of the application is required to hold a secret key in the local system that will connect to the application portal. The public key of the user it will be kept in arweave file system. This way will help the system to run the computation logic in an AO process. The result of the computation is encrypted only the private key holer user can decrypt the information.
+
+The information shared to others parties in the application will be send via a secure channel named FHE P2P Data Exchange.
 
 ### Generate Keys
 
-The generate keys action is require for any user type in order to connect to a survey chart room. The process is detail in figure 3
+The generate keys action is require for any user type in order to connect to a survey chart room. When a user sets that he want to use the FHE protocol. The application will check for the secret and public key settings. If the key are not present, then the browser application will start the process to generate keys. This process will run in the browser application and when the keys are generated the public key and a sample block with encrypted data will be send to a specific AO process. The AO precess will save the public key in arweave file system and the encrypted sample. When the keys are present the browser application will check for the keys compatibility with the user data.
 
 ![FHE Key Providing Process](images/FHEKeyProvidingProcess.png)
 
-<center><b>Figure 1: FHE Key Providing Process</b></center>
+<center><b>Figure 3: FHE Key Providing Process</b></center>
+
+### Respondent Profiling Data Management
+
+The responded
 
 ## License
 
