@@ -53,11 +53,34 @@ The responded is save encrypted into AO transactions. As AO transactions are per
 
 ### Client and Respondent Survey Data Management
 
-The survey data is a complex structure as it has two point of view. The client view of the survey in which the target group settings and the market study are setup, is the client data. The respondent view of the survey contains the market study request and the respondent response of the study. In other worlds the client can setup the survey study data, once the survey study is started the client can't change the survey. After the survey started the market study will be sent to the matching respondents, all respondents will work on his own data survey. When the respondent will finished with the survey the same survey will be transferred to the client and the respondent will not be able to change the survey. In other worlds the AO Computer will hold for a survey lots of transactions. All transaction until a client and a respondent finished with the survey will be indexed by the backend system.
+The survey data has a complex structure with two distinct perspectives: the client's and the respondent's.
+
+- Client View: The client sets up the target group settings and the market study. This setup is considered client data. Once the survey study is started, the client cannot make any changes to it.
+- Respondent View: The respondent receives the market study request and responds to it. This view contains both the request and the respondent's responses.
+
+After the survey starts, the market study is sent to the matching respondents. Each respondent works on their own version of the survey. Once a respondent completes the survey, it is transferred back to the client, and the respondent can no longer make changes to it.
+
+In essence, the system manages numerous transactions for each survey. All transactions are indexed by the backend system both the client and the respondent.
 
 ![FHE Client Respondent Survey Data Management](images/FHEClientRespondentSurveyDataManagement.png)
 
 <center><b>Figure 5: FHE Client Respondent Survey Data Management</b></center>
+
+### The survey chat room
+
+The survey chat room is an implementation of FHE P2P Data exchange. In this implementation the life cycle of a chart room is managed by the survey status. The system will index the chart rooms in the backend system to control the state. The solution is an implementation of cloudflare workers Durable Objects, a new approach to Stateful Serverless. The peer-to-peer is manage by the users websocket connection.
+
+![FHE Peer To Peer Data Exchange](images/FHEPeerToPeerDataExchange.png)
+
+<center><b>Figure 6: EOC Peer To Peer Data Exchange</b>  <i>Each peer owns he's data and approve's data exchange with peer user in order to engage business</i></center>
+
+#### Create Survey Chat Room
+
+Once a survey is ready for the market study the system will create the chart room. The chart room state and result are being indexed in the backend system.
+
+![Create Survey Chat Room](images/CreateSurveyChatRoom.png)
+
+<center><b>Figure 6: Create Survey Chat Room</b></center>
 
 ## License
 
