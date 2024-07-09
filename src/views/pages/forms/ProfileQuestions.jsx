@@ -154,9 +154,10 @@ const ProfileQuestions = ({ question, answers }) => {
       ]
     }
     try {
+      const walletSing = await getSinger()
       const messageId = await message({
         process: 'ENnyYpVeZlS0j01ss-Rht9rHVpmZ73vItDb2Xtrtikc',
-        signer: createDataItemSigner(await getSinger()),
+        signer: createDataItemSigner(walletSing),
         // the survey as stringified JSON
         data: JSON.stringify(survey),
         tags: [{ name: 'Action', value: 'AddSurvey' }]

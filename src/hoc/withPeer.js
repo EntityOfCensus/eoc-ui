@@ -22,7 +22,7 @@ const withPeer = WrappedComponent => {
           // console.log('response: ', res.data)
           const { walletAddress } = jwtDecode(localStorage.getItem('id_token'))
           const socket = new WebSocket(
-            'wss://eoc-stateless-peer-websocket.infra-workers.workers.dev/api/room/OqF4EnU9JrL4CXvbjWLgSXi_okpQnaA9mGPnPP2K1_c/websocket'
+            'ws://localhost:8787/api/room/OqF4EnU9JrL4CXvbjWLgSXi_okpQnaA9mGPnPP2K1_c/websocket'
           )
 
           socket.onopen = () => {
