@@ -45,7 +45,19 @@ The generate keys action is require for any user type in order to connect to a s
 
 ### Respondent Profiling Data Management
 
-The responded
+The responded is save encrypted into AO transactions. As AO transactions are permanently stored each change of the data will lead to save in other transaction ID. The backend system of the application will index the transactions ID. The user will get the active transaction ID to be used by the browser to decrypt the data and display it on the screen.
+
+![FHE Respondent Profiling Data Management](images/FHERespondentProfilingDataManagement.png)
+
+<center><b>Figure 4: FHE Respondent Profiling Data Management</b></center>
+
+### Client and Respondent Survey Data Management
+
+The survey data is a complex structure as it has two point of view. The client view of the survey in which the target group settings and the market study are setup, is the client data. The respondent view of the survey contains the market study request and the respondent response of the study. In other worlds the client can setup the survey study data, once the survey study is started the client can't change the survey. After the survey started the market study will be sent to the matching respondents, all respondents will work on his own data survey. When the respondent will finished with the survey the same survey will be transferred to the client and the respondent will not be able to change the survey. In other worlds the AO Computer will hold for a survey lots of transactions. All transaction until a client and a respondent finished with the survey will be indexed by the backend system.
+
+![FHE Client Respondent Survey Data Management](images/FHEClientRespondentSurveyDataManagement.png)
+
+<center><b>Figure 5: FHE Client Respondent Survey Data Management</b></center>
 
 ## License
 
